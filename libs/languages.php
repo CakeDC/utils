@@ -1,0 +1,60 @@
+<?php
+/**
+ * Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+
+/**
+ * Utils Plugin
+ *
+ * Utils Languages Library
+ *
+ * @package utils
+ * @subpackage utils.libs
+ */
+App::import('Core', 'l10n');
+class Languages extends L10n {
+/**
+ * Constructor
+ *
+ * @return void
+ * @access public
+ */
+	public function __construct() {
+	}
+
+/**
+ * List of languages that can be used in selects for example
+ *
+ * @param string
+ * @return array
+ * @access public
+ */
+	public function lists($order = 'language') {
+		static $lists = array();
+
+		if (empty($lists)) {
+			$catalogs = $this->catalog();
+			$match = null;
+			foreach ($catalogs as $catalog) {
+				if ($match != $catalog['localeFallback']) {
+					$lists[$catalog['language']] = $catalog['localeFallback'];
+				}
+				$match = $catalog['localeFallback'];
+			}
+		}
+		ksort($lists);
+
+		if ($order === 'locale') {
+			return array_flip($lists);
+		}
+		return $lists;
+	}
+
+}
+?>
