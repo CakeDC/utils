@@ -1,4 +1,4 @@
-## CakePHP Utils Plugin ##
+# CakePHP Utils Plugin #
 
 The Utils plugin contains a lot of reusable components, behaviors and helpers.
 Below are the details of each, and notes on usage.
