@@ -23,7 +23,6 @@ class ArchiveComponent extends Object {
  * Date parameters to find
  *
  * @var array
- * @access protected
  */
 	protected $_parameters = array(
 		'year', 'month', 'day');
@@ -32,7 +31,6 @@ class ArchiveComponent extends Object {
  * Controller reference
  *
  * @var object
- * @access public
  */
 	public $controller = null;
 
@@ -42,7 +40,6 @@ class ArchiveComponent extends Object {
  * Customizable in beforeFilter(), or default controller's model name is used
  *
  * @var string
- * @access public
  */
 	public $modelName = null;
 
@@ -50,7 +47,6 @@ class ArchiveComponent extends Object {
  * DateField
  *
  * @var string
- * @access public
  */
 	public $dateField = 'created';
 
@@ -60,7 +56,6 @@ class ArchiveComponent extends Object {
  * Builds the pagination conditions
  *
  * @param object
- * @access public
  */
 	public function startup(&$controller) {
 		$this->controller =& $controller;
@@ -102,7 +97,6 @@ class ArchiveComponent extends Object {
  *
  * @param array $conditions Array of conditions to use on $this->modelName when doing the find
  * @return mixed either false on missing modelName or array of year/month combos
- * @access public
  */
 	public function archiveLinks($conditions = array()) {
 		$modelName = $this->modelName;
@@ -138,7 +132,6 @@ class ArchiveComponent extends Object {
  * Can be overloaded in a model by implementing buildArchiveConditions()
  *
  * @param array
- * @access protected
  */
 	protected function _buildArchiveConditions($dateParams) {
 		$duration = '1 month';
@@ -175,4 +168,3 @@ class ArchiveComponent extends Object {
 	}
 
 }
-?>

@@ -18,11 +18,11 @@
  * @subpackage utils.models.behaviors
  */
 class KeyvalueBehavior extends ModelBehavior {
+
 /**
  * Settings
  * 
  * @var mixed
- * @access public
  */
 	public $settings = array();
 
@@ -30,7 +30,6 @@ class KeyvalueBehavior extends ModelBehavior {
  * Default settings
  * 
  * @var array
- * @access protected
  */
 	protected $_defaults = array(
 		'foreignKey' => 'user_id');
@@ -40,7 +39,6 @@ class KeyvalueBehavior extends ModelBehavior {
  *
  * @param object AppModel
  * @param array $config
- * @access public
  */
 	public function setup(&$model, $config = array()) {
 		$settings = array_merge($this->_defaults, $config);
@@ -53,7 +51,6 @@ class KeyvalueBehavior extends ModelBehavior {
  * @var string
  * @var string
  * @return array
- * @access public
  */
 	public function getSection($Model, $foreignKey = null, $section = null) {
 		$Model->recursive = -1;
@@ -80,7 +77,6 @@ class KeyvalueBehavior extends ModelBehavior {
  * @var string
  * @var array
  * @var string
- * @access public
  */
 	public function saveSection($Model, $foreignKey = null, $data = null, $section = null) {
 		foreach($data as $model => $details) {
@@ -99,6 +95,4 @@ class KeyvalueBehavior extends ModelBehavior {
 			}
 		}
 	}
-
 }
-?>

@@ -23,7 +23,6 @@ class SoftDeleteBehavior extends ModelBehavior {
  * Default settings
  *
  * @var array $default
- * @access public
  */
 	public $default = array('deleted' => 'deleted_date');
 
@@ -31,7 +30,6 @@ class SoftDeleteBehavior extends ModelBehavior {
  * Holds activity flags for models
  *
  * @var array $runtime
- * @access public
  */
 	public $runtime = array();
 
@@ -40,7 +38,6 @@ class SoftDeleteBehavior extends ModelBehavior {
  *
  * @param object $model
  * @param array $settings
- * @access public
  */
     public function setup(&$model, $settings = array()) {
         if (empty($settings)) {
@@ -73,7 +70,6 @@ class SoftDeleteBehavior extends ModelBehavior {
  * @param object $model
  * @param array $query
  * @return array
- * @access public
  */
     public function beforeFind(&$model, $query) {
         $runtime = $this->runtime[$model->alias];
@@ -104,7 +100,6 @@ class SoftDeleteBehavior extends ModelBehavior {
  * @param object $model
  * @param array $query
  * @return boolean
- * @access public
  */
     public function beforeDelete(&$model) {
         $runtime = $this->runtime[$model->alias];
@@ -120,7 +115,6 @@ class SoftDeleteBehavior extends ModelBehavior {
  * @param object $model
  * @param integer $id
  * @return boolean
- * @access public
  */
 	public function delete(&$model, $id) {
 		$runtime = $this->runtime[$model->alias];
@@ -150,7 +144,6 @@ class SoftDeleteBehavior extends ModelBehavior {
  * @param object $model
  * @param integer $id
  * @return boolean
- * @access public
  */
 	public function undelete(&$model, $id) {
 		$runtime = $this->runtime[$model->alias];
@@ -189,7 +182,6 @@ class SoftDeleteBehavior extends ModelBehavior {
  * @param object $model
  * @param mixed $active
  * @return mixed if $active is null, then current setting/null, or boolean if runtime setting for model was changed
- * @access public
  */
 	public function softDelete(&$model, $active) {
 		if (is_null($active)) {
@@ -209,7 +201,6 @@ class SoftDeleteBehavior extends ModelBehavior {
  * @param object $model
  * @param mixed $expiration anything parseable by strtotime(), by default '-90 days'
  * @return integer
- * @access public
  */
     public function purgeDeletedCount(&$model, $expiration = '-90 days') {
         $this->softDelete($model, false);
@@ -217,13 +208,13 @@ class SoftDeleteBehavior extends ModelBehavior {
 			'conditions' => $this->_purgeDeletedConditions($model, $expiration), 
 			'recursive' => -1));
     }
+
 /**
  * Purge table
  *
  * @param object $model
  * @param mixed $expiration anything parseable by strtotime(), by default '-90 days'
  * @return boolean if there were some outdated records
- * @access public
  */
     public function purgeDeleted(&$model, $expiration = '-90 days') {
         $this->softDelete($model, false);
@@ -246,7 +237,6 @@ class SoftDeleteBehavior extends ModelBehavior {
  * @param object $model
  * @param mixed $expiration anything parseable by strtotime(), by default '-90 days'
  * @return array
- * @access public
  */
     protected function _purgeDeletedConditions(&$model, $expiration = '-90 days') {
         $purgeDate = date('Y-m-d H:i:s', strtotime($expiration));
@@ -263,7 +253,6 @@ class SoftDeleteBehavior extends ModelBehavior {
 /**
  * Return normalized field array
  *
- * @access protected
  * @param object $model
  * @param array $settings
  * @return array
@@ -287,7 +276,6 @@ class SoftDeleteBehavior extends ModelBehavior {
  * If multiple delete flags are configured for model, then $active=true doesn't
  * do anything - you have to alter conditions in association definition
  *
- * @access protected
  * @param object $model
  * @param mixed $active
  */
@@ -340,4 +328,3 @@ class SoftDeleteBehavior extends ModelBehavior {
 		}
     }
 }
-?>

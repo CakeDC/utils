@@ -22,7 +22,6 @@ class FormPreserverComponent extends Object {
  * Components that are required
  *
  * @var array $components
- * @access public
  */
 	public $components = array('Session', 'Auth');
 
@@ -30,7 +29,6 @@ class FormPreserverComponent extends Object {
  * Actions used to fetch the post data
  *
  * @var array actions
- * @access public
  */
 	public $actions = array();
 
@@ -48,20 +46,17 @@ class FormPreserverComponent extends Object {
  * Generates a path like PreservedForms.Controller.action
  *
  * @var string
- * @access public
  */
 	public $sessionPath = null;
 /**
  * Flash message for the redirect
  *
  * @var string Message to be shown in the flash message
- * @access public
  */
 	public $redirectMessage = null;
 
 /**
  * @var mixed Array or string URL syntax
- * @access public
  */
 	public $loginRedirect = null;
 
@@ -69,7 +64,6 @@ class FormPreserverComponent extends Object {
  * Directly post the data after a user logged in or not
  *
  * @var boolean If true the data will be directly posted, if not the form appears filled with the preserved data. Default is false.
- * @access public
  */
 	public $directPost = false;
 
@@ -77,7 +71,6 @@ class FormPreserverComponent extends Object {
  * Constructor
  *
  * @return void
- * @access public
  */
 	public function __construct() {
 		parent::__construct();
@@ -88,7 +81,6 @@ class FormPreserverComponent extends Object {
  * Intialize Callback
  *
  * @param object Controller object
- * @access public
  */
 	public function initialize(&$Controller) {
 		$this->Controller = $Controller;
@@ -100,7 +92,6 @@ class FormPreserverComponent extends Object {
  *
  * @param object Controller instance
  * @return void
- * @access public
  */
 
 	public function startUp(&$Controller) {
@@ -145,7 +136,6 @@ class FormPreserverComponent extends Object {
  *
  * @param array Data from Controller->data
  * @return boolean
- * @access public
  */
 	public function preserve($data = null, $sessionPath = null) {
 		$this->_overridPath($sessionPath);
@@ -160,7 +150,6 @@ class FormPreserverComponent extends Object {
  *
  * @param string Session path, allows to override the default path to get the form data on other pages manually
  * @return void
- * @access public
  */
 	public function restore($sessionPath = null) {
 		$this->_overridPath($sessionPath);
@@ -178,7 +167,6 @@ class FormPreserverComponent extends Object {
  * Overrides the session path
  *
  * @param string
- * @access protected
  * @return void
  */
 	protected function _overridPath($sessionPath = null) {
@@ -191,11 +179,9 @@ class FormPreserverComponent extends Object {
  * beforeRender callback
  *
  * @return void
- * @access public
  */
 	public function beforeRender() {
 		$this->restore();
 	}
 
 }
-?>

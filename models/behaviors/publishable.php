@@ -18,20 +18,19 @@
  * @subpackage utils.models.behaviors
  */
 class PublishableBehavior extends ModelBehavior {
+
 /**
  * Contain settings indexed by model name.
  *
  * @var array
- * @access private
  */
-	var $__settings = array();
+	private $__settings = array();
 
 /**
  * Initiate behaviour for the model using settings.
  *
  * @param object $Model Model using the behaviour
  * @param array $settings Settings to override for model.
- * @access public
  */
 	function setup(&$Model, $settings = array()) {
 		$default = array('field' => 'published', 'field_date' => 'published_date', 'find' => true);
@@ -51,7 +50,6 @@ class PublishableBehavior extends ModelBehavior {
  * @param mixed $id ID of the publishable record.
  * @param $attributes Other fields to change (in the form of field => value)
  * @return boolean Result of the operation.
- * @access public
  */
 	function publish(&$Model, $id = null, $attributes = array()) {
 		if ($Model->hasField($this->__settings[$Model->alias]['field'])) {
@@ -83,7 +81,6 @@ class PublishableBehavior extends ModelBehavior {
 
 			return ($result !== false);
 		}
-
 		return false;
 	}
 
@@ -94,7 +91,6 @@ class PublishableBehavior extends ModelBehavior {
  * @param mixed $id ID of the publishable record.
  * @param $attributes Other fields to change (in the form of field => value)
  * @return boolean Result of the operation.
- * @access public
  */
 	function unPublish(&$Model, $id = null, $attributes = array()) {
 		if ($Model->hasField($this->__settings[$Model->alias]['field'])) {
@@ -121,7 +117,6 @@ class PublishableBehavior extends ModelBehavior {
 
 			return ($result !== false);
 		}
-
 		return false;
 	}
 
@@ -131,7 +126,6 @@ class PublishableBehavior extends ModelBehavior {
  * @param object $Model Model to be published
  * @param mixed $methods If string, method to enable on, if array array of method names, if boolean, enable it for find method
  * @param boolean $enable If specified method should be overriden.
- * @access public
  */
 	function enablePublishable(&$Model, $methods, $enable = true) {
 		if (is_bool($methods)) {
@@ -154,7 +148,6 @@ class PublishableBehavior extends ModelBehavior {
  * @param object $Model Model
  * @param array $queryData Data used to execute this query, i.e. conditions, order, etc.
  * @return mixed Set to false to abort find operation, or return an array with data used to execute query
- * @access public
  */
 	function beforeFind(&$Model, $queryData, $recursive = null) {
 
@@ -228,9 +221,7 @@ class PublishableBehavior extends ModelBehavior {
 					$queryData = $Model->{$m}->Behaviors->Publishable->beforeFind($Model->{$m}, $queryData, --$recursive);
 				}
 			}
-
 		}
-
 		return $queryData;
 	}
 
@@ -239,7 +230,6 @@ class PublishableBehavior extends ModelBehavior {
  *
  * @param object $Model Model about to be saved.
  * @return boolean True if the operation should continue, false if it should abort
- * @access public
  */
 	function beforeSave(&$Model) {
 		if ($this->__settings[$Model->alias]['find']) {
@@ -253,7 +243,6 @@ class PublishableBehavior extends ModelBehavior {
 			$this->__backAttributes[$Model->alias]['find'] = $this->__settings[$Model->alias]['find'];
 			$this->enablePublishable($Model, false);
 		}
-
 		return true;
 	}
 
@@ -262,7 +251,6 @@ class PublishableBehavior extends ModelBehavior {
  *
  * @param object $Model Model just saved.
  * @param boolean $created True if this save created a new record
- * @access public
  */
 	function afterSave(&$Model, $created) {
 		if (isset($this->__backAttributes[$Model->alias]['find'])) {

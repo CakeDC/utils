@@ -18,11 +18,11 @@
  * @subpackage utils.models.behaviors
  */
 class ToggleableBehavior extends ModelBehavior {
+
 /**
  * Settings
  * 
  * @var mixed
- * @access public
  */
 	public $settings = array();
 
@@ -30,7 +30,6 @@ class ToggleableBehavior extends ModelBehavior {
  * Default settings
  * 
  * @var array
- * @access protected
  */
 	protected $_defaults = array(
 		'fields' => array(),
@@ -40,7 +39,6 @@ class ToggleableBehavior extends ModelBehavior {
  *
  * @param object AppModel
  * @param array $config
- * @access public
  */
 	public function setup(Model $Model, $config = array()) {
 		$settings = array_merge($this->_defaults, $config);
@@ -58,7 +56,6 @@ class ToggleableBehavior extends ModelBehavior {
  * @param mixed $id Integer or UUID string type record id
  * @param string $field Name of the field to toggle
  * @return mixed The new state or false if setting the new state failed
- * @access public
  */
 	public function toggle(Model $Model, $id = null, $field = null) {
 		extract($this->settings[$Model->alias]);
@@ -110,6 +107,4 @@ class ToggleableBehavior extends ModelBehavior {
 
 		return $newState;
 	}
-
 }
-?>

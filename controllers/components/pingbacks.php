@@ -25,7 +25,6 @@ class PingbacksComponent extends Object {
  * Components that are required
  *
  * @var array $components
- * @access public
  */
 	public $components = array('Session');
 
@@ -33,7 +32,6 @@ class PingbacksComponent extends Object {
  * Socket to access webservice
  *
  * @var Socket $Socket
- * @access private
  */
 	private $Socket;
 
@@ -41,7 +39,6 @@ class PingbacksComponent extends Object {
  * Controller
  *
  * @var mixed $controller
- * @access public
  */
 	public $controller = null;
 
@@ -49,7 +46,6 @@ class PingbacksComponent extends Object {
  * Callback
  *
  * @param object Controller object
- * @access public
  */
 	public function initialize(&$controller) {
 		$this->Socket = new HttpSocket();
@@ -73,7 +69,6 @@ class PingbacksComponent extends Object {
  * Attempts to notify the server of targetUri that sourceUri refers to it.
  *
  * @param object Controller object
- * @access public
  */
 	public function pingbackUrl($sourceUri, $targetUri) {
 		$urlData = $this->Socket->get($targetUri);
@@ -105,7 +100,6 @@ class PingbacksComponent extends Object {
  * Attempts to notify the server of targetUri that sourceUri refers to it.
  *
  * @param object Controller object
- * @access public
  */
 	public function trackbackUrl($sourceUri, $targetUri) {
 		$urlData = $this->Socket->get($targetUri);
@@ -121,7 +115,6 @@ class PingbacksComponent extends Object {
  * @param string $text
  * @param boolean $allowLocalLinks
  * @return array of hyperlink in data
- * @access public
  */
 	public function extractLinks($text, $allowLocalLinks = false) {
 		$matches = array();
@@ -242,7 +235,4 @@ class PingbacksComponent extends Object {
 			return false;
 		}
 	}
-
-
 }
-?>

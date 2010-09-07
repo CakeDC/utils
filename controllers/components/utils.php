@@ -23,7 +23,6 @@ class UtilsComponent extends Object {
  * Controller
  *
  * @var mixed $controller
- * @access public
  */ 
 	public $controller; 
 
@@ -31,7 +30,6 @@ class UtilsComponent extends Object {
  * Startup Callback
  *
  * @param object Controller object
- * @access public
  */
 	public function startup(&$controller) {
 		$this->controller = &$controller;
@@ -43,7 +41,6 @@ class UtilsComponent extends Object {
  * @param string $text
  * @param string $settings
  * @return string
- * @access public
  */
 	public function cleanHtml($text, $settings = 'full') {
 		App::import('Helper', 'Utils.Cleaner');
@@ -52,4 +49,3 @@ class UtilsComponent extends Object {
 	}
 
 }
-?>

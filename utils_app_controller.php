@@ -15,8 +15,6 @@
  * Utils App Controller
  *
  * @package utils
- * @subpackage utils.controller
  */
 class UtilsAppController extends AppController {
 }
-?>

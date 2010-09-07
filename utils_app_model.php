@@ -15,9 +15,9 @@
  * Utils App Model
  *
  * @package utils
- * @subpackage utils.models
  */
 class UtilsAppModel extends AppModel {
+
 /**
  * Plugin name
  *
@@ -26,4 +26,3 @@ class UtilsAppModel extends AppModel {
  */
 	public $plugin = 'Utils';
 }
-?>

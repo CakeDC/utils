@@ -1,28 +1,14 @@
 <?php
 /**
- * Tree behavior class.
- *
- * Enables a model object to act as a node-based tree.
- *
- * PHP versions 4 and 5
- *
- * CakePHP :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2006-2008, Cake Software Foundation, Inc.
+ * Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright	  Copyright 2006-2008, Cake Software Foundation, Inc.
- * @link		  http://www.cakefoundation.org/projects/info/cakephp CakePHP Project
- * @package		  cake
- * @subpackage	  cake.cake.libs.model.behaviors
- * @since		  CakePHP v 1.2.0.4487
- * @version		  $Revision: 114 $
- * @modifiedby	  $LastChangedBy: nathan.mcconathy $
- * @lastmodified  $Date: 2010-01-20 16:18:24 -0500 (Wed, 20 Jan 2010) $
- * @license		  http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
+
 /**
  * Tree Behavior.
  *
@@ -33,29 +19,30 @@
  * @subpackage	  cake.cake.libs.model.behaviors
  */
 class BTreeBehavior extends ModelBehavior {
+
 /**
  * Errors
  *
  * @var array
  */
 	var $errors = array();
+
 /**
  * Defaults
  *
  * @var array
- * @access protected
  */
 	var $_defaults = array(
 		'parent' => 'parent_id', 'left' => 'lft', 'right' => 'rght',
 		'scope' => '1 = 1', 'type' => 'nested', '__parentChange' => false, 'recursive' => -1
 	);
+
 /**
  * Initiate Tree behavior
  *
  * @param object $Model instance of model
  * @param array $config array of configuration settings.
  * @return void
- * @access public
  */
 	function setup(&$Model, $config = array()) {
 		if (!is_array($config)) {
@@ -77,6 +64,7 @@ class BTreeBehavior extends ModelBehavior {
 		}
 		$this->settings[$Model->alias] = $settings;
 	}
+
 /**
  * After save method. Called after all saves
  *
@@ -86,7 +74,6 @@ class BTreeBehavior extends ModelBehavior {
  * @param AppModel $Model Model instance.
  * @param boolean $created indicates whether the node just saved was created or updated
  * @return boolean true on success, false on failure
- * @access public
  */
 	function afterSave(&$Model, $created) {
 		extract($this->settings[$Model->alias]);
@@ -99,6 +86,7 @@ class BTreeBehavior extends ModelBehavior {
 			return $this->_setParent($Model, $Model->data[$Model->alias][$parent]);
 		}
 	}
+
 /**
  * Before delete method. Called before all deletes
  *
@@ -106,7 +94,6 @@ class BTreeBehavior extends ModelBehavior {
  *
  * @param AppModel $Model Model instance
  * @return boolean true to continue, false to abort the delete
- * @access public
  */
 	function beforeDelete(&$Model) {
 		extract($this->settings[$Model->alias]);
@@ -128,6 +115,7 @@ class BTreeBehavior extends ModelBehavior {
 		$this->__sync($Model, $diff, '-', '> ' . $data[$right]);
 		return true;
 	}
+
 /**
  * Before save method. Called before all saves
  *
@@ -138,7 +126,6 @@ class BTreeBehavior extends ModelBehavior {
  * @since		  1.2
  * @param AppModel $Model Model instance
  * @return boolean true to continue, false to abort the save
- * @access public
  */
 	function beforeSave(&$Model) {
 		extract($this->settings[$Model->alias]);
@@ -205,6 +192,7 @@ class BTreeBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
 /**
  * Get the number of child nodes
  *
@@ -215,7 +203,6 @@ class BTreeBehavior extends ModelBehavior {
  * @param mixed $id The ID of the record to read or false to read all top level nodes
  * @param boolean $direct whether to count direct, or all, children
  * @return integer number of child nodes
- * @access public
  */
 	function childcount(&$Model, $id = null, $direct = false) {
 		if (is_array($id)) {
@@ -245,6 +232,7 @@ class BTreeBehavior extends ModelBehavior {
 		}
 		return ($data[$right] - $data[$left] - 1) / 2;
 	}
+
 /**
  * Get the child nodes of the current model
  *
@@ -260,7 +248,6 @@ class BTreeBehavior extends ModelBehavior {
  * @param integer $page Page number, for accessing paged data
  * @param integer $recursive The number of levels deep to fetch associated records
  * @return array Array of child nodes
- * @access public
  */
 	function children(&$Model, $id = null, $direct = false, $fields = null, $order = null, $limit = null, $page = 1, $recursive = null) {
 		if (is_array($id)) {
@@ -306,6 +293,7 @@ class BTreeBehavior extends ModelBehavior {
 		}
 		return $Model->find('all', compact('conditions', 'fields', 'order', 'limit', 'page', 'recursive'));
 	}
+
 /**
  * A convenience method for returning a hierarchical array used for HTML select boxes
  *
@@ -316,7 +304,6 @@ class BTreeBehavior extends ModelBehavior {
  * @param string $spacer The character or characters which will be repeated
  * @param integer $recursive The number of levels deep to fetch associated records
  * @return array An associative array of records, where the id is the key, and the display field is the value
- * @access public
  */
 	function generatetreelist(&$Model, $conditions = null, $keyPath = null, $valuePath = null, $spacer = '_', $recursive = null) {
 		$overrideRecursive = $recursive;
@@ -361,6 +348,7 @@ class BTreeBehavior extends ModelBehavior {
 		}
 		return Set::combine($results, $keyPath, $valuePath);
 	}
+
 /**
  * Get the parent node
  *
@@ -370,7 +358,6 @@ class BTreeBehavior extends ModelBehavior {
  * @param mixed $id The ID of the record to read
  * @param integer $recursive The number of levels deep to fetch associated records
  * @return array Array of data for the parent node
- * @access public
  */
 	function getparentnode(&$Model, $id = null, $fields = null, $recursive = null) {
 		if (is_array($id)) {
@@ -394,6 +381,7 @@ class BTreeBehavior extends ModelBehavior {
 		}
 		return false;
 	}
+
 /**
  * Get the path to the given node
  *
@@ -402,7 +390,6 @@ class BTreeBehavior extends ModelBehavior {
  * @param mixed $fields Either a single string of a field name, or an array of field names
  * @param integer $recursive The number of levels deep to fetch associated records
  * @return array Array of nodes from top most parent to current node
- * @access public
  */
 	function getpath(&$Model, $id = null, $fields = null, $recursive = null) {
 		$cachequeries = $Model->cacheQueries;
@@ -467,6 +454,7 @@ class BTreeBehavior extends ModelBehavior {
 		$Model->cacheQueries = $cachequeries;
 		return $results;
 	}
+
 /**
  * Reorder the node without changing the parent.
  *
@@ -476,7 +464,6 @@ class BTreeBehavior extends ModelBehavior {
  * @param mixed $id The ID of the record to move
  * @param mixed $number how many places to move the node or true to move to last position
  * @return boolean true on success, false on failure
- * @access public
  */
 	function movedown(&$Model, $id = null, $number = 1) {
 		if (is_array($id)) {
@@ -525,6 +512,7 @@ class BTreeBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
 /**
  * Reorder the node without changing the parent.
  *
@@ -534,7 +522,6 @@ class BTreeBehavior extends ModelBehavior {
  * @param mixed $id The ID of the record to move
  * @param mixed $number how many places to move the node, or true to move to first position
  * @return boolean true on success, false on failure
- * @access public
  */
 	function moveup(&$Model, $id = null, $number = 1) {
 		if (is_array($id)) {
@@ -584,6 +571,7 @@ class BTreeBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
 /**
  * Recover a corrupted tree
  *
@@ -598,7 +586,6 @@ class BTreeBehavior extends ModelBehavior {
  * @param mixed $missingParentAction 'return' to do nothing and return, 'delete' to
  * delete, or the id of the parent to set as the parent_id
  * @return boolean true on success, false on failure
- * @access public
  */
 	function recover(&$Model, $mode = 'parent', $missingParentAction = null) {
 		$cachequeries = $Model->cacheQueries;
@@ -681,6 +668,7 @@ class BTreeBehavior extends ModelBehavior {
 		$Model->cacheQueries = $cachequeries;
 		return true;
 	}
+
 /**
  * Reorder method.
  *
@@ -723,6 +711,7 @@ class BTreeBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
 /**
  * Remove the current node from the tree, and reparent all children up one level.
  *
@@ -733,7 +722,6 @@ class BTreeBehavior extends ModelBehavior {
  * @param mixed $id The ID of the record to remove
  * @param boolean $delete whether to delete the node after reparenting children (if any)
  * @return boolean true on success, false on failure
- * @access public
  */
 	function removefromtree(&$Model, $id = null, $delete = false) {
 		if (is_array($id)) {
@@ -802,6 +790,7 @@ class BTreeBehavior extends ModelBehavior {
 			);
 		}
 	}
+
 /**
  * Check if the current tree is valid.
  *
@@ -810,7 +799,6 @@ class BTreeBehavior extends ModelBehavior {
  * @param AppModel $Model Model instance
  * @return mixed true if the tree is valid or empty, otherwise an array of (error type [index, node],
  *	[incorrect left/right index,node id], message)
- * @access public
  */
 	function verify(&$Model) {
 		extract($this->settings[$Model->alias]);
@@ -953,7 +941,6 @@ class BTreeBehavior extends ModelBehavior {
  * @param AppModel $Model Model instance
  * @param mixed $parentId
  * @return boolean true on success, false on failure
- * @access protected
  */
 	function _setParent(&$Model, $parentId = null, $created = false) {
 		extract($this->settings[$Model->alias]);
@@ -1059,7 +1046,6 @@ class BTreeBehavior extends ModelBehavior {
  * @param string $scope
  * @param string $right
  * @return int
- * @access private
  */
 	function __getMax($Model, $scope, $right, $recursive = -1, $created = false) {
 		$db =& ConnectionManager::getDataSource($Model->useDbConfig);
@@ -1082,6 +1068,7 @@ class BTreeBehavior extends ModelBehavior {
 
 		return (empty($edge[$right])) ? 0 : $edge[$right];
 	}
+
 /**
  * get the minimum index value in the table.
  *
@@ -1089,7 +1076,6 @@ class BTreeBehavior extends ModelBehavior {
  * @param string $scope
  * @param string $right
  * @return int
- * @access private
  */
 	function __getMin($Model, $scope, $left, $recursive = -1) {
 		$db =& ConnectionManager::getDataSource($Model->useDbConfig);
@@ -1101,6 +1087,7 @@ class BTreeBehavior extends ModelBehavior {
 
 		return (empty($edge[$left])) ? 0 : $edge[$left];
 	}
+
 /**
  * Table sync method.
  *
@@ -1111,7 +1098,6 @@ class BTreeBehavior extends ModelBehavior {
  * @param string $direction
  * @param array $conditions
  * @param string $field
- * @access private
  */
 	function __sync(&$Model, $shift, $dir = '+', $conditions = array(), $created = false, $field = 'both') {
 		$ModelRecursive = $Model->recursive;
@@ -1163,4 +1149,3 @@ class BTreeBehavior extends ModelBehavior {
 		$Model->cacheQueries = $cachequeries;
 	}
 }
-?>

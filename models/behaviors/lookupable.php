@@ -23,7 +23,6 @@ class LookupableBehavior extends ModelBehavior {
  * Lookupable behavior settings
  *
  * @var array
- * @access public
  */ 
 	public $settings = array();
 
@@ -31,7 +30,6 @@ class LookupableBehavior extends ModelBehavior {
  * Default settings
  * 
  * @var array
- * @access protected
  */
 	protected $_defaults = array(
 		'types' => array());
@@ -55,7 +53,6 @@ class LookupableBehavior extends ModelBehavior {
  * @param string $modelClass, 
  * @param string $name, 
  * @return array, record or false
- * @access public
  */
 	public function findExistingRecord(Model $Model, $modelClass, $name) {
 		return $Model->{$modelClass}->find('first', array(
@@ -71,7 +68,6 @@ class LookupableBehavior extends ModelBehavior {
  * @param string $modelClass, 
  * @param array $data
  * @return boolean
- * @access public
  */
 	public function saveLookupRecord(Model $Model, $modelClass, $data) {
 		$Model->{$modelClass}->create();
@@ -90,7 +86,6 @@ class LookupableBehavior extends ModelBehavior {
  * @param string
  * @param string
  * @return boolean True on success
- * @access public
  */
 	public function lookup(Model $Model, $type = null, $name = null) {
 		extract($this->settings[$Model->alias]);
@@ -135,7 +130,6 @@ class LookupableBehavior extends ModelBehavior {
  * @param array
  * @param boolean
  * @return array
- * @access public
  */
 	public function afterFind(Model $Model, $results, $primary) {
 		extract($this->settings[$Model->alias]);
@@ -159,7 +153,6 @@ class LookupableBehavior extends ModelBehavior {
  * and stored in the record.
  *
  * @return boolean True on success
- * @access public
  */
 	public function afterSave(Model $Model, $created) {
 		extract($this->settings[$Model->alias]);
@@ -180,6 +173,4 @@ class LookupableBehavior extends ModelBehavior {
 			$Model->data = $result;
 		}
 	}
-
 }
-?>

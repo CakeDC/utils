@@ -29,7 +29,6 @@ class InheritableBehavior extends ModelBehavior {
  * 	- fieldAlias
  *
  * @var array
- * @access public
  */
 	public $settings = array();
 
@@ -40,7 +39,6 @@ class InheritableBehavior extends ModelBehavior {
  * @param Model $model
  * @param array $config Behavior configuration
  * @return void
- * @access public
  */
 	public function setup(Model $Model, $config = array()) {
 		$_defaults = array(
@@ -65,7 +63,6 @@ class InheritableBehavior extends ModelBehavior {
  * @param Model $model
  * @param array $query Find query
  * @return array Updated query
- * @access public
  */
 	public function beforeFind(Model $Model, $query) {
 		if ($this->settings[$Model->alias]['method'] == 'STI') {
@@ -93,7 +90,6 @@ class InheritableBehavior extends ModelBehavior {
  * @param array $results
  * @param boolean $primary
  * @return array Results
- * @access public
  */
 	public function afterFind(Model $Model, $results = array(), $primary = false) {
 		if ($this->settings[$Model->alias] !== 'STI' && !empty($results)) {
@@ -130,7 +126,6 @@ class InheritableBehavior extends ModelBehavior {
  *
  * @param Model $Model
  * @return true
- * @access public
  */
 	public function beforeSave(Model $Model) {
 		if ($this->settings[$Model->alias]['method'] == 'STI') {
@@ -146,7 +141,6 @@ class InheritableBehavior extends ModelBehavior {
  * @param Model $Model
  * @param boolean $created
  * @return void
- * @access public
  */
 	public function afterSave(Model $Model, $created = false) {
 		if ($this->settings[$Model->alias]['method'] == 'CTI') {
@@ -160,7 +154,6 @@ class InheritableBehavior extends ModelBehavior {
  *
  * @param Model $Model
  * @return true
- * @access public
  */
 	public function afterDelete(Model $Model) {
 		if ($this->settings[$Model->alias]['method'] == 'CTI') {
@@ -175,7 +168,6 @@ class InheritableBehavior extends ModelBehavior {
  *
  * @param Model $model
  * @return true
- * @access public
  */
 	public function beforeValidate(Model $Model) {
 		if ($this->settings[$Model->alias]['method'] == 'CTI' && !empty($Model->parent->validate)) {
@@ -190,7 +182,6 @@ class InheritableBehavior extends ModelBehavior {
  * @param Model $Model
  * @param array $query Find query
  * @return Updated query
- * @access protected
  */
 	protected function _singleTableBeforeFind(Model $Model, $query) {
 		extract($this->settings[$Model->alias]);
@@ -221,7 +212,6 @@ class InheritableBehavior extends ModelBehavior {
  *
  * @param Model $Model
  * @return true
- * @access protected
  */
 	protected function _singleTableBeforeSave(Model $Model) {
 		if (isset($Model->_schema[$Model->inheritanceField]) && $Model->alias != $Model->parent->alias) {
@@ -240,7 +230,6 @@ class InheritableBehavior extends ModelBehavior {
  * @param Model $Model
  * @param array $query
  * @return boolean Success of the binding
- * @access protected
  */
 	public function classTableBindParent(Model $Model) {
 		$bind = array('belongsTo' => array(
@@ -256,7 +245,6 @@ class InheritableBehavior extends ModelBehavior {
  *
  * @param Model $Model
  * @param array $binds, additional models to bind. They will be filtered to left only belongsTo associations
- * @access protected
  */
 	protected function _classTableBindContains(Model $Model, $binds) {
 		$assocs = array_flip($Model->parent->getAssociated('belongsTo'));
@@ -281,7 +269,6 @@ class InheritableBehavior extends ModelBehavior {
  *
  * @param Model $Model
  * @return true
- * @access protected
  */
 	protected function _saveParentModel(Model $Model) {
 		$fields = array_keys($Model->parent->schema());
@@ -301,4 +288,3 @@ class InheritableBehavior extends ModelBehavior {
 	}
 
 }
-?>

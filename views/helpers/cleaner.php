@@ -18,39 +18,39 @@
  * @subpackage utils.views.cleaner
  */
 class CleanerHelper extends AppHelper {
+
 /**
  * Other helpers
  *
  * @var array
- * @access public
  */
 	public $helpers = array('Javascript');
+
 /**
  * Replace image thumb
  *
  * @var boolean $replaceImgThumb
- * @access public
  */
 	public $replaceImgThumb = false;
+
 /**
  * Tags
  *
  * @var array $tagsArray
- * @access public
  */
 	public $tagsArray = array();
+
 /**
  * Attributes
  *
  * @var array $attributesArray
- * @access public
  */
 	public $attributesArray = array();
+
 /**
  * Holds different configurations
  *
  * @var array $config
- * @access public
  */
 	public $config = array(
 		'full' => array(
@@ -66,10 +66,10 @@ class CleanerHelper extends AppHelper {
 			'tagsArray' => array('img'),
 			'attributesArray' => array('src', 'href', 'title'))
 		);
+
 /**
  * Constructor
  *
- * @access public
  */
 	public function __contruct() {
 		foreach ($this->config['full'] as $key => $value) {
@@ -77,11 +77,12 @@ class CleanerHelper extends AppHelper {
 		}
 		return parent::__construct();
 	}
+
 /**
  * Configuration of cleaner. possible to call separately or from clean method
  *
- * @param array $options
- * @access public
+ * @param string $options 
+ * @return void
  */
 	public function configure($options) {
 		if (is_null($options)) {
@@ -104,12 +105,13 @@ class CleanerHelper extends AppHelper {
 			}
 		}
 	}
+
 /**
  * Main clean method
  *
  * @param string $data
  * @param mixed $options String for config or array to set custom options
- * @access public
+ * @return string
  */
 	public function clean($data, $options = null) {
 		$this->configure($options);
@@ -130,9 +132,13 @@ class CleanerHelper extends AppHelper {
 			return $cleaned;
 		}
 	}
+
 /**
-  * iteratively remove all unwanted tags and attributes
-  */
+ * Remove all unwanted tags and attributes.
+ *
+ * @param string $cleaned 
+ * @return void
+ */
 	function __remove($cleaned) {
 		do {
 			$oldstring = $cleaned;
@@ -140,9 +146,13 @@ class CleanerHelper extends AppHelper {
 		} while ($oldstring != $cleaned);
 		return $cleaned;
 	}
+
 /**
-  * strip a string of certain tags
-  */
+ * Strip a string of certain tags
+ *
+ * @param string $cleaned 
+ * @return void
+ */
 	function __tagsFilter($cleaned) {
 		$beforeTag = NULL;
 		$afterTag = $cleaned;
@@ -231,9 +241,14 @@ class CleanerHelper extends AppHelper {
 		$beforeTag .= $afterTag;
 		return $beforeTag;
 	}
+
 /**
-  * strip a tag of certain attributes
-  */
+ * Strip a tag of certain attributes
+ *
+ * @param string $attributeSet 
+ * @param string $tag 
+ * @return void
+ */
 	function __filterAttr(&$attributeSet, $tag) {
 		$newAttrSet = array();
 		for ($i = 0; $i <count($attributeSet); $i++) {
@@ -284,6 +299,12 @@ class CleanerHelper extends AppHelper {
 		return true;
 	}
 
+/**
+ * Check pos
+ *
+ * @param string $attrval 
+ * @return void
+ */
 	function __checkPos($attrval) {
 		$checkList = array('javascript:', 'behaviour:', 'vbscript:', 'mocha:', 'livescript:');
 		$result = false;
@@ -294,7 +315,12 @@ class CleanerHelper extends AppHelper {
 	}
 
 /**
- * filter external image links
+ * Filter external image links
+ *
+ * @param string $tag 
+ * @param string $attribute 
+ * @param string $attributeValue 
+ * @return void
  */
 	function __postFilter($tag, $attribute, &$attributeValue) {
 		if ($tag == 'img' && $attribute == 'src') {
@@ -309,18 +335,30 @@ class CleanerHelper extends AppHelper {
 		return true;
 	}
 
+/**
+ * Replave all image tags
+ *
+ * @param string $text 
+ * @param boolean $showVideo 
+ * @return void
+ */
 	function replaceAllImageTags($text, $showVideo = true) {
 		$text = $this->bbcode2js($text, $showVideo);
-		//while (preg_match('/src="(\/media\/display\/)([0-9a-z-]{36})"/', $text, $matches)) {
-		//		$name = 'src="' . $matches[1] . $matches[2] . '"';
-		//		$newName = 'src="' . $matches[1] . 'thumb/' . $matches[2] . '"';
-		//		$text = r($name, $newName, $text);
-		//	}
+		// while (preg_match('/src="(\/media\/display\/)([0-9a-z-]{36})"/', $text, $matches)) {
+		// 		$name = 'src="' . $matches[1] . $matches[2] . '"';
+		// 		$newName = 'src="' . $matches[1] . 'thumb/' . $matches[2] . '"';
+		// 		$text = r($name, $newName, $text);
+		// 	}
 		return $text;
 	}
+
 /**
-* convert bbcode to javascript for embedding videos
-*/
+ * Convert BBCode to Javascript for video embedding
+ *
+ * @param string $text 
+ * @param boolean $show 
+ * @return void
+ */
 	function bbcode2js($text, $show = true) {
 		do {
 			$oldstring = $text;
@@ -329,6 +367,13 @@ class CleanerHelper extends AppHelper {
 		return $text;
 	}
 
+/**
+ * BB 2 JS
+ *
+ * @param string $text 
+ * @param boolean $show 
+ * @return void
+ */
 	function __bb2js($text, $show = true) {
 		if(preg_match('/\[googlevideo\]/', $text)) {
 			$vid = null;
@@ -401,4 +446,3 @@ class CleanerHelper extends AppHelper {
 		return $text;
 	}
 }
-?>

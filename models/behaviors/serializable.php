@@ -18,11 +18,11 @@
  * @subpackage utils.models.behaviors
  */
 class SerializableBehavior extends ModelBehavior {
+
 /**
  * Settings
  * 
  * @var mixed
- * @access public
  */
 	public $settings = array();
 
@@ -30,7 +30,6 @@ class SerializableBehavior extends ModelBehavior {
  * Default settings
  * 
  * @var array
- * @access protected
  */
 	protected $_defaults = array(
 		'field' => 'data');
@@ -40,7 +39,6 @@ class SerializableBehavior extends ModelBehavior {
  *
  * @param object AppModel
  * @param array $config
- * @access public
  */
 	public function setup(&$model, $config = array()) {
 		$settings = array_merge($this->_defaults, $config);
@@ -53,7 +51,6 @@ class SerializableBehavior extends ModelBehavior {
  * @param mixed $results The results of the find operation
  * @param boolean $primary Whether this model is being queried directly (vs. being queried as an association)
  * @return mixed Result of the find operation
- * @access public
  */	
 	function afterFind($Model, $results, $primary = false) {
 		$config = $this->settings[$Model->alias];
@@ -69,7 +66,6 @@ class SerializableBehavior extends ModelBehavior {
  * Called before each save operation
  *
  * @return boolean True if the operation should continue, false if it should abort
- * @access public
  */
 	function beforeSave(&$Model, $options = array()) {
 		$Model->data = $Model->serialize($Model->data);
@@ -82,7 +78,6 @@ class SerializableBehavior extends ModelBehavior {
  * @param string $matchId
  * @param array $data
  * @return boolean
- * @access protected
  */	
 	public function serialize($Model, &$data) {
 		$config = $this->settings[$Model->alias];
@@ -91,13 +86,13 @@ class SerializableBehavior extends ModelBehavior {
 		}
 		return $data;
 	}
+
 /**
  * 
  *
  * @param string $matchId
  * @param array $data
  * @return boolean
- * @access protected
  */	
 	public function deserialize($Model, &$data) {
 		$config = $this->settings[$Model->alias];
@@ -113,6 +108,4 @@ class SerializableBehavior extends ModelBehavior {
 		}
 		return $data;
 	}
-	
 }
-?>

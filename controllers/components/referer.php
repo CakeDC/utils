@@ -23,7 +23,6 @@ class RefererComponent extends Object {
  * Controller object instance
  *
  * @var array actions
- * @access public
  */
 	public $Controller;
 
@@ -31,7 +30,6 @@ class RefererComponent extends Object {
  * Intialize Callback
  *
  * @param object Controller object
- * @access public
  */
 	public function initialize(&$controller) {
 		$this->Controller = $controller;
@@ -41,7 +39,6 @@ class RefererComponent extends Object {
  * Startup Callback
  *
  * @param object Controller object
- * @access public
  */
 	public function startup(&$controller) {
 		$this->setReferer();
@@ -51,7 +48,6 @@ class RefererComponent extends Object {
  * Store referer data in view $referer variable
  *
  * @param string $default
- * @access public
  */
 	public function setReferer($default = null) {
 		if (empty($this->Controller->data['Data']['referer'])) {
@@ -76,7 +72,6 @@ class RefererComponent extends Object {
  * @param mixed the url to redirect to
  * @param integer http status code, default is null
  * @param boolean calling php exit or not after redirect, default is true
- * @access public
  * @return mixed
  */
 	public function redirect($url, $status = null, $exit = true) {
@@ -92,6 +87,4 @@ class RefererComponent extends Object {
 			$this->Controller->redirect($referer, $status, $exit);
 		}
 	}
-
 }
-?>

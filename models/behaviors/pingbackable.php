@@ -9,6 +9,10 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::import('Core', 'HttpSocket');
+App::import('Core', 'Xml');
+App::import('Lib', 'Xmlrpc.Xmlrpc');
+
 /**
  * Utils Plugin
  *
@@ -17,10 +21,6 @@
  * @package utils
  * @subpackage utils.models.behaviors
  */
-App::import('Core', 'HttpSocket');
-App::import('Core', 'Xml');
-App::import('Lib', 'Xmlrpc.Xmlrpc');
-
 class RegisterException extends Exception {
 	public $messageString;
 	function __construct($message) {
@@ -29,29 +29,29 @@ class RegisterException extends Exception {
 }
 
 class PingbackableBehavior extends ModelBehavior {
+
 /**
  * Settings array
  *
  * @var array
- * @access public
  */
 	public $settings = array();
+
 /**
  * Default settings
  *
  * @var array
- * @access public
  */
 	public $defaults = array(
 		'commentAlias' => 'Comment',
 		'requireApproveModelField' => 'moderate',
 		'requireApproveCommentField' => 'approved');
+
 /**
  * Setup
  *
  * @param AppModel $model
  * @param array $settings
- * @access public
  */
 	public function setup(&$model, $settings = array()) {
 		if (!isset($this->settings[$model->alias])) {
@@ -59,6 +59,7 @@ class PingbackableBehavior extends ModelBehavior {
 		}
 		$this->settings[$model->alias] = am($this->settings[$model->alias], ife(is_array($settings), $settings, array()));
 	}
+
 /**
  * Register pingback comment. Used by pingback server
  *
@@ -68,7 +69,6 @@ class PingbackableBehavior extends ModelBehavior {
  * @param string $sourceUri
  * @param string $targetUri
  * @return boolean
- * @access public
  */
 	public function pingbackRegisterComment(&$model, $modelId, $sourceUri, $targetUri) {
 		extract($this->settings[$model->alias]);
@@ -102,33 +102,33 @@ class PingbackableBehavior extends ModelBehavior {
 		$model->{$commentAlias}->create($data);
 		return $model->{$commentAlias}->save();
 	}
+
 /**
  * return content of required page
  *
  * @param string $uri
  * @return string
- * @access protected
  */
 	protected function loadPageContent($uri) {
 		$Http = new HttpSocket();
 		return $Http->get($uri);
 	}
+
 /**
  * Cleanup some markup for page
  *
  * @param string $text
  * @return string
- * @access protected
  */
 	protected function cleanupPage($text) {
 		return preg_replace("/ <(h[1-6]|p|t[hd]]|li|d[td]|pre|caption|body)[^>]*>/", "\n\n", preg_replace( '/[\s\r\n\t]+/', ' ', str_replace('<!DOC', '<DOC', $text)));
 	}
+
 /**
  * Extract page title
  *
  * @param string $text
  * @return string
- * @access protected
  */
 	protected function fetchTitle($text) {
 		preg_match('|<title>([^<]*?)</title>|is', $text, $matchedTitle);
@@ -140,6 +140,7 @@ class PingbackableBehavior extends ModelBehavior {
 		preg_replace('/\s{2,}/', ' ', $title);
 		return $title;
 	}
+
 /**
  * Extract short cite from pingback requestor page
  *
@@ -147,7 +148,6 @@ class PingbackableBehavior extends ModelBehavior {
  * @param string $sourceUri, source url permalink
  * @param string $targetUri, target ping url
  * @return string
- * @access protected
  */
 	protected function fetchPingbackCite($text, $sourceUri, $targetUri) {
 	    if(!strstr($text, preg_replace('/&(amp;)?/i', '&amp;', $targetUri))) {
@@ -193,12 +193,12 @@ class PingbackableBehavior extends ModelBehavior {
 	        $this->pingbackUrl($sourceUri, $link);
 	    }
 	}
+
 /**
  * Attempts to notify the server of targetUri that sourceUri refers to it.
  *
  * @param string $sourceUri, source url permalink
  * @param string $targetUri, target ping url
- * @access protected
  */
 	protected function pingbackUrl($sourceUri, $targetUri) {
 		$Socket = new HttpSocket();
@@ -214,6 +214,7 @@ class PingbackableBehavior extends ModelBehavior {
 			}
 	    }
 	}
+
 /**
  * Attempt to determine the pingback Uri of the given url.
  * we try to find the X-Pingback server header
@@ -232,13 +233,13 @@ class PingbackableBehavior extends ModelBehavior {
 		}
 		return $this->testRelLink($response['body'], 'pingback');
 	}
+
 /**
  * Saves a trackback link
  *
  * @param string $entryId UUID
  * @param array $data
  * @return boolean
- * @access public
  */
 	public function trackbackRegisterComment(&$model, $modelId, $data = array()) {
 		extract($this->settings[$model->alias]);
@@ -302,12 +303,12 @@ class PingbackableBehavior extends ModelBehavior {
 	        $this->trackbackUrl($data, $text, $link, $trackback);
 	    }
 	}
+
 /**
  * Attempts to notify the server of targetUri that sourceUri refers to it.
  *
  * @param $data array list of parameters passed to trackback server
  * @param $data array
- * @access protected
  */
 	public function trackbackUrl($data, $text, $targetUri, $targetTrackbackUri) {
 		if (is_numeric($targetUri)) {
@@ -335,12 +336,12 @@ class PingbackableBehavior extends ModelBehavior {
 			return false;
 		}
 	}
+
 /**
  * Search rel link in html page
  *
  * @param string $text
  * @param string $relType pingback, trackback or some other
- * @access protected
  */
 	public function testRelLink($text, $relType, $relTag = 'rel') {
 		if (preg_match('|<' . $relTag . ' rel="' . $relType . '" href="([^"]+)" ?/?>|', $text, $matches)) {
@@ -351,6 +352,7 @@ class PingbackableBehavior extends ModelBehavior {
 		}
 		return false;
 	}
+
 /**
  * Search tag with class in html page
  *
@@ -365,13 +367,13 @@ class PingbackableBehavior extends ModelBehavior {
 			return false;
 		}
 	}
+
 /**
  * Extracts all the hyperlinks from the entry text.
  *
  * @param string $text
  * @param boolean $allowLocalLinks
  * @return array of hyperlink in data
- * @access protected
  */
 	 protected function extractLinks($text, $allowLocalLinks = false) {
 		$matches = array();
@@ -404,11 +406,11 @@ class PingbackableBehavior extends ModelBehavior {
 		}
 		return $result;
 	}
+
 /**
  * Process html response to find trackback link in RDF spec
  *
  * @param string $text
- * @access protected
  */
 	public function determineTrackbackUri($text) {
 		$result = false;
@@ -432,13 +434,13 @@ class PingbackableBehavior extends ModelBehavior {
 			$result = $this->testTagClass($text, 'span', 'trackbacks-link');
 		}
 		return $result;
-
 	}
+
 /**
  * Scan Xml document to fetch trackback link
  *
  * @param Xml $xml
- * @access protected
+ * @return mixed
  */
 	protected function scanRdf(Xml $xml) {
 		if (count($xml->children) > 0) {
@@ -454,6 +456,7 @@ class PingbackableBehavior extends ModelBehavior {
 		}
 		return false;
 	}
+
 /**
  * Send message to weblog system
  */
@@ -467,15 +470,15 @@ class PingbackableBehavior extends ModelBehavior {
 				$Request = new XmlRpcRequest('weblogUpdates.extendedPing', array(new XmlRpcValue($blogName), new XmlRpcValue($siteUrl), new XmlRpcValue($blogUrl), new XmlRpcValue($rssUrl), $tags));
 				$result = $XmlRpcClient->call($Request);
 			} catch (XmlRpcResponseException $e) {
+				// Nothing.
 			}
 		} else {
 			try {
 				$Request = new XmlRpcRequest('weblogUpdates.ping', array(new XmlRpcValue($blogName), new XmlRpcValue($blogUrl)));
 				$result = $XmlRpcClient->call($Request);
 			} catch (XmlRpcResponseException $e) {
+				// Nothing.
 			}
 		}
 	}
-
 }
-?>

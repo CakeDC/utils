@@ -1,13 +1,14 @@
 <?php
 /**
- * Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
+ * CakePHP Gravatar Helper
  *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
+ * A CakePHP View Helper for the display of Gravatar images (http://www.gravatar.com)
  *
- * @copyright Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @copyright Copyright 2010, Graham Weldon (http://grahamweldon.com)
+ * @license http://www.opensource.org/licenses/mit-license.php The MIT License
  */
+
+App::import(array('Security', 'Validation'));
 
 /**
  * Utils Plugin
@@ -17,8 +18,6 @@
  * @package utils
  * @subpackage utils.views.helpers
  */
-App::import(array('Security', 'Validation'));
-
 class GravatarHelper extends AppHelper {
 
 /**

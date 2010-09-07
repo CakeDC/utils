@@ -9,6 +9,8 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::import('Core', 'l10n');
+
 /**
  * Utils Plugin
  *
@@ -17,13 +19,11 @@
  * @package utils
  * @subpackage utils.libs
  */
-App::import('Core', 'l10n');
 class Languages extends L10n {
+
 /**
  * Constructor
  *
- * @return void
- * @access public
  */
 	public function __construct() {
 	}
@@ -33,7 +33,6 @@ class Languages extends L10n {
  *
  * @param string
  * @return array
- * @access public
  */
 	public function lists($order = 'language') {
 		static $lists = array();
@@ -55,6 +54,4 @@ class Languages extends L10n {
 		}
 		return $lists;
 	}
-
 }
-?>

@@ -22,12 +22,14 @@
  * @lastModified         $Date: 2009-10-15 05:49:11 -0500 (Thu, 15 Oct 2009) $
  * @license              http://www.opensource.org/licenses/mit-license.php The MIT License
  */
+
 /**
  * Tree helper
  *
  * Helper to generate tree representations of MPTT or recursively nested data
  */
 class TreeHelper extends AppHelper {
+
 /**
  * name property
  *

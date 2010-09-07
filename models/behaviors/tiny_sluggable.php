@@ -18,11 +18,11 @@
  * @subpackage utils.models.behaviors
  */
 class TinySluggableBehavior extends ModelBehavior {
+
 /**
  * Settings to configure the behavior
  *
  * @var array
- * @access public
  */
 	public $settings = array();
 
@@ -30,7 +30,6 @@ class TinySluggableBehavior extends ModelBehavior {
  * Default settings
  *
  * @var array
- * @access protected
  */
 	protected $_defaults = array(
 		'tinySlug' => 'tiny_slug',
@@ -43,7 +42,6 @@ class TinySluggableBehavior extends ModelBehavior {
  * @param array $settings Settings for the behavior. Keys: 
  * 	- tinySlug: name of the tiny slug field in the table [default: tiny_slug]
  *  - codeset: valid characters for tiny slug [default: 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ]
- * @access public
  */
 	public function setup(&$Model, $settings = array()) {
 		$this->settings[$Model->alias] = array_merge($this->_defaults, $settings);
@@ -55,7 +53,6 @@ class TinySluggableBehavior extends ModelBehavior {
  * beforeSave callback
  *
  * @param object $Model
- * @access public
  */
 	public function beforeSave(&$Model) {
 		if (empty($Model->data[$Model->alias])) {
@@ -72,7 +69,6 @@ class TinySluggableBehavior extends ModelBehavior {
  * Calculates the next available slug and returns it
  *
  * @return string next avalible tiny slug
- * @access private
  */
 	private function __getNextSlug(&$Model) {
 		$new = '';
@@ -111,7 +107,6 @@ class TinySluggableBehavior extends ModelBehavior {
  *
  * @param int $decimal the decimal to convert
  * @return string
- * @access private
  */
 	private function __toShort(&$Model, $decimal) {
 		$codeSet = $this->settings[$Model->alias]['codeset'];
@@ -129,7 +124,6 @@ class TinySluggableBehavior extends ModelBehavior {
  *
  * @param string $short
  * @return integer
- * @access private
  */
 	private function __toDecimal(&$Model, $short) {
 		$codeSet = $this->settings[$Model->alias]['codeset'];
@@ -140,6 +134,4 @@ class TinySluggableBehavior extends ModelBehavior {
 		}
 		return $decimal;
 	}
-
 }
-?>
