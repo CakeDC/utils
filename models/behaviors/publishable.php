@@ -5,6 +5,7 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
+ * Based on the code of SoftDeletableBehavior from Mariano Iglesias (http://cake-syrup.sourceforge.net) also under the MIT license
  * @copyright Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -62,11 +63,8 @@ class PublishableBehavior extends ModelBehavior {
 				$this->__settings[$Model->alias]['field'] => true
 			));
 
-			$Model->id = $id;
 			if (isset($this->__settings[$Model->alias]['field_date']) && $Model->hasField($this->__settings[$Model->alias]['field_date'])) {
-				if (!$Model->exists()) {
-					$data[$Model->alias][$this->__settings[$Model->alias]['field_date']] = date('Y-m-d');
-				}
+				$data[$Model->alias][$this->__settings[$Model->alias]['field_date']] = null;
 			}
 
 			if (!empty($attributes)) {
@@ -76,7 +74,9 @@ class PublishableBehavior extends ModelBehavior {
 			$onFind = $this->__settings[$Model->alias]['find'];
 			$this->enablePublishable($Model, false);
 
+			$Model->id = $id;
 			$result = $Model->save($data, false, array_keys($data[$Model->alias]));
+
 			$this->enablePublishable($Model, 'find', $onFind);
 
 			return ($result !== false);
@@ -198,7 +198,7 @@ class PublishableBehavior extends ModelBehavior {
 				}
 				else {
 					$queryData['conditions'][$Model->alias . '.' . $this->__settings[$Model->alias]['field']] = true;
-					if (!empty($includeDateCondition)) {
+					if ($includeDateCondition) {
 						$queryData['conditions'][$Model->alias . '.' . $this->__settings[$Model->alias]['field_date'] . ' <='] = date('Y-m-d H:i');
 					}
 				}
@@ -207,7 +207,7 @@ class PublishableBehavior extends ModelBehavior {
 			if (is_null($recursive) && !empty($queryData['recursive'])) {
 				$recursive = $queryData['recursive'];
 			} elseif (is_null($recursive)) {
-				$recursive = $Model->recursive;
+				$recursive = 0;
 			}
 
 			if ($recursive < 0) {
