@@ -13,7 +13,7 @@ each component.
  * Serializable 	-	allows serialize/deserialize array data into large text field.
  * Sluggable 		-	implement slugs for model.
  * SoftDelete 		-	soft deleting for model.
- * TinySluggable 	-	creats tiny slugs similar to known url shorteners like bit.ly
+ * TinySluggable 	-	creates tiny slugs similar to known url shorteners like bit.ly
  * Toggleable 		-	toggle field values
 
 ## Libraries
