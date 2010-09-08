@@ -5,7 +5,6 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * Based on the code of SoftDeletableBehavior from Mariano Iglesias (http://cake-syrup.sourceforge.net) also under the MIT license
  * @copyright Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -19,13 +18,12 @@
  * @subpackage utils.models.behaviors
  */
 class PublishableBehavior extends ModelBehavior {
-
 /**
  * Contain settings indexed by model name.
  *
  * @var array
  */
-	private $__settings = array();
+	var $__settings = array();
 
 /**
  * Initiate behaviour for the model using settings.
@@ -63,8 +61,11 @@ class PublishableBehavior extends ModelBehavior {
 				$this->__settings[$Model->alias]['field'] => true
 			));
 
+			$Model->id = $id;
 			if (isset($this->__settings[$Model->alias]['field_date']) && $Model->hasField($this->__settings[$Model->alias]['field_date'])) {
-				$data[$Model->alias][$this->__settings[$Model->alias]['field_date']] = null;
+				if (!$Model->exists()) {
+					$data[$Model->alias][$this->__settings[$Model->alias]['field_date']] = date('Y-m-d');
+				}
 			}
 
 			if (!empty($attributes)) {
@@ -74,13 +75,12 @@ class PublishableBehavior extends ModelBehavior {
 			$onFind = $this->__settings[$Model->alias]['find'];
 			$this->enablePublishable($Model, false);
 
-			$Model->id = $id;
 			$result = $Model->save($data, false, array_keys($data[$Model->alias]));
-
 			$this->enablePublishable($Model, 'find', $onFind);
 
 			return ($result !== false);
 		}
+
 		return false;
 	}
 
@@ -117,6 +117,7 @@ class PublishableBehavior extends ModelBehavior {
 
 			return ($result !== false);
 		}
+
 		return false;
 	}
 
@@ -198,7 +199,7 @@ class PublishableBehavior extends ModelBehavior {
 				}
 				else {
 					$queryData['conditions'][$Model->alias . '.' . $this->__settings[$Model->alias]['field']] = true;
-					if ($includeDateCondition) {
+					if (!empty($includeDateCondition)) {
 						$queryData['conditions'][$Model->alias . '.' . $this->__settings[$Model->alias]['field_date'] . ' <='] = date('Y-m-d H:i');
 					}
 				}
@@ -207,7 +208,7 @@ class PublishableBehavior extends ModelBehavior {
 			if (is_null($recursive) && !empty($queryData['recursive'])) {
 				$recursive = $queryData['recursive'];
 			} elseif (is_null($recursive)) {
-				$recursive = 0;
+				$recursive = $Model->recursive;
 			}
 
 			if ($recursive < 0) {
@@ -221,7 +222,9 @@ class PublishableBehavior extends ModelBehavior {
 					$queryData = $Model->{$m}->Behaviors->Publishable->beforeFind($Model->{$m}, $queryData, --$recursive);
 				}
 			}
+
 		}
+
 		return $queryData;
 	}
 
@@ -243,6 +246,7 @@ class PublishableBehavior extends ModelBehavior {
 			$this->__backAttributes[$Model->alias]['find'] = $this->__settings[$Model->alias]['find'];
 			$this->enablePublishable($Model, false);
 		}
+
 		return true;
 	}
 
