@@ -9,7 +9,7 @@ each component.
  * Keyvalue 		-	allows to get and save group of settings in key/value representation.
  * List 			-	provide a way to make collection ordered
  * List 			-	toggle a published value in the model and filter finds by this field or publication date
- * Lookupable 		-	looks associated records up based on a given field and its value
+ * Lookupable 		-	looks up associated records up based on a given field and its value
  * Serializable 	-	allows serialize/deserialize array data into large text field.
  * Sluggable 		-	implement slugs for model.
  * SoftDelete 		-	soft deleting for model.
@@ -36,7 +36,7 @@ each component.
 You can configure the Importable behavior using these options:
 
  * delimiter		-	The delimiter for the values, default is ;
- * eclosure			-	The enclusure, default is "
+ * enclosure			-	The enclosure, default is "
  * hasHeader		-	Parse the header of the CSV file if it has one, default is true
 
 The main method of this behavior is
