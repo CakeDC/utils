@@ -103,7 +103,7 @@ class CsvImportBehavior extends ModelBehavior {
  */
 	public function importCSV(Model &$Model, $file, $fixed = array(), $returnSaved = false) {
 		$handle = new SplFileObject($file, 'rb');
-		$header = $this->_getHeader($Model,$handle);
+		$header = $this->_getHeader($Model, $handle);
 		$db = $Model->getDataSource();
 		$db->begin($Model);
 		$saved = array();
@@ -198,7 +198,7 @@ class CsvImportBehavior extends ModelBehavior {
  *
  * @param Model $Model
  * @param string $action the name of the event. It will be used as method name for object listeners
- * @param mixed $data adittional iformation to pass to the listener callback
+ * @param mixed $data additional information to pass to the listener callback
  * @return void
  */
 	protected function _notify(Model $Model, $action, $data = null) {
