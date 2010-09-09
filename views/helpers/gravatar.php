@@ -11,9 +11,7 @@
 App::import(array('Security', 'Validation'));
 
 /**
- * Utils Plugin
- *
- * Utils Gravatar Helper
+ * Gravatar Helper
  *
  * @package utils
  * @subpackage utils.views.helpers
