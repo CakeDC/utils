@@ -1,12 +1,14 @@
 <?php
 /**
- * Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
- *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * This code is an improved version of the Inheritable Behavior published
+ * at http://bakery.cakephp.org/articles/view/inheritable-behavior-missing-link-of-cake-model
+ * 
+ * It was itself based on top of the SubclassBehavior by Eldon Bite <eldonbite@gmail.com>
+ * and the ExtendableBehavior class by Matthew Harris which can be found at
+ * http://bakery.cakephp.org/articles/view/extendablebehavior 
+ * 
+ * @author Cake Development Corporation (http://cakedc.com)
+ * @license   http://www.opensource.org/licenses/mit-license.php The MIT License 
  */
 
 /**
