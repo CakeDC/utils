@@ -153,7 +153,7 @@ class ArchiveComponent extends Object {
 		$startDate = sprintf('%s-%s-%s', $year, $month, $day);
 		if (strtotime($startDate) > time()) {
 			$this->cakeError('error', array(
-				'name' => sprintf(__('No %s found for that date range', true), Inflector::humanize(Inflector::pluralize($this->modelName))),
+				'name' => sprintf(__d('utils', 'No %s found for that date range', true), Inflector::humanize(Inflector::pluralize($this->modelName))),
 				'message' => $this->controller->here,
 				'code' => 404,
 			));
