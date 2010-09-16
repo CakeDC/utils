@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CakePHP Utils Plugin\n"
+"POT-Creation-Date: 2010-09-15 15:54+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pierre MARTIN <contact@pierre-martin.fr>\n"
+"Language-Team: CakeDC <contact@cakedc.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+
+#: /controllers/components/archive.php:156
+msgid "No %s found for that date range"
+msgstr "Aucun %s trouvé pour cette période"
+
+#: /controllers/components/form_preserver.php:77
+msgid "Your form data is preserved you'll be redirected to it after login."
+msgstr "Les données soumises ont été préservées vous y serez redirigé une fois connecté."
+
+#: /models/behaviors/csv_import.php:142
+msgid "%s for Row %d failed to save."
+msgstr "%s pour la Ligne %d n'a pu être sauvegardé."
+
+#: /models/behaviors/toggleable.php:48
+msgid "You need to define at least one field to be toggleable."
+msgstr "Vous devez définir au moins un champ inversable."
+
+#: /models/behaviors/toggleable.php:69
+msgid "The field %s is not in the list of toggleable fields."
+msgstr "Le champ %s n'est pas dans la liste des champs inversables."
+
+#: /models/behaviors/toggleable.php:73
+msgid "The field %s does not have two toggleable states defined."
+msgstr "Le champ %s n'a pas deux états inversables définis."
+
+#: /models/behaviors/toggleable.php:93
+msgid "Invalid record"
+msgstr "Enregistrement invalide"
+
