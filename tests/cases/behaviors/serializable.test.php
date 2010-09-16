@@ -5,15 +5,16 @@ App::import('Core', 'Model');
 /**
  * Serialized Session
  */
-class Session extends CakeTestModel {
+class SerializedSession extends CakeTestModel {
 	public $alias = 'Session';
+	public $useTable = 'sessions';
 	public $actsAs = array('Utils.Serializable' => array('fields' => array('data')));
 }
 
 /**
  * Serialized Post
  */
-class Content extends CakeTestModel {
+class SerializedContent extends CakeTestModel {
 	public $alias = 'Content';
 	public $useTable = 'contents';
 	public $actsAs = array('Utils.Serializable' => array('fields' => array('title', 'body')));
@@ -45,8 +46,8 @@ class SerializableTestCase extends CakeTestCase {
 	public function startTest($method) {
 		parent::startTest($method);
 
-		$this->Session = ClassRegistry::init('Session');
-		$this->Content = ClassRegistry::init('Content');
+		$this->Session = ClassRegistry::init('SerializedSession');
+		$this->Content = ClassRegistry::init('SerializedContent');
 
 		$this->settings =& $this->Session->Behaviors->Serializable->settings;
 	}
