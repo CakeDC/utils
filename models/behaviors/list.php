@@ -33,7 +33,10 @@ class ListBehavior extends ModelBehavior {
  */
 	protected $_defaults = array(
 		'positionColumn' => 'position',
-		'scope' => '');
+		'scope' => '',
+		'validate' => false,
+		'callbacks' => false);
+
 /**
  * Setup
  *
@@ -235,12 +238,14 @@ class ListBehavior extends ModelBehavior {
  * @param AppModel $model
  */
 	protected function _incrementPosition($model) {
-	  if (!$this->isInList($model)) {
-		return;
-	  }
-	  extract($this->settings[$model->alias]);
-	  $model->data[$model->alias][$positionColumn]++;
-	  return $model->save();
+		if (!$this->isInList($model)) {
+			return;
+		}
+		extract($this->settings[$model->alias]);
+		$model->data[$model->alias][$positionColumn]++;
+		return $model->save(null, array(
+			'validate' => $validate,
+			'callbacks' => $callbacks));
 	}
 
 /**
@@ -254,7 +259,9 @@ class ListBehavior extends ModelBehavior {
 		}
 		extract($this->settings[$model->alias]);
 		$model->data[$model->alias][$positionColumn]--;
-		return $model->save();
+		return $model->save(null, array(
+			'validate' => $validate,
+			'callbacks' => $callbacks));
 	}
 
 /**
@@ -434,7 +441,9 @@ class ListBehavior extends ModelBehavior {
 	private function __assumeBottomPosition($model) {
 		extract($this->settings[$model->alias]);
 		$model->data[$model->alias][$positionColumn] = $this->__bottomPositionInList($model, $model->data)+1;
-		return $model->save();
+		return $model->save(null, array(
+			'validate' => $validate,
+			'callbacks' => $callbacks));
 	}
 
 /**
@@ -446,7 +455,9 @@ class ListBehavior extends ModelBehavior {
 	private function __assumeTopPosition($model) {
 		extract($this->settings[$model->alias]);
 		$model->data[$model->alias][$positionColumn] = 1;
-		return $model->save();
+		return $model->save(null, array(
+			'validate' => $validate,
+			'callbacks' => $callbacks));
 	}
 
 /**
@@ -507,7 +518,7 @@ class ListBehavior extends ModelBehavior {
 			array($model->alias . '.' . $positionColumn => $model->alias . '.' . $positionColumn . '+1'),
 			array($this->__scopeCondition($model), $model->alias . '.' . $positionColumn . ' >= ' => $position)
 		);
-    }
+	}
 
 /**
  * Increments the position on all items
@@ -531,14 +542,18 @@ class ListBehavior extends ModelBehavior {
  */
 	private function __insertAtPosition($model, $position) {
 		extract($this->settings[$model->alias]);
-		$model->save();
+		return $model->save(null, array(
+			'validate' => $validate,
+			'callbacks' => $callbacks));
 		$model->recursive = 0;
 		$model->findById($model->id);
 		$this->removeFromList($model);
 		$result = $this->__incrementPositionsOnLowerItems($model, $position);
 		if ($position <= $this->__bottomPositionInList($model)) {
 			$model->data[$model->alias][$positionColumn] = $position;
-			$result = $model->save();
+			$result = $model->save(null, array(
+				'validate' => $validate,
+				'callbacks' => $callbacks));
 		}
 		return $result;
 	}
