@@ -1,0 +1,48 @@
+# LANGUAGE translation of the CakePHP Utils plugin
+#
+# Copyright 2010, Cake Development Corporation (http://cakedc.com)
+#
+# Licensed under The MIT License
+# Redistributions of files must retain the above copyright notice.
+#
+# @copyright Copyright 2010, Cake Development Corporation (http://cakedc.com)
+# @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+#
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2010-09-15 15:54+0200\n"
+"PO-Revision-Date: 2010-09-24 12:57-0400\n"
+"Last-Translator: José Loreno Rodríguez\n"
+"Language-Team: Cake Development Corporation <contac@cakedc.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Spanish\n"
+
+#: /controllers/components/archive.php:156
+msgid "No %s found for that date range"
+msgstr "Ningún %s encontrado para el rango de fechas especificado"
+
+#: /controllers/components/form_preserver.php:77
+msgid "Your form data is preserved you'll be redirected to it after login."
+msgstr "Tus datos del formulario han sidro preservados, serás redirigido una vez que inicies sesión"
+
+#: /models/behaviors/csv_import.php:142
+msgid "%s for Row %d failed to save."
+msgstr "%s en fila %d no pudo ser guardado"
+
+#: /models/behaviors/toggleable.php:48
+msgid "You need to define at least one field to be toggleable."
+msgstr "Necesitas definir al menos un campo para que sea activado/desactivado"
+
+#: /models/behaviors/toggleable.php:69
+msgid "The field %s is not in the list of toggleable fields."
+msgstr "El campo %s no esta en la lista de campos activables"
+
+#: /models/behaviors/toggleable.php:73
+msgid "The field %s does not have two toggleable states defined."
+msgstr "El campo %s no tiene dos estados definidos"
+
+#: /models/behaviors/toggleable.php:93
+msgid "Invalid record"
+msgstr "Registro no válido"
+

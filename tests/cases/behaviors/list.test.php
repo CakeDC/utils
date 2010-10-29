@@ -9,6 +9,14 @@ class UsersAddon extends CakeTestModel {
 	public $name = 'UsersAddon';
 
 /**
+ * The return value of beforeSave() for the test model to test callbacks
+ *
+ * @var string
+ * @access public
+ */
+	public $beforeSaveFalse = false;
+
+/**
  * Behaviors to load with this model
  *
  * @var array $actsAs
@@ -18,6 +26,16 @@ class UsersAddon extends CakeTestModel {
 		'Utils.List' => array(
 			'positionColumn' => 'position',
 			'scope' => 'user_id'));
+
+/**
+ * beforeSave callback
+ * 
+ * @return boolean
+ */
+	public function beforeSave() {
+		return $this->beforeSaveFalse;
+	}
+
 }
 
 class ListTest extends CakeTestCase {
@@ -149,6 +167,24 @@ class ListTest extends CakeTestCase {
 
 		$result = $this->UsersAddon->isLast('0fab7f82-a9ab-11dd-8943-00e018bfb339');
 		$this->assertFalse($result);
+	}
+
+/**
+ * Test to disable/enabled callbacks
+ *
+ * @return void
+ * @access public
+ */
+	public function testCallbacks() {
+		$this->UsersAddon->Behaviors->detach('Utils.List');
+		$this->UsersAddon->Behaviors->attach('Utils.List', array(
+			'positionColumn' => 'position',
+			'scope' => 'user_id',
+			'callbacks' => false,
+			'validate' => false));
+		$this->UsersAddon->beforeSaveFalse = false;
+		$result = $this->UsersAddon->moveDown('149e7472-a9ab-11dd-be1d-00e018bfb339');
+		$this->assertTrue($result);
 	}
 
 }
