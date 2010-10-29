@@ -88,7 +88,7 @@ Allow to keep referer url inside the add/edit form to reuse it for redirect on s
 ## Requirements ##
 
 * PHP version: PHP 5.2+
-* CakePHP version: Cakephp 1.3 Stable
+* CakePHP version: 1.3 Stable
 
 ## Support ##
 
