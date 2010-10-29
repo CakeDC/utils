@@ -1,18 +1,52 @@
 <?php
+/**
+ * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+
 App::import('Behavior', 'Utils.SoftDelete');
 
 /**
- * SoftDelete Test Behavior
- **/
+ * SoftDeleteTestBehavior
+ *
+ * @package default
+ * @author Predominant
+ */
 class SoftDeleteTestBehavior extends SoftDeleteBehavior {
 }
 
 /**
- * SoftDeleted Post
+ * SoftDeletedPost
+ *
+ * @package utils
+ * @subpackage utils.tests.cases.behaviors
  */
 class SoftDeletedPost extends CakeTestModel {
+
+/**
+ * Use Table
+ *
+ * @var string
+ */
 	public $useTable = 'posts';
+
+/**
+ * Behaviors
+ *
+ * @var array
+ */
 	public $actsAs = array('SoftDeleteTest');
+
+/**
+ * Alias
+ *
+ * @var string
+ */
 	public $alias = 'Post';
 }
 
@@ -20,11 +54,11 @@ class SoftDeletedPost extends CakeTestModel {
  * SoftDelete Test case
  */
 class SoftDeleteTest extends CakeTestCase {
+
 /**
  * fixtures property
  *
  * @var array
- * @access public
  */
 	public $fixtures = array('plugin.utils.post');
 
@@ -64,7 +98,12 @@ class SoftDeleteTest extends CakeTestCase {
 		$this->assertEqual($data['Post']['deleted'], 1);
 		$this->assertEqual($data['Post']['updated'], $data['Post']['deleted_date']);
 	}
-		
+
+/**
+ * testUnDelete
+ *
+ * @return void
+ */
 	public function testUnDelete() {
 		$data = $this->Post->read(null, 1);
 		$result = $this->Post->delete(1);
@@ -72,7 +111,12 @@ class SoftDeleteTest extends CakeTestCase {
 		$data = $this->Post->read(null, 1);
 		$this->assertEqual($data['Post']['deleted'], 0);
 	}
-		
+
+/**
+ * testSoftDeletePurge
+ *
+ * @return void
+ */
 	public function testSoftDeletePurge() {
 		$this->Post->Behaviors->disable('SoftDeleteTest');
 		$data = $this->Post->read(null, 3);
@@ -111,4 +155,3 @@ class SoftDeleteTest extends CakeTestCase {
 		// $this->assertEqual($result['SoftDeletedPost']['slug'], 'fourth_Post_part_2');
 
 }
-?>
