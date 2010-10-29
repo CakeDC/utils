@@ -90,7 +90,9 @@ class SoftDeleteTest extends CakeTestCase {
  */
 	public function testSoftDelete() {
 		$data = $this->Post->read(null, 1);
+		$this->assertEqual($data[$this->Post->alias][$this->Post->primaryKey], 1);
 		$result = $this->Post->delete(1);
+		$this->assertFalse($result);
 		$data = $this->Post->read(null, 1);
 		$this->assertFalse($data);
 		$this->Post->Behaviors->detach('SoftDeleteTest');
