@@ -9,6 +9,7 @@
  *
  */
 App::import('Helper', array('Html', 'Utils.Gravatar'));
+App::import('Core', 'View', false);
 
 /**
  * GravatarHelper Test
@@ -32,9 +33,11 @@ class GravatarHelperTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function startTest() {
-		$this->Gravatar = new GravatarHelper();
-		$this->Gravatar->Html = new HtmlHelper();
+	public function setUp() {
+		$null = null;
+		$this->View = new View($null);
+		$this->Gravatar = new GravatarHelper($this->View);
+		$this->Gravatar->Html = new HtmlHelper($this->View);
 	}
 
 /**
@@ -43,7 +46,7 @@ class GravatarHelperTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function endTest() {
+	public function tearDown() {
 		unset($this->Gravatar);
 	}
 

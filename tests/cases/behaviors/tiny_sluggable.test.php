@@ -43,7 +43,7 @@ class TinySluggableBehaviorTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function startTest() {
+	public function setUp() {
 		$this->Model = ClassRegistry::init('TinySluggableArticle');
 		$this->Model->Behaviors->attach('Utils.TinySluggable', array());
 	}
@@ -54,7 +54,7 @@ class TinySluggableBehaviorTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function endTest() {
+	public function tearDown() {
 		unset($this->Model);
 		ClassRegistry::flush(); 
 	}

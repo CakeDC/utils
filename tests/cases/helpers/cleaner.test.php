@@ -1,7 +1,7 @@
 <?php
-App::import('Core', 'Helper');
-App::import('Helper', 'AppHelper');
-App::import('Core', 'Javascript');
+App::import('Core', 'Helper', false);
+App::import('Helper', 'AppHelper', false);
+App::import('Core', 'View', false);
 App::import('Helper', 'Utils.Cleaner');
 
 /**
@@ -10,16 +10,15 @@ App::import('Helper', 'Utils.Cleaner');
  * @package		cake.tests
  * @subpackage	cake.tests.cases.libs
  */
-class CleanerHelperTest extends UnitTestCase {
+class CleanerHelperTest extends CakeTestCase {
 
 	function setUp() {
 		ClassRegistry::flush();
 		Router::reload();
 		$null = null;
 		$this->View = new View($null);
-		$this->Helper = new Helper();
-		$this->Cleaner = new CleanerHelper();
-		$this->Cleaner->Javascript = new JavascriptHelper();
+		$this->Helper = new Helper($this->View);
+		$this->Cleaner = new CleanerHelper($this->View);
 	}
 
 	function testClean() {
@@ -47,7 +46,7 @@ class CleanerHelperTest extends UnitTestCase {
 		$this->assertEqual($result, '<a href="#">data</a>');
 
 		$result = $this->Cleaner->clean('<img src="www.example.com/img.jpg" />data');
-		$this->assertEqual($result, 'data');
+		$this->assertEqual($result, '<img src="www.example.com/img.jpg" />data');
 
 		$result = $this->Cleaner->clean('<img src="/media/display/47ce0324-2238-40ec-b68a-a7994a35e6b2" />data');
 		$this->assertEqual($result, '<img src="/media/display/47ce0324-2238-40ec-b68a-a7994a35e6b2" />data');
@@ -179,7 +178,7 @@ Noon-3pm Trojan Soundsystem  (LIVE)
 	
 	
 	function tearDown() {
-		unset($this->Helper, $this->View);
+		unset($this->Helper);
 		ClassRegistry::flush();
 	}
 }

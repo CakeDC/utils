@@ -74,7 +74,9 @@ class SoftDeleteBehavior extends ModelBehavior {
     public function beforeFind(&$model, $query) {
         $runtime = $this->runtime[$model->alias];
         if ($runtime) {
-            $query['conditions'] = ife(is_array($query['conditions']), $query['conditions'], array());
+			if (!is_array($query['conditions'])) {
+				$query['conditions'] = array();
+			}
             $conditions = array_filter(array_keys($query['conditions']));
 
             $fields = $this->_normalizeFields($model);
@@ -258,7 +260,9 @@ class SoftDeleteBehavior extends ModelBehavior {
  * @return array
  */
     protected function _normalizeFields(&$model, $settings = array()) {
-        $settings = ife(empty($settings), @$this->settings[$model->alias], $settings);
+		if (empty($settings)) {
+			$settings = @$this->settings[$model->alias];
+		}
         $result = array();
         foreach ($settings as $flag => $date) {
             if (is_numeric($flag)) {

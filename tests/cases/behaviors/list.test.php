@@ -60,7 +60,7 @@ class ListTest extends CakeTestCase {
  *
  * @access public
  */
-	public function startTest() {
+	public function setUp() {
 		$this->UsersAddon = ClassRegistry::init('UsersAddon');
 		$this->UsersAddon->Behaviors->attach('Utils.List', array(
 			'positionColumn' => 'position',
@@ -73,7 +73,7 @@ class ListTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function endTest() {
+	public function tearDown() {
 		unset($this->UsersAddon);
 		ClassRegistry::flush();
 	}
@@ -86,7 +86,7 @@ class ListTest extends CakeTestCase {
  */
 	public function testMoveUp() {
 		$result = $this->UsersAddon->moveUp('149e7472-a9ab-11dd-be1d-00e018bfb339');
-		$this->assertTrue($result);
+		$this->assertTrue(!empty($result));
 
 		$result = $this->UsersAddon->moveUp('non-existing-uuid');
 		$this->assertFalse($result);
@@ -100,7 +100,7 @@ class ListTest extends CakeTestCase {
  */
 	public function testMoveDown() {
 		$result = $this->UsersAddon->moveDown('149e7472-a9ab-11dd-be1d-00e018bfb339');
-		$this->assertTrue($result);
+		$this->assertTrue(!empty($result));
 
 		$result = $this->UsersAddon->moveDown('non-existing-uuid');
 		$this->assertFalse($result);
@@ -114,7 +114,7 @@ class ListTest extends CakeTestCase {
  */
 	public function testInsertAt() {
 		$result = $this->UsersAddon->insertAt(1, '1857670e-a9ab-11dd-b579-00e018bfb339');
-		$this->assertTrue($result);
+		$this->assertTrue(!empty($result));
 	}
 
 /**
@@ -184,7 +184,7 @@ class ListTest extends CakeTestCase {
 			'validate' => false));
 		$this->UsersAddon->beforeSaveFalse = false;
 		$result = $this->UsersAddon->moveDown('149e7472-a9ab-11dd-be1d-00e018bfb339');
-		$this->assertTrue($result);
+		$this->assertTrue(!empty($result));
 	}
 
 }
