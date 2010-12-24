@@ -74,7 +74,7 @@ class FormPreserverComponent extends Object {
  */
 	public function __construct() {
 		parent::__construct();
-		$this->redirectMessage = __('Your form data is preserved you\'ll be redirected to it after login.', true);
+		$this->redirectMessage = __d('utils', 'Your form data is preserved you\'ll be redirected to it after login.', true);
 	}
 
 /**

@@ -1,0 +1,51 @@
+# LANGUAGE translation of the CakePHP Utils plugin
+#
+# Copyright 2010, Cake Development Corporation (http://cakedc.com)
+#
+# Licensed under The MIT License
+# Redistributions of files must retain the above copyright notice.
+#
+# @copyright Copyright 2010, Cake Development Corporation (http://cakedc.com)
+# @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2010-09-15 15:54+0200\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: /controllers/components/archive.php:156
+msgid "No %s found for that date range"
+msgstr ""
+
+#: /controllers/components/form_preserver.php:77
+msgid "Your form data is preserved you'll be redirected to it after login."
+msgstr ""
+
+#: /models/behaviors/csv_import.php:142
+msgid "%s for Row %d failed to save."
+msgstr ""
+
+#: /models/behaviors/toggleable.php:48
+msgid "You need to define at least one field to be toggleable."
+msgstr ""
+
+#: /models/behaviors/toggleable.php:69
+msgid "The field %s is not in the list of toggleable fields."
+msgstr ""
+
+#: /models/behaviors/toggleable.php:73
+msgid "The field %s does not have two toggleable states defined."
+msgstr ""
+
+#: /models/behaviors/toggleable.php:93
+msgid "Invalid record"
+msgstr ""
+
