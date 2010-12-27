@@ -136,4 +136,3 @@ class FormPreserverComponentTest extends CakeTestCase {
 	}
 
 }
-?>

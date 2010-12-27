@@ -55,14 +55,8 @@ class RefererComponentTest extends CakeTestCase {
  */
 	function setUp() {
 		$request = new CakeRequest('controller_posts/index');
-		//debug($request);
 		$response = new CakeResponse(); 
 		$this->Controller = new ArticlesTestController($request, $response);
-		//$this->Controller->constructClasses();
-		// $this->Controller->params = array(
-			// 'named' => array(),
-			// 'pass' => array(),
-			// 'url' => array());
 		$this->Controller->modelClass = 'Article';
 		$this->Controller->Components->init($this->Controller);
 		$this->Controller->Referer->initialize($this->Controller, array());
@@ -120,4 +114,3 @@ class RefererComponentTest extends CakeTestCase {
 	}
 
 }
-?>
