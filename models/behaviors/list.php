@@ -358,15 +358,9 @@ class ListBehavior extends ModelBehavior {
 			if ($scope=='') {
 				return $scopes;
 			}
-			if (substr($scope, -3) != '_id') {
-				$scope .= '_id';
-			}
 			$scopes[$model->alias . '.' . $scope] = $model->data[$model->alias][$scope];
 		} elseif (is_array($scope)) {
 			foreach ($scope as $scopeEl) {
-				if (substr($scopeEl, -3) == '_id') {
-					$scopeEl .= '_id';
-				}
 				$scopes[$model->alias . '.' . $scopeEl] = $model->data[$model->alias][$scopeEl];
 			}
 		}
