@@ -91,7 +91,7 @@ class SluggableBehavior extends ModelBehavior {
 		}
 
 		$settings = $this->settings[$Model->alias];
-		$slug = $this->multibyteSlug($Model, $slug, $settings['separator']);
+		$slug = $this->multibyteSlug($Model, $slug);
 
 		if ($settings['unique'] === true || is_array($settings['unique'])) {
 			$slug = $this->makeUniqueSlug($Model, $slug);
