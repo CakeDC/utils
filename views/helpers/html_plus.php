@@ -18,13 +18,6 @@
 class HtmlPlus extends AppHelper {
 
 /**
- * View helper dependencies
- *
- * @var array
- */
-	public $helpers = array('Html');
-
-/**
  * Takes the script_for_layout variable and returns the meta tags form it omitting the rest
  *
  * @param string $scripts 
