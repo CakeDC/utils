@@ -15,7 +15,7 @@
  * @package utils
  * @subpackage utils.views.helpers
  */
-class HtmlPlus extends AppHelper {
+class HtmlPlusHelper extends AppHelper {
 
 /**
  * Takes the script_for_layout variable and returns the meta tags form it omitting the rest
