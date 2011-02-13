@@ -24,7 +24,7 @@ class HtmlPlus extends AppHelper {
  * @return string
  */
 	public function metaForLayout($scripts = null) {
-		return $this->_getScriptType($scripts, 'meta')l
+		return $this->_getScriptType($scripts, 'meta');
 	}
 
 /**
@@ -34,7 +34,7 @@ class HtmlPlus extends AppHelper {
  * @return string
  */
 	public function scriptsForLayout($scripts) {
-		return $this->_getScriptType($scripts, 'script')l
+		return $this->_getScriptType($scripts, 'script');
 	}
 
 /**
