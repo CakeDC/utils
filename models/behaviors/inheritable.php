@@ -116,6 +116,13 @@ class InheritableBehavior extends ModelBehavior {
 				} elseif ($i == $Model->parent->alias) {
 					$results = array_merge($results, $res);
 					unset($results[$i]);
+				} elseif ($i == $Model->alias && array_key_exists(0, $res)) {
+					foreach($res as $j => $payload) {
+						if (array_key_exists($Model->parent->alias, $payload)) {
+							$results[$i][$j] = array_merge($payload, $payload[$Model->parent->alias]);
+							unset($results[$i][$j][$Model->parent->alias]);
+						}
+					}
 				}
 			}
 		}

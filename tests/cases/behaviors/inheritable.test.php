@@ -331,6 +331,14 @@ class InheritableTest extends CakeTestCase {
 		$results = $this->Link->Behaviors->Inheritable->afterFind($this->Link, $data);
 		$expected = array_merge($linkData, $assetData);
 		$this->assertEqual($results, $expected);
+		
+		// Another format that can be found
+		$data = array('Link' => array(
+			array_merge($linkData, array('Asset' => $assetData))));
+		$results = $this->Link->Behaviors->Inheritable->afterFind($this->Link, $data);
+		$expected = array('Link' => array(
+			array_merge($linkData, $assetData)));
+		$this->assertEqual($results, $expected);
 	}
 
 /**

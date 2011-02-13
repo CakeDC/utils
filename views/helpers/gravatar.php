@@ -42,7 +42,7 @@ class GravatarHelper extends AppHelper {
  *
  * @var array
  */
-	private $__defaultIcons = array('none', 'mm', 'identicon', 'monsterid', 'wavatar', '404');
+	private $__defaultIcons = array('none', 'identicon', 'mm', 'monsterid', 'retro', 'wavatar', '404');
 
 /**
  * Default settings
