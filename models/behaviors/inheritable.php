@@ -49,7 +49,7 @@ class InheritableBehavior extends ModelBehavior {
             'fieldAlias' => $Model->alias);
 		$this->settings[$Model->alias] = array_merge($_defaults, $config);
 
-		$Model->parent = ClassRegistry::init(get_parent_class($Model->name));
+		$Model->parent = ClassRegistry::init(get_parent_class($Model));
 		$Model->inheritanceField = $this->settings[$Model->alias]['inheritanceField'];
 		$Model->fieldAlias = $this->settings[$Model->alias]['fieldAlias'];
 
