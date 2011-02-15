@@ -57,7 +57,7 @@ class ToggleableBehavior extends ModelBehavior {
  * @param string $field Name of the field to toggle
  * @return mixed The new state or false if setting the new state failed
  */
-	public function toggle(Model $Model, $id = null, $field = null) {
+	public function toggle(Model $Model, $id = null, $field = null, $options = array()) {
 		extract($this->settings[$Model->alias]);
 
 		if (empty($field) && count($fields) == 1) {
@@ -102,7 +102,7 @@ class ToggleableBehavior extends ModelBehavior {
 		}
 
 		if (method_exists($Model, 'afterToggle')) {
-			$Model->afterToggle(compact('field', 'newState'));
+			$Model->afterToggle(compact('field', 'currentState', 'newState', 'options'));
 		}
 
 		return $newState;
