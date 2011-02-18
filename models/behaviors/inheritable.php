@@ -77,7 +77,7 @@ class InheritableBehavior extends ModelBehavior {
 			if (!empty($query['contain'])) {
 				$this->_classTableBindContains($Model, $query['contain']);
 				if (empty($query['contain'][$Model->parent->alias]) && !in_array($Model->parent->alias, $query['contain'])) {
-					$query['contain'][] = $Model->parent->alias;
+					array_unshift($query['contain'], $Model->parent->alias);
 				}
 			}
 		}
@@ -246,7 +246,13 @@ class InheritableBehavior extends ModelBehavior {
 				'type' => 'INNER',
 				'className' => $Model->parent->alias,
 				'foreignKey' => $Model->primaryKey)));
-		return $Model->bindModel($bind, false);
+		$success = $Model->bindModel($bind, false);
+		//Putting the parent association as the first one, so any dependent join on the parent model will
+		// be in the right order
+		$assoc = $Model->belongsTo[$Model->parent->alias];
+		unset($Model->belongsTo[$Model->parent->alias]);
+		$Model->belongsTo = array_merge(array($Model->parent->alias => $assoc), $Model->belongsTo);
+		return $success;
 	}
 
 /**
