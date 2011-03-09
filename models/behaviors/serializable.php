@@ -33,7 +33,7 @@ class SerializableBehavior extends ModelBehavior {
  */
 	protected $_defaults = array(
 		'engine' => 'serialize',
-		'fields' => array()
+		'field' => array()
 	);
 
 /**
@@ -44,8 +44,8 @@ class SerializableBehavior extends ModelBehavior {
  */
 	public function setup(&$Model, $config = array()) {
 		$settings = array_merge($this->_defaults, $config);
-		if (!is_array($settings['fields'])) {
-			$settings['fields'] = array($settings['fields']);
+		if (!is_array($settings['field'])) {
+			$settings['field'] = array($settings['field']);
 		}
 		$this->settings[$Model->alias] = $settings;
 	}
@@ -87,7 +87,7 @@ class SerializableBehavior extends ModelBehavior {
 		if (empty($data[$Model->alias])) {
 			return $data;
 		}
-		$fields = $this->settings[$Model->alias]['fields'];
+		$fields = $this->settings[$Model->alias]['field'];
 		$engine = $this->settings[$Model->alias]['engine'];
 		if (!empty($data[$Model->alias][0]) && array_intersect_key($fields, array_keys($data[$Model->alias][0]))) {
 			foreach ($data[$Model->alias] as $key => $model) {
@@ -119,7 +119,7 @@ class SerializableBehavior extends ModelBehavior {
 		if (empty($data[$Model->alias])) {
 			return $data;
 		}
-		$fields = $this->settings[$Model->alias]['fields'];
+		$fields = $this->settings[$Model->alias]['field'];
 		$engine = $this->settings[$Model->alias]['engine'];
 		foreach ($fields as $field) {
 			if (!empty($data[$Model->alias][$field])) {
