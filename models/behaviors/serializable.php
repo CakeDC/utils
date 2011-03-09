@@ -44,6 +44,9 @@ class SerializableBehavior extends ModelBehavior {
  */
 	public function setup(&$Model, $config = array()) {
 		$settings = array_merge($this->_defaults, $config);
+		if (!is_array($settings['fields'])) {
+			$settings['fields'] = array($settings['fields']);
+		}
 		$this->settings[$Model->alias] = $settings;
 	}
 
@@ -81,7 +84,9 @@ class SerializableBehavior extends ModelBehavior {
  * @return boolean
  */
 	public function serialize($Model, &$data) {
-		if (empty($data[$Model->alias])) return $data;
+		if (empty($data[$Model->alias])) {
+			return $data;
+		}
 		$fields = $this->settings[$Model->alias]['fields'];
 		$engine = $this->settings[$Model->alias]['engine'];
 		if (!empty($data[$Model->alias][0]) && array_intersect_key($fields, array_keys($data[$Model->alias][0]))) {
@@ -89,7 +94,7 @@ class SerializableBehavior extends ModelBehavior {
 				$model = $Model->serialize(array($Model->alias => $model));
 				$data[$Model->alias][$key] = $model[$Model->alias];
 			}
-		} elseif (array_intersect_key($fields, array_keys($data[$Model->alias]))) {
+		} else {
 			foreach ($fields as $field) {
 				if (isset($data[$Model->alias][$field]) && is_array($data[$Model->alias][$field])) {
 					if ($engine == 'json') {
@@ -111,7 +116,9 @@ class SerializableBehavior extends ModelBehavior {
  * @return boolean
  */
 	public function deserialize($Model, &$data) {
-		if(empty($data[$Model->alias])) return $data;
+		if (empty($data[$Model->alias])) {
+			return $data;
+		}
 		$fields = $this->settings[$Model->alias]['fields'];
 		$engine = $this->settings[$Model->alias]['engine'];
 		foreach ($fields as $field) {
