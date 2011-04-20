@@ -536,14 +536,19 @@ class ListBehavior extends ModelBehavior {
  */
 	private function __insertAtPosition($model, $position) {
 		extract($this->settings[$model->alias]);
-		return $model->save(null, array(
+
+		$data = $model->data;
+		$model->data[$model->alias][$positionColumn] = 0;
+		$model->save(null, array(
 			'validate' => $validate,
 			'callbacks' => $callbacks));
+		$model->create($data);
+
 		$model->recursive = 0;
 		$model->findById($model->id);
 		$this->removeFromList($model);
 		$result = $this->__incrementPositionsOnLowerItems($model, $position);
-		if ($position <= $this->__bottomPositionInList($model)) {
+		if ($position <= $this->__bottomPositionInList($model) + 1) {
 			$model->data[$model->alias][$positionColumn] = $position;
 			$result = $model->save(null, array(
 				'validate' => $validate,
