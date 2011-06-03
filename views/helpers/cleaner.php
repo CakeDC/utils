@@ -71,7 +71,7 @@ class CleanerHelper extends AppHelper {
  * Constructor
  *
  */
-	public function __contruct() {
+	public function __construct() {
 		foreach ($this->config['full'] as $key => $value) {
 			$this->{$key} = $value;
 		}

@@ -85,7 +85,7 @@ class ListTest extends CakeTestCase {
  * @access public
  */
 	public function testMoveUp() {
-		$result = $this->UsersAddon->moveUp('149e7472-a9ab-11dd-be1d-00e018bfb339');
+		$result = $this->UsersAddon->moveUp('useraddon-2');
 		$this->assertTrue(!empty($result));
 
 		$result = $this->UsersAddon->moveUp('non-existing-uuid');
@@ -99,7 +99,7 @@ class ListTest extends CakeTestCase {
  * @access public
  */
 	public function testMoveDown() {
-		$result = $this->UsersAddon->moveDown('149e7472-a9ab-11dd-be1d-00e018bfb339');
+		$result = $this->UsersAddon->moveDown('useraddon-2');
 		$this->assertTrue(!empty($result));
 
 		$result = $this->UsersAddon->moveDown('non-existing-uuid');
@@ -113,8 +113,23 @@ class ListTest extends CakeTestCase {
  * @access public
  */
 	public function testInsertAt() {
-		$result = $this->UsersAddon->insertAt(1, '1857670e-a9ab-11dd-b579-00e018bfb339');
+		$result = $this->UsersAddon->insertAt(1, 'useraddon-3');
 		$this->assertTrue(!empty($result));
+		$result = $this->UsersAddon->read('position', 'useraddon-3');
+		$this->assertEqual($result['UsersAddon']['position'], 1);
+
+		// insert somewhere in the middle
+		$result = $this->UsersAddon->insertAt(2, 'useraddon-3');
+		$this->assertTrue($result);
+		$result = $this->UsersAddon->read('position', 'useraddon-3');
+		$this->assertEqual($result['UsersAddon']['position'], 2);
+
+		// insert at last position
+		$position = $this->UsersAddon->find('count');
+		$result = $this->UsersAddon->insertAt($position, 'useraddon-3');
+		$this->assertTrue($result);
+		$result = $this->UsersAddon->read('position', 'useraddon-3');
+		$this->assertEqual($result['UsersAddon']['position'], $position);
 	}
 
 /**
@@ -124,8 +139,8 @@ class ListTest extends CakeTestCase {
  * @access public
  */
 	public function testMoveToBottom() {
-		$this->UsersAddon->moveToBottom('0fab7f82-a9ab-11dd-8943-00e018bfb339');
-		$result = $this->UsersAddon->read('position', '0fab7f82-a9ab-11dd-8943-00e018bfb339');
+		$this->UsersAddon->moveToBottom('useraddon-1');
+		$result = $this->UsersAddon->read('position', 'useraddon-1');
 		$this->assertEqual($result['UsersAddon']['position'], 3);
 	}
 
@@ -136,8 +151,8 @@ class ListTest extends CakeTestCase {
  * @access public
  */
 	public function testMoveToTop() {
-		$this->UsersAddon->moveToTop('1857670e-a9ab-11dd-b579-00e018bfb339');
-		$result = $this->UsersAddon->read('position', '1857670e-a9ab-11dd-b579-00e018bfb339');
+		$this->UsersAddon->moveToTop('useraddon-3');
+		$result = $this->UsersAddon->read('position', 'useraddon-3');
 		$this->assertEqual($result['UsersAddon']['position'], 1);
 	}
 
@@ -148,10 +163,10 @@ class ListTest extends CakeTestCase {
  * @access public
  */
 	public function testIsFirst() {
-		$result = $this->UsersAddon->isFirst('0fab7f82-a9ab-11dd-8943-00e018bfb339');
+		$result = $this->UsersAddon->isFirst('useraddon-1');
 		$this->assertTrue($result);
 
-		$result = $this->UsersAddon->isFirst('1857670e-a9ab-11dd-b579-00e018bfb339');
+		$result = $this->UsersAddon->isFirst('useraddon-3');
 		$this->assertFalse($result);
 	}
 
@@ -162,10 +177,10 @@ class ListTest extends CakeTestCase {
  * @access public
  */
 	public function testIsLast() {
-		$result = $this->UsersAddon->isLast('1857670e-a9ab-11dd-b579-00e018bfb339');
+		$result = $this->UsersAddon->isLast('useraddon-3');
 		$this->assertTrue($result);
 
-		$result = $this->UsersAddon->isLast('0fab7f82-a9ab-11dd-8943-00e018bfb339');
+		$result = $this->UsersAddon->isLast('useraddon-1');
 		$this->assertFalse($result);
 	}
 
@@ -183,9 +198,8 @@ class ListTest extends CakeTestCase {
 			'callbacks' => false,
 			'validate' => false));
 		$this->UsersAddon->beforeSaveFalse = false;
-		$result = $this->UsersAddon->moveDown('149e7472-a9ab-11dd-be1d-00e018bfb339');
+		$result = $this->UsersAddon->moveDown('useraddon-1');
 		$this->assertTrue(!empty($result));
 	}
 
 }
-?>
