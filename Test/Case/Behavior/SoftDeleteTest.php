@@ -10,6 +10,7 @@
  */
 
 App::import('Behavior', 'Utils.SoftDelete');
+// App::uses('SoftDelete', 'Utils.Model/Behavior/SoftDelete');
 
 /**
  * SoftDeleteTestBehavior
@@ -17,8 +18,8 @@ App::import('Behavior', 'Utils.SoftDelete');
  * @package default
  * @author Predominant
  */
-class SoftDeleteTestBehavior extends SoftDeleteBehavior {
-}
+// class SoftDeleteTestBehavior extends SoftDeleteBehavior {
+// }
 
 /**
  * SoftDeletedPost
@@ -40,7 +41,7 @@ class SoftDeletedPost extends CakeTestModel {
  *
  * @var array
  */
-	public $actsAs = array('SoftDeleteTest');
+	public $actsAs = array('Utils.SoftDelete');
 
 /**
  * Alias
@@ -69,7 +70,7 @@ class SoftDeleteTest extends CakeTestCase {
  */
 	public function setUp() {
 		$this->Post = new SoftDeletedPost();
-		$this->Behavior = new SoftDeleteTestBehavior();
+		//$this->Behavior = new SoftDeleteTestBehavior();
 	}
 
 /**
@@ -79,7 +80,7 @@ class SoftDeleteTest extends CakeTestCase {
  */
 	public function tearDown() {
 		unset($this->Post);
-		unset($this->Behavior);
+		//unset($this->Behavior);
 		ClassRegistry::flush();
 	}
 

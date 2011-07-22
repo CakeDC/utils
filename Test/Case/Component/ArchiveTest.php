@@ -55,15 +55,16 @@ class PrgComponentTest extends CakeTestCase {
  * @return void
  */
 	function setUp() {
-		$this->Controller = new ArticlesTestController();
+		$request = new CakeRequest();
+		$this->Controller = new ArticlesTestController($request);
 		$this->Controller->constructClasses();
 		$this->Controller->params = array(
 			'named' => array(),
 			'pass' => array(),
 			'url' => array());
 		$this->Controller->modelClass = 'Article';
-		$this->Controller->Component->init($this->Controller);
-		$this->Controller->Component->initialize($this->Controller);
+		//$this->Controller->Components->init($this->Controller);
+		// $this->Controller->Component->initialize($this->Controller);
 		$this->Controller->Archive->startup($this->Controller);
 	}
 
