@@ -1,6 +1,8 @@
 <?php
 App::import('Controller', 'Controller', false);
+//App::uses('Referer', 'Utils.Controller/Component/Referer');
 App::import('Component', 'Utils.Referer');
+App::uses('Router', 'Routing');
 
 class Article extends CakeTestModel {
 /**
@@ -55,15 +57,15 @@ class PrgComponentTest extends CakeTestCase {
  * @return void
  */
 	function setUp() {
-		$this->Controller = new ArticlesTestController();
+		$request = new CakeRequest();
+		$this->Controller = new ArticlesTestController($request);
 		$this->Controller->constructClasses();
 		$this->Controller->params = array(
 			'named' => array(),
 			'pass' => array(),
 			'url' => array());
 		$this->Controller->modelClass = 'Article';
-		$this->Controller->Component->init($this->Controller);
-		$this->Controller->Component->initialize($this->Controller);
+		$this->Controller->Referer->initialize($this->Controller);
 	}
 
 /**
@@ -96,7 +98,7 @@ class PrgComponentTest extends CakeTestCase {
 		$this->Controller->Referer->setReferer(array('controller' => 'foo', 'action' => 'bar'));
 		$this->assertEqual($this->Controller->viewVars['referer'], '/foo/bar');
 
-		$this->Controller->data['Data']['referer'] = '/post';
+		$this->Controller->request->data['Data']['referer'] = '/post';
 		$this->Controller->Referer->setReferer('/foo/bar2');
 		$this->assertEqual($this->Controller->viewVars['referer'], '/post');
 	}
@@ -108,12 +110,12 @@ class PrgComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testRedirect() {
-		$this->Controller->data['Data']['referer'] = '/foo/bar';
+		$this->Controller->request->data['Data']['referer'] = '/foo/bar';
 		$result = $this->Controller->Referer->redirect('/home');
 		$this->assertEqual($this->Controller->redirectUrl, '/foo/bar');
 
 		$_SERVER['HTTP_REFERER'] = '/';
-		$this->Controller->data = null;
+		$this->Controller->request->data = null;
 		$result = $this->Controller->Referer->redirect('/home');
 		$this->assertEqual($this->Controller->redirectUrl, '/home');
 	}

@@ -1,8 +1,10 @@
 <?php
 App::import('Core', 'Helper');
 App::import('Helper', 'AppHelper');
-App::import('Core', 'Javascript');
+App::import('Helper', 'Html');
 App::import('Helper', 'Utils.Cleaner');
+App::uses('View', 'View'); 
+App::uses('Javascript', 'View'); 
 
 /**
  * Short description for class.
@@ -10,19 +12,20 @@ App::import('Helper', 'Utils.Cleaner');
  * @package		cake.tests
  * @subpackage	cake.tests.cases.libs
  */
-class CleanerHelperTest extends UnitTestCase {
+class CleanerHelperTest extends CakeTestCase {
 
-	function setUp() {
+	public function setUp() {
 		ClassRegistry::flush();
 		Router::reload();
 		$null = null;
 		$this->View = new View($null);
-		$this->Helper = new Helper();
-		$this->Cleaner = new CleanerHelper();
-		$this->Cleaner->Javascript = new JavascriptHelper();
+		$this->Helper = new Helper($this->View);
+		$this->Helper = new Helper($this->View);
+		$this->Cleaner = new CleanerHelper($this->View);
+		$this->Cleaner->Html = new HtmlHelper($this->View);
 	}
 
-	function testClean() {
+	public function testClean() {
 		$tagsArray = array('br', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'dl'	, 'dd', 'dt', 'a', 'img', 'i', 'u', 'b');
 		$attributesArray = array('src', 'href', 'title');
 		$replaceImgThumb = false;
@@ -140,7 +143,7 @@ class CleanerHelperTest extends UnitTestCase {
 		$this->assertEqual($result, '<object width="464" height="392"><param name="movie" value="http://embed.break.com/NTc3MjQ5"></param><param name="allowScriptAccess" value="always"></param><embed src="http://embed.break.com/NTc3MjQ5" type="application/x-shockwave-flash" allowScriptAccess=always width="464" height="392"></embed></object>text');
 	}
 
-	function testOverCleaning() {
+	public function testOverCleaning() {
 		$tagsArray = array('br', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'dl'	, 'dd', 'dt', 'a', 'img', 'i', 'u', 'b');
 		$attributesArray = array('src', 'href', 'title');
 		$replaceImgThumb = false;
@@ -178,7 +181,7 @@ Noon-3pm Trojan Soundsystem  (LIVE)
 	}
 	
 	
-	function tearDown() {
+	public function tearDown() {
 		unset($this->Helper, $this->View);
 		ClassRegistry::flush();
 	}

@@ -50,8 +50,8 @@ class RefererComponent extends Object {
  * @param string $default
  */
 	public function setReferer($default = null) {
-		if (empty($this->Controller->data['Data']['referer'])) {
-			$referer = $this->Controller->referer();
+		if (empty($this->Controller->request->data['Data']['referer'])) {
+			$referer = $this->Controller->request->referer();
 
 			if ($referer == '/' && !empty($default)) {
 				$referer = $default;
@@ -61,7 +61,7 @@ class RefererComponent extends Object {
 				}
 			}
 		} else {
-			$referer = $this->Controller->data['Data']['referer'];
+			$referer = $this->Controller->request->data['Data']['referer'];
 		}
 		$this->Controller->set(compact('referer'));
 	}
@@ -76,9 +76,9 @@ class RefererComponent extends Object {
  */
 	public function redirect($url, $status = null, $exit = true) {
 		if (isset($this->Controller->data['Data']['referer'])) {
-			$referer = $this->Controller->data['Data']['referer'];
+			$referer = $this->Controller->request->data['Data']['referer'];
 		} else {
-			$referer = $this->Controller->referer();
+			$referer = $this->Controller->request->referer();
 		}
 
 		if (strlen($referer) == 0 || $referer == '/') {

@@ -24,7 +24,7 @@ class CleanerHelper extends AppHelper {
  *
  * @var array
  */
-	public $helpers = array('Javascript');
+	public $helpers = array('Html');
 
 /**
  * Replace image thumb
@@ -71,11 +71,12 @@ class CleanerHelper extends AppHelper {
  * Constructor
  *
  */
-	public function __construct() {
+	public function __construct($View = null) {
+		$this->View = $View;
 		foreach ($this->config['full'] as $key => $value) {
 			$this->{$key} = $value;
 		}
-		return parent::__construct();
+		return parent::__construct($this->View);
 	}
 
 /**
