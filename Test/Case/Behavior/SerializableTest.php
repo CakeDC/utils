@@ -1,6 +1,4 @@
 <?php
-App::uses('Model', 'Model');
-
 /**
  * Serialized Session
  */
