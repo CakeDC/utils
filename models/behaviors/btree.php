@@ -1015,7 +1015,7 @@ class BTreeBehavior extends ModelBehavior {
 			}
 		}
 
-		list($count) = array_values(current($Model->find('first', array('conditions' => "1=1", 'fields' => 'count(' . $Model->primaryKey . ')'))));
+		list($count) = array_values(current($Model->find('first', array('conditions' => "1=1", 'fields' => 'count(' . $Model->alias . '.' . $Model->primaryKey . ')'))));
 
 		$part_lft = $block_size*2;
 		while($part_lft < ($count*2)) $part_lft = $part_lft + ($block_size*2);
