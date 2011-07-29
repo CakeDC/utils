@@ -62,7 +62,7 @@ class SluggableTest extends CakeTestCase {
 		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article');
 
 		// Should update
-		$this->Model->Behaviors->attach('Utils.Sluggable', array('update' => true));
+		$this->Model->Behaviors->load('Utils.Sluggable', array('update' => true));
 		$this->Model->saveField('title', 'Fourth Article (Part 2)');
 		$result = $this->Model->read();
 		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article_part_2');
@@ -166,8 +166,8 @@ class SluggableTest extends CakeTestCase {
  * @access public
  */
 	public function testUpdatingSlug() {
-		$this->Model->Behaviors->detach('Sluggable');
-		$this->Model->Behaviors->attach('Sluggable', array(
+		$this->Model->Behaviors->unload('Sluggable');
+		$this->Model->Behaviors->load('Sluggable', array(
 			'update' => true));
 
 		$this->Model->create(array('title' => "Andersons Fairy Tales"));

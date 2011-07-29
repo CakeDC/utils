@@ -49,7 +49,7 @@ class ToggleableTest extends CakeTestCase {
  * @return void
  */
 	public function testToggle() {
-		$this->Post->Behaviors->attach('Utils.Toggleable', array(
+		$this->Post->Behaviors->load('Utils.Toggleable', array(
 			'fields' => array(
 				'deleted' => array(1, 0))));
 
@@ -66,7 +66,7 @@ class ToggleableTest extends CakeTestCase {
  * @return void
  */
 	public function testInvalidFieldException() {
-		$this->Post->Behaviors->attach('Utils.Toggleable', array(
+		$this->Post->Behaviors->load('Utils.Toggleable', array(
 			'fields' => array(
 				'other_field' => array(1, 0))));
 
@@ -81,7 +81,7 @@ class ToggleableTest extends CakeTestCase {
  * @return void
  */
 	public function testInvalidFieldStates() {
-		$this->Post->Behaviors->attach('Utils.Toggleable', array(
+		$this->Post->Behaviors->load('Utils.Toggleable', array(
 			'fields' => array(
 				'deleted' => array(1))));
 
@@ -96,7 +96,7 @@ class ToggleableTest extends CakeTestCase {
  * @return void
  */
 	public function testToggleInvalidRecord() {
-		$this->Post->Behaviors->attach('Utils.Toggleable', array(
+		$this->Post->Behaviors->load('Utils.Toggleable', array(
 			'fields' => array(
 				'deleted' => array(1))));
 

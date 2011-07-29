@@ -70,8 +70,8 @@ class InheritableTest extends CakeTestCase {
 		$this->Page = ClassRegistry::init('Page');
 		$this->Content = ClassRegistry::init('Content');
 
-		$this->Page->Behaviors->attach('Containable');
-		$this->Article->Behaviors->attach('Containable');
+		$this->Page->Behaviors->load('Containable');
+		$this->Article->Behaviors->load('Containable');
 
 		// CTI models
 		$this->Asset = ClassRegistry::init('Asset');

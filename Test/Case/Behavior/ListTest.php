@@ -62,7 +62,7 @@ class ListTest extends CakeTestCase {
  */
 	public function setUp() {
 		$this->UsersAddon = ClassRegistry::init('UsersAddon');
-		$this->UsersAddon->Behaviors->attach('Utils.List', array(
+		$this->UsersAddon->Behaviors->load('Utils.List', array(
 			'positionColumn' => 'position',
 			'scope' => 'user_id'));
 	}
@@ -192,8 +192,8 @@ class ListTest extends CakeTestCase {
  * @access public
  */
 	public function testCallbacks() {
-		$this->UsersAddon->Behaviors->detach('Utils.List');
-		$this->UsersAddon->Behaviors->attach('Utils.List', array(
+		$this->UsersAddon->Behaviors->unload('Utils.List');
+		$this->UsersAddon->Behaviors->load('Utils.List', array(
 			'positionColumn' => 'position',
 			'scope' => 'user_id',
 			'callbacks' => false,

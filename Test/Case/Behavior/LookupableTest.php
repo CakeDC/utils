@@ -52,7 +52,7 @@ class LookupableTest extends CakeTestCase {
  * @access public
  */
 	public function testAddRecordAndLookup() {
-		$this->Post->Behaviors->attach('Utils.Lookupable', array(
+		$this->Post->Behaviors->load('Utils.Lookupable', array(
 			'types' => array(
 				'Article')));
 		$this->Post->create();

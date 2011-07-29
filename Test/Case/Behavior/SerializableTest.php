@@ -155,12 +155,12 @@ class SerializableTestCase extends CakeTestCase {
 
 
 	public function testErrorIsSerializedData() {
-		$this->Session->Behaviors->detach('Serializable');
+		$this->Session->Behaviors->unload('Serializable');
 		$record = array('Session' => array('id' => 1, 'data' => 'error text', 'expires' => 1000));
 		$this->Session->create($record);
 		$result = $this->Session->save();
 
-		$this->Session->Behaviors->attach('Utils.Serializable', array('field' => array('data')));
+		$this->Session->Behaviors->load('Utils.Serializable', array('field' => array('data')));
 		$record = array('Session' => array('id' => 1, 'data' => array(), 'expires' => 1000));
 		$data = $this->Session->find('first', array('conditions' => array('id' => 1)));
 		$this->assertEqual($data, $record);
