@@ -12,7 +12,6 @@ class Content extends CakeTestModel {
  * Content Test Model
  */
 class ImportObserver {
-
 	public function onImportRow($data) {}
 	public function listen($action, $data) {}
 }
@@ -181,18 +180,17 @@ class CsvImportTest extends CakeTestCase {
  * @return void
  */
 	public function testListeners() {
-		//@ todo fix mock
-		// Mock::generate('ImportObserver');
-		// $mock = new MockImportObserver;
+		$mock = $this->getMock('ImportObserver');
 		$path = App::pluginPath('Utils');
 		$this->Content->Behaviors->load('Utils.CsvImport');
-		$this->Content->loadImportListener($mock);
-		$this->Content->loadImportListener(array(&$mock, 'listen'));
-		$mock->expectCallCount('onImportRow', 2);
-		$mock->expectCallCount('listen', 2);
+		$this->Content->attachImportListener($mock);
+		$this->Content->attachImportListener(array(&$mock, 'listen'));
+
+		$mock->expects($this->exactly(2))->method('onImportRow');
+		$mock->expects($this->exactly(2))->method('listen');
+
 		$result = $this->Content->importCSV($path . 'Test' . DS . 'tmp' . DS . 'test1.csv');
 		$this->assertTrue($result);
 	}
 
 }
-?>
