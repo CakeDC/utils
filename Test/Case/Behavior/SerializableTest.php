@@ -1,6 +1,5 @@
 <?php
-
-App::import('Core', 'Model');
+App::uses('Model', 'Model');
 
 /**
  * Serialized Session
@@ -8,7 +7,9 @@ App::import('Core', 'Model');
 class SerializedSession extends CakeTestModel {
 	public $alias = 'Session';
 	public $useTable = 'sessions';
-	public $actsAs = array('Utils.Serializable' => array('field' => array('data')));
+	public $actsAs = array(
+		'Utils.Serializable' => array(
+			'field' => array('data')));
 }
 
 /**
@@ -17,7 +18,9 @@ class SerializedSession extends CakeTestModel {
 class SerializedContent extends CakeTestModel {
 	public $alias = 'Content';
 	public $useTable = 'contents';
-	public $actsAs = array('Utils.Serializable' => array('field' => array('title', 'body')));
+	public $actsAs = array(
+		'Utils.Serializable' => array(
+			'field' => array('title', 'body')));
 }
 
 class SerializableTestCase extends CakeTestCase {
@@ -28,7 +31,9 @@ class SerializableTestCase extends CakeTestCase {
  * @var array
  * @access public
  */
-	public $fixtures = array('core.session', 'plugin.utils.content');
+	public $fixtures = array(
+		'core.session',
+		'plugin.utils.content');
 
 /**
  * SerializableBehavior Settings

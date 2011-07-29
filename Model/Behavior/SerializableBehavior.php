@@ -42,7 +42,7 @@ class SerializableBehavior extends ModelBehavior {
  * @param object AppModel
  * @param array $config
  */
-	public function setup(&$Model, $config = array()) {
+	public function setup(Model $Model, $config = array()) {
 		$settings = array_merge($this->_defaults, $config);
 		if (!is_array($settings['field'])) {
 			$settings['field'] = array($settings['field']);
@@ -57,7 +57,7 @@ class SerializableBehavior extends ModelBehavior {
  * @param boolean $primary Whether this model is being queried directly (vs. being queried as an association)
  * @return mixed Result of the find operation
  */
-	function afterFind($Model, $results, $primary = false) {
+	function afterFind(Model $Model, $results, $primary = false) {
 		if (!empty($results)) {
 			foreach ($results as $key => $result) {
 				$results[$key] = $Model->deserialize($result);
@@ -71,7 +71,7 @@ class SerializableBehavior extends ModelBehavior {
  *
  * @return boolean True if the operation should continue, false if it should abort
  */
-	function beforeSave(&$Model, $options = array()) {
+	function beforeSave(Model $Model, $options = array()) {
 		$Model->data = $Model->serialize($Model->data);
 		return true;
 	}
@@ -83,7 +83,7 @@ class SerializableBehavior extends ModelBehavior {
  * @param array $data
  * @return boolean
  */
-	public function serialize($Model, &$data) {
+	public function serialize(Model $Model, $data) {
 		if (empty($data[$Model->alias])) {
 			return $data;
 		}
@@ -115,7 +115,7 @@ class SerializableBehavior extends ModelBehavior {
  * @param array $data
  * @return boolean
  */
-	public function deserialize($Model, &$data) {
+	public function deserialize(Model $Model, $data) {
 		if (empty($data[$Model->alias])) {
 			return $data;
 		}
