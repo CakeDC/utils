@@ -16,6 +16,18 @@ class SluggedArticle extends CakeTestModel {
 }
 
 /**
+ * Slugged Article
+ */
+class SluggedCustomArticle extends CakeTestModel {
+	public $useTable = 'articles';
+	public $actsAs = array('SluggableTest');
+
+	function multibyteSlug($string = null, $separator = '_') {
+		return 'slug';
+	}
+}
+
+/**
  * Sluggable Test case
  */
 class SluggableTest extends CakeTestCase {
@@ -34,6 +46,7 @@ class SluggableTest extends CakeTestCase {
  */
 	public function startTest() {
 		$this->Model = new SluggedArticle();
+		$this->ModelTwo = new SluggedCustomArticle();
 		$this->Behavior = new SluggableTestBehavior();
 	}
 
@@ -75,6 +88,19 @@ class SluggableTest extends CakeTestCase {
 		$this->Model->saveField('body', 'Here goes the content.');
 		$result = $this->Model->read();
 		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article_part_2');
+	}
+
+/**
+ * Test saving a item
+ *
+ * @return void
+ */
+	public function testCustomMultibyteSlug() {
+		$this->ModelTwo->create(array('title' => 'Fifth Article'));
+		$this->ModelTwo->save();
+
+		$result = $this->ModelTwo->read();
+		$this->assertEqual($result['SluggedCustomArticle']['slug'], 'slug');
 	}
 
 /**
