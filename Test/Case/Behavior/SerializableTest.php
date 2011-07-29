@@ -8,7 +8,7 @@ App::import('Core', 'Model');
 class SerializedSession extends CakeTestModel {
 	public $alias = 'Session';
 	public $useTable = 'sessions';
-	public $actsAs = array('Utils.Serializable' => array('fields' => array('data')));
+	public $actsAs = array('Utils.Serializable' => array('field' => array('data')));
 }
 
 /**
@@ -17,7 +17,7 @@ class SerializedSession extends CakeTestModel {
 class SerializedContent extends CakeTestModel {
 	public $alias = 'Content';
 	public $useTable = 'contents';
-	public $actsAs = array('Utils.Serializable' => array('fields' => array('title', 'body')));
+	public $actsAs = array('Utils.Serializable' => array('field' => array('title', 'body')));
 }
 
 class SerializableTestCase extends CakeTestCase {
@@ -43,13 +43,13 @@ class SerializableTestCase extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function setUp($method) {
-		parent::setUp($method);
+	public function setUp() {
+		parent::setUp();
 
 		$this->Session = ClassRegistry::init('SerializedSession');
 		$this->Content = ClassRegistry::init('SerializedContent');
 
-		$this->settings =& $this->Session->Behaviors->Serializable->settings;
+		$this->settings = &$this->Session->Behaviors->Serializable->settings;
 	}
 
 /**
@@ -122,7 +122,7 @@ class SerializableTestCase extends CakeTestCase {
 		$this->settings['Session']['engine'] = 'json';
 		$record = array('Session' => array(array('id' => 1, 'data' => array('k' => 'value'), 'expires' => 1000), array('id' => 2, 'data' => array('k' => 'value'), 'expires' => 1000)));
 		$result = $this->Session->saveAll($record['Session']);
-		$this->assertEqual($result, 1);
+		$this->assertEqual($result, true);
 
 		$data = $this->Session->find('all', array('conditions' => array('id' => array(1, 2))));
 		$this->assertEqual(Set::classicExtract($data, '{n}.Session'), $record['Session']);
@@ -160,10 +160,9 @@ class SerializableTestCase extends CakeTestCase {
 		$this->Session->create($record);
 		$result = $this->Session->save();
 
-		$this->Session->Behaviors->attach('Utils.Serializable', array('fields' => array('data')));
+		$this->Session->Behaviors->attach('Utils.Serializable', array('field' => array('data')));
 		$record = array('Session' => array('id' => 1, 'data' => array(), 'expires' => 1000));
 		$data = $this->Session->find('first', array('conditions' => array('id' => 1)));
 		$this->assertEqual($data, $record);
 	}
 }
-?>

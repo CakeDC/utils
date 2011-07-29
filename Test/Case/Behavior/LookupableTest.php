@@ -1,12 +1,10 @@
 <?php
-App::import('Behavior', 'Utils.Lookupable');
 
 /**
  * Post Test Model
  */
 class Post extends CakeTestModel {
 	public $useTable = 'posts';
-	//public $actsAs = array('Utils.Lookupable');
 	public $alias = 'Post';
 	public $belongsTo = array(
 		'Article');
@@ -82,4 +80,3 @@ class LookupableTest extends CakeTestCase {
 	}
 
 }
-?>

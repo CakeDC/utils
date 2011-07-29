@@ -1,5 +1,4 @@
 <?php
-App::import('Behavior', 'TinySluggable');
 
 /**
  * TinySluggableArticle model used for tests
@@ -35,7 +34,7 @@ class TinySluggableBehaviorTest extends CakeTestCase {
  * @var array
  * @access public
  */
-	public $fixtures = array('plugin.utils.article');
+	public $fixtures = array('plugin.Utils.Article');
 
 /**
  * 

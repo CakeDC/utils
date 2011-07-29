@@ -6,7 +6,7 @@ App::import('Behavior', 'Utils.Sluggable');
  */
 class SluggedArticle extends CakeTestModel {
 	public $useTable = 'articles';
-	public $actsAs = array('Sluggable');
+	public $actsAs = array('Utils.Sluggable');
 }
 
 /**
@@ -51,6 +51,7 @@ class SluggableTest extends CakeTestCase {
 		$this->Model->create(array(
 			'SluggedArticle' => array(
 				'title' => 'Fourth Article')));
+		$this->Model->save();	
 
 		$result = $this->Model->read();
 		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article');
@@ -61,7 +62,7 @@ class SluggableTest extends CakeTestCase {
 		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article');
 
 		// Should update
-		$this->Model->Behaviors->SluggableTest->settings['SluggedArticle']['update'] = true;
+		$this->Model->Behaviors->attach('Utils.Sluggable', array('update' => true));
 		$this->Model->saveField('title', 'Fourth Article (Part 2)');
 		$result = $this->Model->read();
 		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article_part_2');
@@ -180,4 +181,3 @@ class SluggableTest extends CakeTestCase {
 	}
 
 }
-?>

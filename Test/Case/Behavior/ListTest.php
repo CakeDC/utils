@@ -86,7 +86,7 @@ class ListTest extends CakeTestCase {
  */
 	public function testMoveUp() {
 		$result = $this->UsersAddon->moveUp('useraddon-2');
-		$this->assertTrue($result);
+		$this->assertTrue(!empty($result));
 
 		$result = $this->UsersAddon->moveUp('non-existing-uuid');
 		$this->assertFalse($result);
@@ -100,7 +100,7 @@ class ListTest extends CakeTestCase {
  */
 	public function testMoveDown() {
 		$result = $this->UsersAddon->moveDown('useraddon-2');
-		$this->assertTrue($result);
+		$this->assertTrue(!empty($result));
 
 		$result = $this->UsersAddon->moveDown('non-existing-uuid');
 		$this->assertFalse($result);
@@ -114,7 +114,7 @@ class ListTest extends CakeTestCase {
  */
 	public function testInsertAt() {
 		$result = $this->UsersAddon->insertAt(1, 'useraddon-3');
-		$this->assertTrue($result);
+		$this->assertTrue(!empty($result));
 		$result = $this->UsersAddon->read('position', 'useraddon-3');
 		$this->assertEqual($result['UsersAddon']['position'], 1);
 
@@ -122,6 +122,7 @@ class ListTest extends CakeTestCase {
 		$result = $this->UsersAddon->insertAt(2, 'useraddon-3');
 		$this->assertTrue($result);
 		$result = $this->UsersAddon->read('position', 'useraddon-3');
+		debug($this->UsersAddon->find('all'));
 		$this->assertEqual($result['UsersAddon']['position'], 2);
 
 		// insert at last position
@@ -199,7 +200,7 @@ class ListTest extends CakeTestCase {
 			'validate' => false));
 		$this->UsersAddon->beforeSaveFalse = false;
 		$result = $this->UsersAddon->moveDown('useraddon-1');
-		$this->assertTrue($result);
+		$this->assertTrue(!empty($result));
 	}
 
 }

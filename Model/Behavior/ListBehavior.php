@@ -423,7 +423,10 @@ class ListBehavior extends ModelBehavior {
 			$conditions = array_merge($conditions, array($model->alias . '.' . $model->primaryKey . ' != ' => $except[$model->alias][$model->primaryKey]));
 		}
 		$model->recursive = 0;
-		return $model->find($conditions, null, array($model->alias . '.' . $positionColumn => 'DESC'));
+		$options = array(
+			'conditions' => $conditions,
+			'order' => array($model->alias . '.' . $positionColumn => 'DESC'));
+		return $model->find('all', $options);
 	}
 
 /**

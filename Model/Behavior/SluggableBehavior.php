@@ -86,7 +86,7 @@ class SluggableBehavior extends ModelBehavior {
 		}
 
 		$slug = $Model->data[$Model->alias][$settings['label']];
-		if (method_Exists($Model, 'beforeSlugGeneration')) {
+		if (method_exists($Model, 'beforeSlugGeneration')) {
 			$slug = $Model->beforeSlugGeneration($slug, $settings['separator']);
 		}
 
@@ -101,6 +101,7 @@ class SluggableBehavior extends ModelBehavior {
 			$Model->whitelist[] = $settings['slug'];
 		}
 		$Model->data[$Model->alias][$settings['slug']] = $slug;
+		return true;
 	}
 
 /**
