@@ -1,5 +1,5 @@
 <?php
-App::import('Behavior', 'Utils.Sluggable');
+App::uses('Utils.Sluggable', 'Model/Behavior');
 
 /**
  * Slugged Article
