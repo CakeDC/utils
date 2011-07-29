@@ -42,8 +42,8 @@ class BtreeTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function setUp($method) {
-		parent::setUp($method);
+	public function setUp() {
+		parent::setUp();
 		$this->Model = new BArticle();
 		$this->Behavior = $this->Model->Behaviors->Btree;
 	}
@@ -54,8 +54,8 @@ class BtreeTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function tearDown($method) {
-		parent::tearDown($method);
+	public function tearDown() {
+		parent::tearDown();
 		unset($this->Model, $this->Behavior);
 		ClassRegistry::flush();
 	}
@@ -144,4 +144,3 @@ class BtreeTest extends CakeTestCase {
 	}
 
 }
-?>

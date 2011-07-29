@@ -398,7 +398,6 @@ class ListBehavior extends ModelBehavior {
 	private function __bottomPositionInList($model, $except = null) {
 		extract($this->settings[$model->alias]);
 		$item = $this->__bottomItem($model, $except);
-
 		if (!empty($item) && isset($item[$model->alias][$positionColumn])) {
 			return $item[$model->alias][$positionColumn];
 		} else {
@@ -426,7 +425,7 @@ class ListBehavior extends ModelBehavior {
 		$options = array(
 			'conditions' => $conditions,
 			'order' => array($model->alias . '.' . $positionColumn => 'DESC'));
-		return $model->find('all', $options);
+		return $model->find('first', $options);
 	}
 
 /**

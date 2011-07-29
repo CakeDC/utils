@@ -120,15 +120,14 @@ class ListTest extends CakeTestCase {
 
 		// insert somewhere in the middle
 		$result = $this->UsersAddon->insertAt(2, 'useraddon-3');
-		$this->assertTrue($result);
+		$this->assertTrue(!empty($result));
 		$result = $this->UsersAddon->read('position', 'useraddon-3');
-		debug($this->UsersAddon->find('all'));
 		$this->assertEqual($result['UsersAddon']['position'], 2);
 
 		// insert at last position
 		$position = $this->UsersAddon->find('count');
 		$result = $this->UsersAddon->insertAt($position, 'useraddon-3');
-		$this->assertTrue($result);
+		$this->assertTrue(!empty($result));
 		$result = $this->UsersAddon->read('position', 'useraddon-3');
 		$this->assertEqual($result['UsersAddon']['position'], $position);
 	}
