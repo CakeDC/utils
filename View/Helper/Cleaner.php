@@ -384,8 +384,8 @@ class CleanerHelper extends AppHelper {
 				}
 			}
 			if ($vid) {
-				$this->Javascript->link('vipers-video-quicktags', false);
-				$this->Javascript->codeBlock('vvq_googlevideo("vvq_' . $vid . '", "325", "265", "' . $vid . '");', array('inline' => false), true);
+				$this->Html->script('vipers-video-quicktags', array('inline' => false));
+				$this->Html->scriptBlock('vvq_googlevideo("vvq_' . $vid . '", "325", "265", "' . $vid . '");', array('inline' => false), true);
 
 				$content = "<p id=\"vvq_$vid\">";
 				$content .= '<a href="http://video.google.com/videoplay?docid=' . $vid .'">';
@@ -408,8 +408,8 @@ class CleanerHelper extends AppHelper {
 				}
 			}
 			if ($vid) {
-				$this->Javascript->link('vipers-video-quicktags', false);
-				$this->Javascript->codeBlock('vvq_youtube("vvq_' . $vid . '", "325", "271", "' . $vid . '");', array('inline' => false), true);
+				$this->Html->script('vipers-video-quicktags', array('inline' => false));
+				$this->Html->scriptBlock('vvq_youtube("vvq_' . $vid . '", "325", "271", "' . $vid . '");', array('inline' => false), true);
 
 				$content = "<p id=\"vvq_$vid\">";
 				$content .= '<a href="http://www.youtube.com/watch?v=' . $vid . '">';

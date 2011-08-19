@@ -3,7 +3,7 @@ App::import('Core', 'Helper');
 App::import('Helper', 'AppHelper');
 App::import('Helper', 'Html');
 App::import('Helper', 'Utils.Cleaner');
-App::uses('View', 'View'); 
+App::uses('View', 'View');
 App::uses('Javascript', 'View'); 
 
 /**
@@ -18,11 +18,13 @@ class CleanerHelperTest extends CakeTestCase {
 		ClassRegistry::flush();
 		Router::reload();
 		$null = null;
-		$this->View = new View($null);
+		$this->View = new View(null);
 		$this->Helper = new Helper($this->View);
 		$this->Helper = new Helper($this->View);
 		$this->Cleaner = new CleanerHelper($this->View);
 		$this->Cleaner->Html = new HtmlHelper($this->View);
+		$this->Cleaner->Html->request = new CakeRequest(null, false);
+		$this->Cleaner->Html->request->webroot = '';
 	}
 
 	public function testClean() {
