@@ -556,4 +556,26 @@ class ListBehavior extends ModelBehavior {
 		}
 		return $result;
 	}
+	
+/**
+ * Repair list method
+ *
+ * @param object AppModel
+ * @return boolean
+ */
+	public function fixListOrder($model) {
+		extract($this->settings[$model->alias]);
+		$data = $model->find('all', array(
+			'conditions' => $this->__scopeCondition($model), 
+			'order' => array($model->alias . '.' . $positionColumn => 'asc'), 
+			'recursive' => -1));
+		$position = 1;
+		foreach ($data as $row) {
+			$model->id = $row[$model->alias][$model->primaryKey];
+			$model->saveField($positionColumn, $position, array(
+			'validate' => $validate,
+			'callbacks' => $callbacks));
+			$position += 1;
+		}
+	}
 }
