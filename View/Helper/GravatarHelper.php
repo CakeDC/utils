@@ -66,7 +66,7 @@ class GravatarHelper extends AppHelper {
  * Constructor
  *
  */
-	public function __construct($settings = array()) {
+	public function __construct(View $View, $settings = array()) {
 		if (!is_array($settings)) {
 			$settings = array();
 		}
@@ -74,6 +74,8 @@ class GravatarHelper extends AppHelper {
 
 		// Default the secure option to match the current URL.
 		$this->__default['secure'] = env('HTTPS');
+		
+		parent::__construct($View, $settings);
 	}
 
 /**
