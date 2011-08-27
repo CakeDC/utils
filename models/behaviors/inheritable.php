@@ -194,8 +194,8 @@ class InheritableBehavior extends ModelBehavior {
  */
 	protected function _singleTableBeforeFind(Model $Model, $query) {
 		extract($this->settings[$Model->alias]);
-
-		if (isset($Model->_schema[$inheritanceField]) && $Model->alias != $Model->parent->alias) {
+		$_schema = $Model->schema();
+		if (isset($_schema[$inheritanceField]) && $Model->alias != $Model->parent->alias) {
 			$field = $Model->alias. '.' . $inheritanceField;
 
 			if (!isset($query['conditions'])) {
