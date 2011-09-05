@@ -101,15 +101,16 @@ class SluggableBehavior extends ModelBehavior {
 			$Model->whitelist[] = $settings['slug'];
 		}
 		$Model->data[$Model->alias][$settings['slug']] = $slug;
+		return true;
 	}
 
 /**
- * Searche if the slug already exists and if yes increments it
+ * Search if the slug already exists and if yes increments it
  *
  * @param object $Model
  * @param string the raw slug
  * @return string The incremented unique slug
- * 
+ *
  */
 	public function makeUniqueSlug(Model $Model, $slug = '') {
 		$settings = $this->settings[$Model->alias];
