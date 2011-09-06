@@ -73,7 +73,7 @@ class SluggableBehavior extends ModelBehavior {
 		$settings = $this->settings[$Model->alias];
 		if (is_string($this->settings[$Model->alias]['trigger'])) {
 			if ($Model->{$this->settings[$Model->alias]['trigger']} != true) {
-				return;
+				return true;
 			}
 		}
 
