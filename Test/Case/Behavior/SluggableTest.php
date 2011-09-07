@@ -168,8 +168,8 @@ class SluggableTest extends CakeTestCase {
  * @access public
  */
 	public function testUpdatingSlug() {
-		$this->Model->Behaviors->detach('Sluggable');
-		$this->Model->Behaviors->attach('Sluggable', array(
+		$this->Model->Behaviors->detach('SluggableTest');
+		$this->Model->Behaviors->attach('SluggableTest', array(
 			'update' => true));
 
 		$this->Model->create(array('title' => "Andersons Fairy Tales"));
