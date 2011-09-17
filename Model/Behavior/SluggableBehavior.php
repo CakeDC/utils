@@ -9,7 +9,8 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::import('I18n', 'Multibyte');
+
+App::uses('Multibyte', 'I18n');
 
 /**
  * Utils Plugin
@@ -114,7 +115,7 @@ class SluggableBehavior extends ModelBehavior {
  * @param object $Model
  * @param string the raw slug
  * @return string The incremented unique slug
- * 
+ *
  */
 	public function makeUniqueSlug(Model $Model, $slug = '') {
 		$settings = $this->settings[$Model->alias];
