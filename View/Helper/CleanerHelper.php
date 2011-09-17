@@ -71,18 +71,20 @@ class CleanerHelper extends AppHelper {
  * Constructor
  *
  */
-	public function __construct($View = null) {
+	public function __construct(View $View, $settings = array()) {
 		$this->View = $View;
+
 		foreach ($this->config['full'] as $key => $value) {
 			$this->{$key} = $value;
 		}
-		return parent::__construct($this->View);
+
+		return parent::__construct($View, $settings);
 	}
 
 /**
  * Configuration of cleaner. possible to call separately or from clean method
  *
- * @param string $options 
+ * @param string $options
  * @return void
  */
 	public function configure($options) {
@@ -137,7 +139,7 @@ class CleanerHelper extends AppHelper {
 /**
  * Remove all unwanted tags and attributes.
  *
- * @param string $cleaned 
+ * @param string $cleaned
  * @return void
  */
 	function __remove($cleaned) {
@@ -151,7 +153,7 @@ class CleanerHelper extends AppHelper {
 /**
  * Strip a string of certain tags
  *
- * @param string $cleaned 
+ * @param string $cleaned
  * @return void
  */
 	function __tagsFilter($cleaned) {
@@ -246,8 +248,8 @@ class CleanerHelper extends AppHelper {
 /**
  * Strip a tag of certain attributes
  *
- * @param string $attributeSet 
- * @param string $tag 
+ * @param string $attributeSet
+ * @param string $tag
  * @return void
  */
 	function __filterAttr(&$attributeSet, $tag) {
@@ -303,7 +305,7 @@ class CleanerHelper extends AppHelper {
 /**
  * Check pos
  *
- * @param string $attrval 
+ * @param string $attrval
  * @return void
  */
 	function __checkPos($attrval) {
@@ -318,9 +320,9 @@ class CleanerHelper extends AppHelper {
 /**
  * Filter external image links
  *
- * @param string $tag 
- * @param string $attribute 
- * @param string $attributeValue 
+ * @param string $tag
+ * @param string $attribute
+ * @param string $attributeValue
  * @return void
  */
 	function __postFilter($tag, $attribute, &$attributeValue) {
@@ -339,8 +341,8 @@ class CleanerHelper extends AppHelper {
 /**
  * Replave all image tags
  *
- * @param string $text 
- * @param boolean $showVideo 
+ * @param string $text
+ * @param boolean $showVideo
  * @return void
  */
 	function replaceAllImageTags($text, $showVideo = true) {
@@ -356,8 +358,8 @@ class CleanerHelper extends AppHelper {
 /**
  * Convert BBCode to Javascript for video embedding
  *
- * @param string $text 
- * @param boolean $show 
+ * @param string $text
+ * @param boolean $show
  * @return void
  */
 	function bbcode2js($text, $show = true) {
@@ -371,8 +373,8 @@ class CleanerHelper extends AppHelper {
 /**
  * BB 2 JS
  *
- * @param string $text 
- * @param boolean $show 
+ * @param string $text
+ * @param boolean $show
  * @return void
  */
 	function __bb2js($text, $show = true) {
