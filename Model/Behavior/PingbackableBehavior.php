@@ -9,8 +9,11 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::import('Core', 'HttpSocket');
-App::import('Core', 'Xml');
+App::uses('HttpSocket', 'Network/Http');
+App::uses('Xml', 'Utility');
+
+
+
 App::import('Lib', 'Xmlrpc.Xmlrpc');
 
 /**
