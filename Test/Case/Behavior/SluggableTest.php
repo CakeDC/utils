@@ -8,6 +8,7 @@ class SluggedArticle extends CakeTestModel {
 	public $useTable = 'articles';
 	public $actsAs = array('Utils.Sluggable');
 }
+
 /**
  * Slugged Article
  */
@@ -15,7 +16,7 @@ class SluggedCustomArticle extends CakeTestModel {
 	public $useTable = 'articles';
 	public $actsAs = array('Utils.Sluggable');
 
-	public function multibyteSlug($string = null, $separator = '_') {
+	function multibyteSlug($string = null, $separator = '_') {
 		return 'slug';
 	}
 }
@@ -83,6 +84,19 @@ class SluggableTest extends CakeTestCase {
 		$this->Model->saveField('body', 'Here goes the content.');
 		$result = $this->Model->read();
 		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article_part_2');
+	}
+
+/**
+ * Test saving a item
+ *
+ * @return void
+ */
+	public function testCustomMultibyteSlug() {
+		$this->ModelTwo->create(array('title' => 'Fifth Article'));
+		$this->ModelTwo->save();
+
+		$result = $this->ModelTwo->read();
+		$this->assertEqual($result['SluggedCustomArticle']['slug'], 'slug');
 	}
 
 /**
@@ -191,18 +205,4 @@ class SluggableTest extends CakeTestCase {
 		$result = $this->Model->read();
 		$this->assertEqual($result['SluggedArticle']['slug'], 'andersons_fairy_tales_ii');
 	}
-
-/**
- * Test saving a item
- *
- * @return void
- */
-	public function testCustomMultibyteSlug() {
-		$this->ModelTwo->create(array('title' => 'Fifth Article'));
-		$this->ModelTwo->save();
-
-		$result = $this->ModelTwo->read();
-		$this->assertEqual($result['SluggedCustomArticle']['slug'], 'slug');
-	}
-
 }
