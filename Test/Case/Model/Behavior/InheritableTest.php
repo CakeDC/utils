@@ -10,7 +10,9 @@
  * @author Cake Development Corporation (http://cakedc.com)
  * @license   http://www.opensource.org/licenses/mit-license.php The MIT License 
  */
-App::import('Core', array('AppModel', 'Model'));
+App::uses('AppModel', 'Model');
+App::uses('Model', 'Model');
+App::uses('InheritableBehavior', 'Utils.Model/Behavior');
 
 // STI Models
 class Content extends CakeTestModel {
@@ -147,7 +149,8 @@ class InheritableTest extends CakeTestCase {
 			'title' => 'monday morning train rush',
 			'body' => 'Bus transport break down around the city... ',
 			'permalink' => 'monday-morning-train-rush'));
-		$this->assertTrue($this->Article->save());
+		$result = $this->Article->save();
+		$this->assertTrue(Set::matches('/Article[title=/monday morning train rush/i]', $result));
 
 		$result = $this->Article->findByPermalink('monday-morning-train-rush');
 		$this->assertEqual(count($result), 1);
@@ -158,13 +161,14 @@ class InheritableTest extends CakeTestCase {
 			'title' => 'profile page',
 			'body' => 'We have a profile page here',
 			'permalink' => 'profile-page'));
-		$this->assertTrue($result);
+		$this->assertTrue(Set::matches('/Page[title=/profile page/i]', $result));
 
 		$result = $this->Page->find('all', array('conditions' => "Page.permalink='profile-page'"));
 		$this->assertTrue(Set::matches('/Page[body=/profile page/]', $result));
 
 		// beforeFind shouldn't invoke here
-		$this->assertTrue($this->Page->saveField('published', 'Y'));
+		$result = $this->Page->saveField('published', 'Y');
+		$this->assertTrue(Set::matches('/Page[published=/Y/i]', $result));
 	}
 	
 /**
@@ -219,8 +223,10 @@ class InheritableTest extends CakeTestCase {
 			'file_name' => 'bsd.bmp',
 			'file_size' => '653445',
 			'content_type' => 'image/bitmap'));
-		$this->assertTrue($this->Link->save());
-		$this->assertTrue($this->Image->save());
+		$result = $this->Link->save();
+		$this->assertTrue(Set::matches('/Link[title=/yahoo/i]', $result));
+		$result = $this->Image->save();
+		$this->assertTrue(Set::matches('/Image[title=/BSD logo/i]', $result));
 
 		$result = $this->Link->saveAll(array(
 			array('Link' => array(
@@ -260,7 +266,8 @@ class InheritableTest extends CakeTestCase {
 		$data['Link']['title'] = 'yahoo UK';
 		$data['Link']['url'] = 'http://yahoo.co.uk';
 		$this->Link->create($data);
-		$this->assertTrue($this->Link->save());
+		$result = $this->Link->save();
+		$this->assertTrue(Set::matches('/Link[title=/yahoo UK/i]', $result));
 		
 		$result = $this->Link->findById(11);
 		$this->assertEqual($this->Link->find('count'), 2);
@@ -351,8 +358,6 @@ class InheritableTest extends CakeTestCase {
  * @access private
  */
 	private function __assertMatches($pattern, $object, $message = '') {
-		return $this->assert(new TrueExpectation(), Set::matches($pattern, $object), $message);
+		return $this->assertTrue(Set::matches($pattern, $object), $message);
 	}
-
 }
-?>
