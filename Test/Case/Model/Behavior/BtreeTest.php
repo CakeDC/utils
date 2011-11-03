@@ -1,6 +1,5 @@
 <?php
-App::import('Behavior', 'Utils.Btree');
-
+App::uses('BtreeBehavior', 'Utils.Model/Behavior');
 class BArticle extends CakeTestModel {
 	public $useTable = 'b_articles';
 	public $actsAs = array('Utils.Btree');
