@@ -1,4 +1,5 @@
 <?php
+App::uses('ListBehavior', 'Utils.Model/Behavior');
 class UsersAddon extends CakeTestModel {
 /**
  * Name
