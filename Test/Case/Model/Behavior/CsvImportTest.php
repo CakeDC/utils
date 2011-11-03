@@ -1,5 +1,5 @@
 <?php
-App::import('Behavior', 'Utils.CsvImport');
+App::uses('CsvImportBehavior', 'Utils.Model/Behavior');
 
 /**
  * Content Test Model
@@ -82,7 +82,7 @@ class CsvImportTest extends CakeTestCase {
 	public function testImportCSV() {
 		$this->Content->Behaviors->attach('Utils.CsvImport');
 		$path = App::pluginPath('Utils');
-		$result = $this->Content->importCsv($path . 'tests' . DS . 'tmp' . DS . 'test1.csv');
+		$result = $this->Content->importCSV($path . 'Test' . DS . 'tmp' . DS . 'test1.csv');
 		$this->assertTrue($result);
 
 		$records = $this->Content->find('all', array('order' => 'created DESC', 'limit' => 2));
@@ -103,7 +103,7 @@ class CsvImportTest extends CakeTestCase {
 		$this->Content = new ContentCallback();
 		$this->Content->Behaviors->attach('Utils.CsvImport');
 		$path = App::pluginPath('Utils');
-		$result = $this->Content->importCsv($path . 'tests' . DS . 'tmp' . DS . 'test1.csv');
+		$result = $this->Content->importCSV($path . 'Test' . DS . 'tmp' . DS . 'test1.csv');
 		$this->assertTrue($result);
 
 		$records = $this->Content->find('all', array('order' => 'created DESC', 'limit' => 2));
@@ -121,7 +121,7 @@ class CsvImportTest extends CakeTestCase {
 		$this->Content->Behaviors->attach('Utils.CsvImport');
 		$path = App::pluginPath('Utils');
 		$fixed = array('Content' => array('parent_id' => 10));
-		$result = $this->Content->importCsv($path . 'tests' . DS . 'tmp' . DS . 'test1.csv', $fixed);
+		$result = $this->Content->importCSV($path . 'Test' . DS . 'tmp' . DS . 'test1.csv', $fixed);
 		$this->assertTrue($result);
 
 		$records = $this->Content->find('all', array('order' => 'created DESC', 'limit' => 2));
@@ -141,12 +141,12 @@ class CsvImportTest extends CakeTestCase {
 		$this->Content->validate = array(
 			'title' => array(
 				'long' => array('rule' => array('minLength', 100))));
-		$result = $this->Content->importCsv($path . 'tests' . DS . 'tmp' . DS . 'test1.csv');
+		$result = $this->Content->importCSV($path . 'Test' . DS . 'tmp' . DS . 'test1.csv');
 		$this->assertFalse($result);
 		$errors = $this->Content->getImportErrors();
 		$expected = array(
-			array('validation' => array('title' => 'long')),
-			array('validation' => array('title' => 'long'))
+			array('validation' => array('title' => array('long'))),
+			array('validation' => array('title' => array('long')))
 		);
 		$this->assertEqual($errors, $expected);
 	}
@@ -164,12 +164,12 @@ class CsvImportTest extends CakeTestCase {
 			'type' => array(
 				'list' => array('rule' => array('inList', array('Article')))));
 				
-		$result = $this->Content->importCsv($path . 'tests' . DS . 'tmp' . DS . 'test1.csv', array(), true);
+		$result = $this->Content->importCSV($path . 'Test' . DS . 'tmp' . DS . 'test1.csv', array(), true);
 		$this->assertEqual($result, array(0)); // The numbers of the rows that were saved
 
 		$errors = $this->Content->getImportErrors();
 		$expected = array(
-			1 => array('validation' => array('type' => 'list')) // the index 1 indicates the number of the failing row
+			1 => array('validation' => array('type' => array('list'))) // the index 1 indicates the number of the failing row
 		);
 		$this->assertEqual($errors, $expected);
 	}
@@ -181,17 +181,18 @@ class CsvImportTest extends CakeTestCase {
  * @return void
  */
 	public function testListeners() {
-		Mock::generate('ImportObserver');
-		$mock = new MockImportObserver;
+		$mock = $this->getMock('ImportObserver');
 		$path = App::pluginPath('Utils');
 		$this->Content->Behaviors->attach('Utils.CsvImport');
 		$this->Content->attachImportListener($mock);
 		$this->Content->attachImportListener(array(&$mock, 'listen'));
-		$mock->expectCallCount('onImportRow', 2);
-		$mock->expectCallCount('listen', 2);
-		$result = $this->Content->importCsv($path . 'tests' . DS . 'tmp' . DS . 'test1.csv');
+		$mock->expects($this->any())
+			->method('onImportRow')
+			->will($this->returnValue(2));
+		$mock->expects($this->any())
+			->method('listen')
+			->will($this->returnValue(2));
+		$result = $this->Content->importCSV($path . 'Test' . DS . 'tmp' . DS . 'test1.csv');
 		$this->assertTrue($result);
 	}
-
 }
-?>
