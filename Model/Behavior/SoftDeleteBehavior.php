@@ -187,7 +187,7 @@ class SoftDeleteBehavior extends ModelBehavior {
  */
 	public function softDelete(&$model, $active) {
 		if (is_null($active)) {
-			return ife(isset($this->runtime[$model->alias]), @$this->runtime[$model->alias], null);
+			return !empty(isset($this->runtime[$model->alias])) ? @$this->runtime[$model->alias] : null;
 		}
 
 
@@ -297,7 +297,7 @@ class SoftDeleteBehavior extends ModelBehavior {
 				}
 
 				foreach ($model->{$parentModel}->{$assocType} as $assoc => $assocConfig) {
-					$modelName = ife(empty($assocConfig['className']), $assoc, @$assocConfig['className']);
+					$modelName = !empty(empty($assocConfig['className'])) ? $assoc : @$assocConfig['className'];
 					if ($model->alias != $modelName) {
 						continue;
 					}

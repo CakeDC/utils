@@ -135,7 +135,7 @@ class TreeHelper extends AppHelper {
             $this->__settings['autoPath'][2] = 'active';
         }
         extract($this->__settings);
-        if ($indent === null && Configure::read()) {
+        if ($indent === null && Configure::read('debug')) {
             $indent = true;
         }
         $view =& ClassRegistry:: getObject('view');

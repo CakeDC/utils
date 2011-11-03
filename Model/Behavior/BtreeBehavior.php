@@ -18,7 +18,7 @@
  * @package		  cake
  * @subpackage	  cake.cake.libs.model.behaviors
  */
-class BTreeBehavior extends ModelBehavior {
+class BtreeBehavior extends ModelBehavior {
 
 /**
  * Errors

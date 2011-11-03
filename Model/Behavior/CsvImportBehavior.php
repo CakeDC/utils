@@ -139,7 +139,7 @@ class CsvImportBehavior extends ModelBehavior {
 
 			// save the row
 			if (!$error && !$Model->saveAll($data, array('validate' => false,'atomic' => false))) {
-				$this->errors[$Model->alias][$i]['save'] = sprintf(__d('utils', '%s for Row %d failed to save.', true), $Model->alias, $i);
+				$this->errors[$Model->alias][$i]['save'] = sprintf(__d('utils', '%s for Row %d failed to save.'), $Model->alias, $i);
 				$error = true;
 				$this->_notify($Model, 'onImportError', $this->errors[$Model->alias][$i]);
 			}
