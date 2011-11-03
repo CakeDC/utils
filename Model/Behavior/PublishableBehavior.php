@@ -56,6 +56,9 @@ class PublishableBehavior extends ModelBehavior {
 				$id = $Model->id;
 			}
 
+			$onFind = $this->__settings[$Model->alias]['find'];
+			$this->enablePublishable($Model, false);
+
 			$data = array($Model->alias => array(
 				$Model->primaryKey => $id,
 				$this->__settings[$Model->alias]['field'] => true
@@ -63,17 +66,14 @@ class PublishableBehavior extends ModelBehavior {
 
 			$Model->id = $id;
 			if (isset($this->__settings[$Model->alias]['field_date']) && $Model->hasField($this->__settings[$Model->alias]['field_date'])) {
-				if (!$Model->exists()) {
-					$data[$Model->alias][$this->__settings[$Model->alias]['field_date']] = date('Y-m-d');
+				if (!$Model->field($this->__settings[$Model->alias]['field_date'])) {
+					$data[$Model->alias][$this->__settings[$Model->alias]['field_date']] = date('Y-m-d H:i:s');
 				}
 			}
 
 			if (!empty($attributes)) {
 				$data[$Model->alias] = array_merge($data[$Model->alias], $attributes);
 			}
-
-			$onFind = $this->__settings[$Model->alias]['find'];
-			$this->enablePublishable($Model, false);
 
 			$result = $Model->save($data, false, array_keys($data[$Model->alias]));
 			$this->enablePublishable($Model, 'find', $onFind);
