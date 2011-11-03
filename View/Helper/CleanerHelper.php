@@ -347,7 +347,7 @@ class CleanerHelper extends AppHelper {
 		// while (preg_match('/src="(\/media\/display\/)([0-9a-z-]{36})"/', $text, $matches)) {
 		// 		$name = 'src="' . $matches[1] . $matches[2] . '"';
 		// 		$newName = 'src="' . $matches[1] . 'thumb/' . $matches[2] . '"';
-		// 		$text = r($name, $newName, $text);
+		// 		$text = str_replace($name, $newName, $text);
 		// 	}
 		return $text;
 	}

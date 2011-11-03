@@ -73,16 +73,16 @@ class SluggableBehavior extends ModelBehavior {
 		$settings = $this->settings[$Model->alias];
 		if (is_string($this->settings[$Model->alias]['trigger'])) {
 			if ($Model->{$this->settings[$Model->alias]['trigger']} != true) {
-				return true;
+				return;
 			}
 		}
 
 		if (empty($Model->data[$Model->alias])) {
-			return true;
+			return;
 		} else if (empty($Model->data[$Model->alias][$this->settings[$Model->alias]['label']])) {
-			return true;
+			return;
 		} else if (!$this->settings[$Model->alias]['update'] && !empty($Model->id) && !is_string($this->settings[$Model->alias]['trigger'])) {
-			return true;
+			return;
 		}
 
 		$slug = $Model->data[$Model->alias][$settings['label']];
@@ -101,16 +101,15 @@ class SluggableBehavior extends ModelBehavior {
 			$Model->whitelist[] = $settings['slug'];
 		}
 		$Model->data[$Model->alias][$settings['slug']] = $slug;
-		return true;
 	}
 
 /**
- * Search if the slug already exists and if yes increments it
+ * Searche if the slug already exists and if yes increments it
  *
  * @param object $Model
  * @param string the raw slug
  * @return string The incremented unique slug
- *
+ * 
  */
 	public function makeUniqueSlug(Model $Model, $slug = '') {
 		$settings = $this->settings[$Model->alias];
