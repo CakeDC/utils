@@ -8,6 +8,7 @@
  * @copyright Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
+App::uses('AppHelper', 'View/Helper');
 
 /**
  * Utils Plugin
@@ -71,11 +72,11 @@ class CleanerHelper extends AppHelper {
  * Constructor
  *
  */
-	public function __construct() {
+	public function __construct(View $View, $settings = array()) {
 		foreach ($this->config['full'] as $key => $value) {
 			$this->{$key} = $value;
 		}
-		return parent::__construct();
+		return parent::__construct($View, $settings);
 	}
 
 /**
