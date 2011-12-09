@@ -8,8 +8,9 @@
  * @subpackage goodies.tests.cases.helpers
  *
  */
-App::import('Helper', array('Html', 'Utils.Gravatar'));
-App::import('Core', 'View', false);
+App::uses('View', 'View');
+App::uses('GravatarHelper', 'Utils.View/Helper');
+App::uses('HtmlHelper', 'View/Helper');
 
 /**
  * GravatarHelper Test
@@ -33,7 +34,7 @@ class GravatarHelperTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function setUp() {
+	public function startTest() {
 		$null = null;
 		$this->View = new View($null);
 		$this->Gravatar = new GravatarHelper($this->View);
@@ -46,7 +47,7 @@ class GravatarHelperTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function tearDown() {
+	public function endTest() {
 		unset($this->Gravatar);
 	}
 
