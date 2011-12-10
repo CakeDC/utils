@@ -1,5 +1,5 @@
 <?php
-App::import('Behavior', 'Utils.Lookupable');
+App::uses('LookupableBehavior', 'Utils.Model/Behavior');
 
 /**
  * Post Test Model

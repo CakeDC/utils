@@ -1,5 +1,6 @@
 <?php
-App::import('Behavior', 'TinySluggable');
+
+App::uses('TinySluggableBehavior', 'Utils.Model/Behavior');
 
 /**
  * TinySluggableArticle model used for tests

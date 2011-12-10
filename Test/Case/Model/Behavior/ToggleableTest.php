@@ -1,5 +1,5 @@
 <?php
-App::import('Behavior', 'Utils.Toggleable');
+App::uses('ToggleableBehavior', 'Utils.Model/Behavior');
 
 /**
  * Post Test Model

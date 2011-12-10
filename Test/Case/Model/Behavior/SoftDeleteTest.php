@@ -9,7 +9,9 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::import('Behavior', 'Utils.SoftDelete');
+App::uses('Model', 'Model');
+App::uses('Behavior', 'Model');
+App::uses('SoftDeleteBehavior', 'Utils.Model/Behavior');
 
 /**
  * SoftDeleteTestBehavior
