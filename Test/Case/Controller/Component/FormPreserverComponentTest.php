@@ -1,6 +1,8 @@
 <?php
-App::import('Controller', 'Controller', false);
-App::import('Component', array('Utils.FormPreserver', 'Session', 'Auth'));
+App::uses('Controller', 'Controller');
+App::uses('AuthComponent', 'Controller/Component');
+App::uses('SessionComponent', 'Controller/Component');
+App::uses('FormPreserverComponent', 'Utils.Controller/Component');
 
 class Article extends CakeTestModel {
 /**
@@ -62,7 +64,7 @@ class FormPreserverComponentTest extends CakeTestCase {
 			'pass' => array(),
 			'url' => array());
 		$this->Controller->modelClass = 'Article';
-		$this->Controller->Component->init($this->Controller);
+		$this->Controller->Component = new FormPreserverComponent;
 		$this->Controller->Component->initialize($this->Controller);
 	}
 

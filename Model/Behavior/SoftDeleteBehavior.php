@@ -8,7 +8,7 @@
  * @copyright Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
+App::uses('ModelBehavior', 'Model');
 /**
  * Utils Plugin
  *
@@ -187,7 +187,7 @@ class SoftDeleteBehavior extends ModelBehavior {
  */
 	public function softDelete(&$model, $active) {
 		if (is_null($active)) {
-			return !empty(isset($this->runtime[$model->alias])) ? @$this->runtime[$model->alias] : null;
+			return !empty($this->runtime[$model->alias]) ? @$this->runtime[$model->alias] : null;
 		}
 
 
@@ -297,7 +297,7 @@ class SoftDeleteBehavior extends ModelBehavior {
 				}
 
 				foreach ($model->{$parentModel}->{$assocType} as $assoc => $assocConfig) {
-					$modelName = !empty(empty($assocConfig['className'])) ? $assoc : @$assocConfig['className'];
+					$modelName = !empty($assocConfig['className']) ? $assoc : @$assocConfig['className'];
 					if ($model->alias != $modelName) {
 						continue;
 					}
