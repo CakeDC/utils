@@ -1,6 +1,7 @@
 <?php
-App::import('Controller', 'Controller', false);
-App::import('Component', 'Utils.Archive');
+App::uses('Controller', 'Controller');
+App::uses('PrgComponent', 'Utils.Controller/Component');
+
 
 class Article extends CakeTestModel {
 /**
@@ -62,9 +63,9 @@ class PrgComponentTest extends CakeTestCase {
 			'pass' => array(),
 			'url' => array());
 		$this->Controller->modelClass = 'Article';
-		$this->Controller->Component->init($this->Controller);
-		$this->Controller->Component->initialize($this->Controller);
-		$this->Controller->Archive->startup($this->Controller);
+		$this->Controller->Prg = new PrgComponent;
+		$this->Controller->Prg->initialize($this->Controller);
+		$this->Controller->Prg->startup($this->Controller);
 	}
 
 /**
@@ -76,20 +77,6 @@ class PrgComponentTest extends CakeTestCase {
 	function endTest() {
 		unset($this->Controller);
 		ClassRegistry::flush();
-	}
-
-/**
- * testArchiveLinks
- *
- * @access public
- * @return void
- */
-	public function testArchiveLinks() {
-		$result = $this->Controller->Archive->archiveLinks();
-		$this->assertEqual($result[0], array(
-			'year' => 2007,
-			'month' => 03,
-			'count' => 3));
 	}
 
 }
