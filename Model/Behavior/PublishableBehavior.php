@@ -17,6 +17,7 @@
  * @package utils
  * @subpackage utils.models.behaviors
  */
+App::uses('ModelBehavior', 'Model');
 class PublishableBehavior extends ModelBehavior {
 /**
  * Contain settings indexed by model name.
