@@ -5,7 +5,7 @@ class ContentFixture extends CakeTestFixture {
     
     var $fields = array(
         'id' => array('type' => 'integer', 'key' => 'primary'),
-        'user_id' => array('type' => 'integer', 'null' => false),
+        'user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
         'title' => array('type' => 'string', 'null' => false),
         'body' => 'text',
         'published' => array('type' => 'string', 'length' => 1, 'default' => 'N'),
