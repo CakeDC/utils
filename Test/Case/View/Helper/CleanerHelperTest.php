@@ -8,7 +8,7 @@
  * @subpackage goodies.tests.cases.helpers
  *
  */
-App::uses('GravatarHelper', 'Utils.View/Helper');
+App::uses('CleanerHelper', 'Utils.View/Helper');
 App::uses('HtmlHelper', 'View/Helper');
 App::uses('View', 'View');
 
@@ -18,7 +18,7 @@ App::uses('View', 'View');
  * @package goodies
  * @subpackage goodies.test.cases.views.helpers
  */
-class GravatarHelperTest extends CakeTestCase {
+class CleanerHelperTest extends CakeTestCase {
 
 /**
  * Gravatar helper
@@ -26,7 +26,7 @@ class GravatarHelperTest extends CakeTestCase {
  * @var GravatarHelper
  * @access public
  */
-	public $Gravatar = null;
+	public $Cleaner = null;
 
 /**
  * Start Test
@@ -37,8 +37,8 @@ class GravatarHelperTest extends CakeTestCase {
 	public function setUp() {
 		$null = null;
 		$this->View = new View($null);
-		$this->Gravatar = new GravatarHelper($this->View);
-		$this->Gravatar->Html = new HtmlHelper($this->View);
+		$this->Cleaner = new CleanerHelper($this->View);
+		$this->Cleaner->Html = new HtmlHelper($this->View);
 	}
 
 /**
@@ -48,151 +48,160 @@ class GravatarHelperTest extends CakeTestCase {
  * @access public
  */
 	public function tearDown() {
-		unset($this->Gravatar);
+		unset($this->Cleaner);
+	}
+	function testClean() {
+		$tagsArray = array('br', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'dl'	, 'dd', 'dt', 'a', 'img', 'i', 'u', 'b');
+		$attributesArray = array('src', 'href', 'title');
+		$replaceImgThumb = false;
+		$this->Cleaner->configure(compact('tagsArray', 'attributesArray', 'replaceImgThumb'));
+
+		$result = $this->Cleaner->clean('<p><img src="/bla/bla"></p> <iframe>data</iframe> <i>data</i>');
+		$this->assertEqual($result, '<p><img src="/bla/bla" /></p> data <i>data</i>');
+
+		$result = $this->Cleaner->clean('<body>data</body></div></div></div>');
+		$this->assertEqual($result, 'data');
+
+		$result = $this->Cleaner->clean('<i>data</i><div class="test"></div>');
+		$this->assertEqual($result, '<i>data</i>');
+
+		$result = $this->Cleaner->clean('<b><i>data</i><div class="test"></b>');
+		$this->assertEqual($result, '<b><i>data</i></b>');
+
+		$result = $this->Cleaner->clean('<p style="blink">data</p>');
+		$this->assertEqual($result, '<p>data</p>');
+
+		$result = $this->Cleaner->clean('<a href="#" onclick="javascr">data</a>');
+		$this->assertEqual($result, '<a href="#">data</a>');
+
+		$result = $this->Cleaner->clean('<img src="www.example.com/img.jpg" />data');
+		$this->assertEqual($result, 'data');
+
+		$result = $this->Cleaner->clean('<img src="/media/display/47ce0324-2238-40ec-b68a-a7994a35e6b2" />data');
+		$this->assertEqual($result, '<img src="/media/display/47ce0324-2238-40ec-b68a-a7994a35e6b2" />data');
+
+		$replaceImgThumb = true;
+		$settings = compact('tagsArray', 'attributesArray', 'replaceImgThumb');
+		$result = $this->Cleaner->clean('<img src="/media/display/47ce0324-2238-40ec-b68a-a7994a35e6b2" />data', $settings);
+		$this->assertEqual($result, '<img src="/media/display/thumb/47ce0324-2238-40ec-b68a-a7994a35e6b2" />data');
+
+	}
+	function _testImgThumb() {
+		$tagsArray = array('br', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'dl', 'dd', 'dt', 'a', 'img', 'i', 'u', 'b');
+		$attributesArray = array('src', 'href', 'title');
+		$replaceImgThumb = false;
+		$settings = compact('tagsArray', 'attributesArray', 'replaceImgThumb');
+		$result = $this->Cleaner->replaceAllImageTags('<img src="/media/display/47ce0324-2238-40ec-b68a-a7994a35e6b2" />data');
+		$this->assertEqual($result, '<img src="/media/display/thumb/47ce0324-2238-40ec-b68a-a7994a35e6b2" />data');
+		$result = $this->Cleaner->replaceAllImageTags('<img src="/media/display/47ce0324-2238-40ec-b68a-a7994a35e6b2" /><img src="/media/display/47ce0324-2238-40ec-b68a-a7994a35e6b2" /><img src="/media/display/47ce0324-2238-40ec-b68a-a7994a35e6b2" />data');
+		$this->assertEqual($result, '<img src="/media/display/thumb/47ce0324-2238-40ec-b68a-a7994a35e6b2" /><img src="/media/display/thumb/47ce0324-2238-40ec-b68a-a7994a35e6b2" /><img src="/media/display/thumb/47ce0324-2238-40ec-b68a-a7994a35e6b2" />data');
+		$result = $this->Cleaner->replaceAllImageTags('<img src="/media/display/47ce0324-2237-40ec-b68a-a7994a35e6b2" /><img src="/media/display/47ce0324-2238-40ec-b68a-a7994a35e6b2" /><img src="/media/display/47ce0324-2239-40ec-b68a-a7994a35e6b2" />data');
+		$this->assertEqual($result, '<img src="/media/display/thumb/47ce0324-2237-40ec-b68a-a7994a35e6b2" /><img src="/media/display/thumb/47ce0324-2238-40ec-b68a-a7994a35e6b2" /><img src="/media/display/thumb/47ce0324-2239-40ec-b68a-a7994a35e6b2" />data');
+
 	}
 
-/**
- * testBaseUrlGeneration
- *
- * @return void
- * @access public
- */
-	public function testBaseUrlGeneration() {
-		App::uses('Security', 'Utility');
-		$expected = 'http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
-		$result = $this->Gravatar->url('example@gravatar.com', array('ext' => false, 'default' => 'wavatar'));
-		list($url, $params) = explode('?', $result);
-		$this->assertEqual($expected, $url);
-	}
+	function testBbcode2js() {
+		$result = $this->Cleaner->bbcode2js('[googlevideo]http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays[/googlevideo]');
+		$this->assertEqual($result, '<p id="vvq_S1IjqhLFv5bl07AWays"><a href="http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays">http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays</a></p><br />');
 
-/**
- * testExtensions
- *
- * @return void
- * @access public
- */
-	public function testExtensions() {
-		$result = $this->Gravatar->url('example@gravatar.com', array('ext' => true, 'default' => 'wavatar'));
-		$this->assertPattern('/\.jpg(?:$|\?)/', $result);
-	}
+		$result = $this->Cleaner->bbcode2js('[googlevideo]http://video.google.com/videoplay?docid=e2HwisfuVokRIKTXCa7[/googlevideo]');
+		$this->assertEqual($result, '<p id="vvq_e2HwisfuVokRIKTXCa7"><a href="http://video.google.com/videoplay?docid=e2HwisfuVokRIKTXCa7">http://video.google.com/videoplay?docid=e2HwisfuVokRIKTXCa7</a></p><br />');
 
-/**
- * testRating
- *
- * @return void
- * @access public
- */
-	public function testRating() {
-		$result = $this->Gravatar->url('example@gravatar.com', array('ext' => true, 'default' => 'wavatar'));
-		$this->assertPattern('/\.jpg(?:$|\?)/', $result);
-	}
+		$result = $this->Cleaner->bbcode2js('[googlevideo]http://video.google.com/videoplay?docid=1Y1bxKUBOVAoCENNQTj[/googlevideo]');
+		$this->assertEqual($result, '<p id="vvq_1Y1bxKUBOVAoCENNQTj"><a href="http://video.google.com/videoplay?docid=1Y1bxKUBOVAoCENNQTj">http://video.google.com/videoplay?docid=1Y1bxKUBOVAoCENNQTj</a></p><br />');
 
-/**
- * testAlternateDefaultIcon
- *
- * @return void
- * @access public
- */
-	public function testAlternateDefaultIcon() {
-		$result = $this->Gravatar->url('example@gravatar.com', array('ext' => false, 'default' => 'wavatar'));
-		list($url, $params) = explode('?', $result);
-		$this->assertPattern('/default=wavatar/', $params);
-	}
+		$result = $this->Cleaner->bbcode2js('[googlevideo]http://video.google.com/videoplay?docid=atVdRpDa1q7KzZpxtfA[/googlevideo]');
+		$this->assertEqual($result, '<p id="vvq_atVdRpDa1q7KzZpxtfA"><a href="http://video.google.com/videoplay?docid=atVdRpDa1q7KzZpxtfA">http://video.google.com/videoplay?docid=atVdRpDa1q7KzZpxtfA</a></p><br />');
 
-/**
- * testAlternateDefaultIconCorrection
- *
- * @return void
- * @access public
- */
-	public function testAlternateDefaultIconCorrection() {
-		$result = $this->Gravatar->url('example@gravatar.com', array('ext' => false, 'default' => '12345'));
-		$this->assertPattern('/[^\?]+/', $result);
-	}
+		$result = $this->Cleaner->bbcode2js('[googlevideo]http://video.google.com/videoplay?docid=-4131010848345121656[/googlevideo]');
+		$this->assertEqual($result, '<p id="vvq_-4131010848345121656"><a href="http://video.google.com/videoplay?docid=-4131010848345121656">http://video.google.com/videoplay?docid=-4131010848345121656</a></p><br />');
 
-/**
- * testSize
- *
- * @return void
- * @access public
- */
-	public function testSize() {
-		$result = $this->Gravatar->url('example@gravatar.com', array('size' => '120'));
-		list($url, $params) = explode('?', $result);
-		$this->assertPattern('/size=120/', $params);
-	}
+		$result = $this->Cleaner->bbcode2js('[youtubevideo]http://www.youtube.com/watch?v=4O4x9J4PnSI[/youtubevideo]');
+		$this->assertEqual($result, '<p id="vvq_4O4x9J4PnSI"><a href="http://www.youtube.com/watch?v=4O4x9J4PnSI">http://www.youtube.com/watch?v=4O4x9J4PnSI</a></p><br />');
 
-/**
- * testImageTag
- *
- * @return void
- * @access public
- */
-	public function testImageTag() {
-		$expected = '<img src="http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5') . '" alt="" />';
-		$result = $this->Gravatar->image('example@gravatar.com', array('ext' => false));
-		$this->assertEqual($expected, $result);
+		$result = $this->Cleaner->bbcode2js('[youtubevideo]http://www.youtube.com/watch?v=QTsXlTKaFq0[/youtubevideo]');
+		$this->assertEqual($result, '<p id="vvq_QTsXlTKaFq0"><a href="http://www.youtube.com/watch?v=QTsXlTKaFq0">http://www.youtube.com/watch?v=QTsXlTKaFq0</a></p><br />');
 
-		$expected = '<img src="http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5') . '" alt="Gravatar" />';
-		$result = $this->Gravatar->image('example@gravatar.com', array('ext' => false, 'alt' => 'Gravatar'));
-		$this->assertEqual($expected, $result);
-	}
+		$result = $this->Cleaner->bbcode2js('[youtubevideo]http://www.youtube.com/watch?v=ebfxYAUBw-0[/youtubevideo]');
+		$this->assertEqual($result, '<p id="vvq_ebfxYAUBw-0"><a href="http://www.youtube.com/watch?v=ebfxYAUBw-0">http://www.youtube.com/watch?v=ebfxYAUBw-0</a></p><br />');
 
-/**
- * testDefaulting
- *
- * @return void
- * @access public
- */
-	public function testDefaulting() {
-		$result = $this->Gravatar->url('example@gravatar.com', array('default' => 'wavatar', 'size' => 'default'));
-		list($url, $params) = explode('?', $result);
-		$this->assertEqual($params, 'default=wavatar');
-	}
+		$result = $this->Cleaner->bbcode2js('[youtubevideo]http://www.youtube.com/watch?v=FSl742lZQe8[/youtubevideo]');
+		$this->assertEqual($result, '<p id="vvq_FSl742lZQe8"><a href="http://www.youtube.com/watch?v=FSl742lZQe8">http://www.youtube.com/watch?v=FSl742lZQe8</a></p><br />');
 
-/**
- * testNonSecureUrl
- *
- * @return void
- * @access public
- */
-	public function testNonSecureUrl() {
-		$_SERVER['HTTPS'] = false;
+		$result = $this->Cleaner->bbcode2js('[youtubevideo]http://www.youtube.com/watch?v=YPQ_N4imYVE[/youtubevideo]');
+		$this->assertEqual($result, '<p id="vvq_YPQ_N4imYVE"><a href="http://www.youtube.com/watch?v=YPQ_N4imYVE">http://www.youtube.com/watch?v=YPQ_N4imYVE</a></p><br />');
+
+		$result = $this->Cleaner->bbcode2js('[youtubevideo]http://www.youtube.com/watch?v=YPQ_N4imYVE[/youtubevideo]text[googlevideo]http://video.google.com/videoplay?docid=-4131010848345121656[/googlevideo]');
+		$this->assertEqual($result, '<p id="vvq_YPQ_N4imYVE"><a href="http://www.youtube.com/watch?v=YPQ_N4imYVE">http://www.youtube.com/watch?v=YPQ_N4imYVE</a></p><br />text<p id="vvq_-4131010848345121656"><a href="http://video.google.com/videoplay?docid=-4131010848345121656">http://video.google.com/videoplay?docid=-4131010848345121656</a></p><br />');
+
+		$result = $this->Cleaner->bbcode2js('[youtubevideo]http://www.youtube.com/watch?v=YPQ_N4imYVE[/youtubevideo]text[googlevideo]http://video.google.com/videoplay?docid=-4131010848345121656[/googlevideo]text[youtubevideo]http://www.youtube.com/watch?v=YPQ_N4imYVE[/youtubevideo]text[googlevideo]http://video.google.com/videoplay?docid=-4131010848345121656[/googlevideo]');
+		$this->assertEqual($result, '<p id="vvq_YPQ_N4imYVE"><a href="http://www.youtube.com/watch?v=YPQ_N4imYVE">http://www.youtube.com/watch?v=YPQ_N4imYVE</a></p><br />text<p id="vvq_-4131010848345121656"><a href="http://video.google.com/videoplay?docid=-4131010848345121656">http://video.google.com/videoplay?docid=-4131010848345121656</a></p><br />text<p id="vvq_YPQ_N4imYVE"><a href="http://www.youtube.com/watch?v=YPQ_N4imYVE">http://www.youtube.com/watch?v=YPQ_N4imYVE</a></p><br />text<p id="vvq_-4131010848345121656"><a href="http://video.google.com/videoplay?docid=-4131010848345121656">http://video.google.com/videoplay?docid=-4131010848345121656</a></p><br />');
+
+		$result = $this->Cleaner->bbcode2js('[youtubevideo]http://www.youtube.com/watch?v=YPQ_N4imYVE[/youtubevideo]text[googlevideo]http://video.google.com/videoplay?docid=-4131010848345121656[/googlevideo]text[youtubevideo]http://www.youtube.com/watch?v=YPQ_N4imYVE[/youtubevideo]text');
+		$this->assertEqual($result, '<p id="vvq_YPQ_N4imYVE"><a href="http://www.youtube.com/watch?v=YPQ_N4imYVE">http://www.youtube.com/watch?v=YPQ_N4imYVE</a></p><br />text<p id="vvq_-4131010848345121656"><a href="http://video.google.com/videoplay?docid=-4131010848345121656">http://video.google.com/videoplay?docid=-4131010848345121656</a></p><br />text<p id="vvq_YPQ_N4imYVE"><a href="http://www.youtube.com/watch?v=YPQ_N4imYVE">http://www.youtube.com/watch?v=YPQ_N4imYVE</a></p><br />text');
+
+		$result = $this->Cleaner->bbcode2js('[youtubevideo]http://www.youtube.com/watch?v=YPQ_N4imYVE[/youtubevideo][youtubevideo]http://www.youtube.com/watch?v=YPQ_N4imYVE[/youtubevideo]');
+		$this->assertEqual($result, '<p id="vvq_YPQ_N4imYVE"><a href="http://www.youtube.com/watch?v=YPQ_N4imYVE">http://www.youtube.com/watch?v=YPQ_N4imYVE</a></p><br /><p id="vvq_YPQ_N4imYVE"><a href="http://www.youtube.com/watch?v=YPQ_N4imYVE">http://www.youtube.com/watch?v=YPQ_N4imYVE</a></p><br />');
+
+		$result = $this->Cleaner->bbcode2js('[youtubevideo]http://www.youtube.com/watch?v=YPQ_N4imYVE[/youtubevideo]text[youtubevideo]http://www.youtube.com/watch?v=YPQ_N4imYVE[/youtubevideo]');
+		$this->assertEqual($result, '<p id="vvq_YPQ_N4imYVE"><a href="http://www.youtube.com/watch?v=YPQ_N4imYVE">http://www.youtube.com/watch?v=YPQ_N4imYVE</a></p><br />text<p id="vvq_YPQ_N4imYVE"><a href="http://www.youtube.com/watch?v=YPQ_N4imYVE">http://www.youtube.com/watch?v=YPQ_N4imYVE</a></p><br />');
 		
-		$expected = 'http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
-		$result = $this->Gravatar->url('example@gravatar.com', array('ext' => false));
-		$this->assertEqual($expected, $result);
+		$result = $this->Cleaner->bbcode2js('[googlevideo]http://video.google.com/videoplay?docid=atVdRpDa1q7KzZpxtfA[/googlevideo]', false);
+		$this->assertEqual($result, '');
+		
+		$result = $this->Cleaner->bbcode2js('[youtubevideo]http://www.youtube.com/watch?v=YPQ_N4imYVE[/youtubevideo]text[youtubevideo]http://www.youtube.com/watch?v=YPQ_N4imYVE[/youtubevideo]', false);
+		$this->assertEqual($result, 'text');
 
-		$expected = 'http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
-		$result = $this->Gravatar->url('example@gravatar.com', array('ext' => false, 'secure' => false));
-		$this->assertEqual($expected, $result);
+		$result = $this->Cleaner->bbcode2js('[breakvideo]http://embed.break.com/NTc3MjQ5[/breakvideo]');
+		$this->assertEqual($result, '<object width="464" height="392"><param name="movie" value="http://embed.break.com/NTc3MjQ5"></param><param name="allowScriptAccess" value="always"></param><embed src="http://embed.break.com/NTc3MjQ5" type="application/x-shockwave-flash" allowScriptAccess=always width="464" height="392"></embed></object>');
 
-		$_SERVER['HTTPS'] = true;
-		$expected = 'http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
-		$result = $this->Gravatar->url('example@gravatar.com', array('ext' => false, 'secure' => false));
-		$this->assertEqual($expected, $result);
+		$result = $this->Cleaner->bbcode2js('[breakvideo]http://embed.break.com/NTc3MjQ5[/breakvideo]', false);
+		$this->assertEqual($result, '');
+
+		$result = $this->Cleaner->bbcode2js('[breakvideo]http://embed.break.com/NTc3MjQ5[/breakvideo]text', false);
+		$this->assertEqual($result, 'text');
+
+		$result = $this->Cleaner->bbcode2js('[breakvideo]http://embed.break.com/NTc3MjQ5[/breakvideo]text[breakvideo]http://embed.break.com/NTc3MjQ5[/breakvideo]', false);
+		$this->assertEqual($result, 'text');
+
+		$result = $this->Cleaner->bbcode2js('[breakvideo]http://embed.break.com/NTc3MjQ5[/breakvideo]text');
+		$this->assertEqual($result, '<object width="464" height="392"><param name="movie" value="http://embed.break.com/NTc3MjQ5"></param><param name="allowScriptAccess" value="always"></param><embed src="http://embed.break.com/NTc3MjQ5" type="application/x-shockwave-flash" allowScriptAccess=always width="464" height="392"></embed></object>text');
 	}
 
-/**
- * testSecureUrl
- *
- * @return void
- * @access public
- */
-	public function testSecureUrl() {
-		$expected = 'https://secure.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
-		$result = $this->Gravatar->url('example@gravatar.com', array('ext' => false, 'secure' => true));
-		$this->assertEqual($expected, $result);
+	function testOverCleaning() {
+		$tagsArray = array('br', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'dl'	, 'dd', 'dt', 'a', 'img', 'i', 'u', 'b');
+		$attributesArray = array('src', 'href', 'title');
+		$replaceImgThumb = false;
+		$this->Cleaner->configure(compact('tagsArray', 'attributesArray', 'replaceImgThumb'));
 
-		$_SERVER['HTTPS'] = 'on';
-		$_SERVER['REQUEST_METHOD'] = 'Secure';
+		//$result = $this->Cleaner->clean('<p>4pm � 8pm Mountain of One</p>');
+		//$this->assertEqual($result, '<p>4pm � 8pm Mountain of One</p>');
 		
-		$expected = 'https://secure.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
-		$result = $this->Gravatar->url('example@gravatar.com', array('ext' => false));
-		$this->assertEqual($expected, $result);
+		$text = 'Single line spacing:
+ 
+Noon-3pm Trojan Soundsystem  (LIVE)
+3pm � 4pm Har Mar Superstar�s Desert Island Disco (pre rec)
+4pm � 8pm Mountain of One
+8pm � 11pm Shortwave Set (pre rec)
+11pm � Midnight Inflagranti (pre rec in the mix)
+Double line spacing:
+Noon-3pm Trojan Soundsystem  (LIVE)
+3pm � 4pm Har Mar Superstar�s Desert Island Disco (pre rec)
+4pm � 8pm Mountain of One
+8pm � 11pm Shortwave Set (pre rec)
+11pm � Midnight Inflagranti (pre rec in the mix)';
+		
+		$result = $this->Cleaner->clean('<p>4pm - 8pm Mountain of One</p>');
+		$this->assertEqual($result, '<p>4pm - 8pm Mountain of One</p>');
 
-		$expected = 'https://secure.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
-		$result = $this->Gravatar->url('example@gravatar.com', array('ext' => false, 'secure' => true));
-		$this->assertEqual($expected, $result);
+		$result = $this->Cleaner->clean($text);
+		$this->assertEqual($result, $text);
+
+		$text2 = '<p>Noon-3pm Trojan Soundsystem&nbsp; (LIVE)<br />3pm &ndash; 4pm Har Mar Superstar&rsquo;s Desert Island Disco (pre rec)<br />4pm &ndash; 8pm Mountain of One<br />8pm &ndash; 11pm Shortwave Set (pre rec)<br />11pm &ndash; Midnight Inflagranti (pre rec in the mix)<br />Double line spacing:<br />Noon-3pm Trojan Soundsystem&nbsp; (LIVE)<br />3pm &ndash; 4pm Har Mar Superstar&rsquo;s Desert Island Disco (pre rec)<br />4pm &ndash; 8pm Mountain of One<br />8pm &ndash; 11pm Shortwave Set (pre rec)</p>
+';
+		
+		$result = $this->Cleaner->clean($text2);
+		$this->assertEqual($result, $text2);
+		return ;
 	}
 }
