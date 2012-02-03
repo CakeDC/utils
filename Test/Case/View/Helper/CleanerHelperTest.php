@@ -1,26 +1,55 @@
 <?php
-App::import('Core', 'Helper', false);
-App::import('Helper', 'AppHelper', false);
-App::import('Core', 'View', false);
-App::import('Helper', 'Utils.Cleaner');
+/**
+ * CakePHP Gravatar Helper Test
+ *
+ * @copyright Copyright 2010, Graham Weldon
+ * @license http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @package goodies
+ * @subpackage goodies.tests.cases.helpers
+ *
+ */
+App::uses('CleanerHelper', 'Utils.View/Helper');
+App::uses('HtmlHelper', 'View/Helper');
+App::uses('View', 'View');
 
 /**
- * Short description for class.
+ * GravatarHelper Test
  *
- * @package		cake.tests
- * @subpackage	cake.tests.cases.libs
+ * @package goodies
+ * @subpackage goodies.test.cases.views.helpers
  */
 class CleanerHelperTest extends CakeTestCase {
 
-	function setUp() {
-		ClassRegistry::flush();
-		Router::reload();
+/**
+ * Gravatar helper
+ *
+ * @var GravatarHelper
+ * @access public
+ */
+	public $Cleaner = null;
+
+/**
+ * Start Test
+ *
+ * @return void
+ * @access public
+ */
+	public function setUp() {
 		$null = null;
 		$this->View = new View($null);
-		$this->Helper = new Helper($this->View);
 		$this->Cleaner = new CleanerHelper($this->View);
+		$this->Cleaner->Html = new HtmlHelper($this->View);
 	}
 
+/**
+ * End Test
+ *
+ * @return void
+ * @access public
+ */
+	public function tearDown() {
+		unset($this->Cleaner);
+	}
 	function testClean() {
 		$tagsArray = array('br', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'dl'	, 'dd', 'dt', 'a', 'img', 'i', 'u', 'b');
 		$attributesArray = array('src', 'href', 'title');
@@ -46,7 +75,7 @@ class CleanerHelperTest extends CakeTestCase {
 		$this->assertEqual($result, '<a href="#">data</a>');
 
 		$result = $this->Cleaner->clean('<img src="www.example.com/img.jpg" />data');
-		$this->assertEqual($result, '<img src="www.example.com/img.jpg" />data');
+		$this->assertEqual($result, 'data');
 
 		$result = $this->Cleaner->clean('<img src="/media/display/47ce0324-2238-40ec-b68a-a7994a35e6b2" />data');
 		$this->assertEqual($result, '<img src="/media/display/47ce0324-2238-40ec-b68a-a7994a35e6b2" />data');
@@ -175,11 +204,4 @@ Noon-3pm Trojan Soundsystem  (LIVE)
 		$this->assertEqual($result, $text2);
 		return ;
 	}
-	
-	
-	function tearDown() {
-		unset($this->Helper);
-		ClassRegistry::flush();
-	}
 }
-?>

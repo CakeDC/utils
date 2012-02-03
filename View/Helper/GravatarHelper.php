@@ -1,5 +1,8 @@
 <?php
-App::import(array('Security', 'Validation'));
+App::uses('Security', 'Utility');
+App::uses('Validation', 'Utility');
+App::uses('AppHelper', 'View/Helper');
+
 
 /**
  * CakePHP Gravatar Helper

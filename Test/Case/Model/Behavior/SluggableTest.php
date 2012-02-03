@@ -1,5 +1,5 @@
 <?php
-App::import('Behavior', 'Utils.Sluggable');
+App::uses('SluggableBehavior', 'Utils.Model/Behavior');
 
 /**
  * Sluggable Test Behavior

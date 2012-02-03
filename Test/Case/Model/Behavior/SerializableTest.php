@@ -1,6 +1,6 @@
 <?php
 
-App::import('Core', 'Model');
+App::uses('SerializableBehavior', 'Utils.Model/Behavior');
 
 class Session extends CakeTestModel {
 	public $actsAs = array('Utils.Serializable');

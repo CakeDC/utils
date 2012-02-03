@@ -10,6 +10,7 @@
  */
 
 App::import('Core', 'Multibyte');
+App::uses('ModelBehavior', 'Model');
 
 /**
  * Utils Plugin

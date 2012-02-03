@@ -8,6 +8,7 @@
  * @copyright Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
+App::uses('AppHelper', 'View/Helper');
 
 /**
  * Utils Plugin
@@ -24,7 +25,7 @@ class CleanerHelper extends AppHelper {
  *
  * @var array
  */
-	public $helpers = array('Javascript');
+	public $helpers = array('Html');
 
 /**
  * Replace image thumb
@@ -71,11 +72,11 @@ class CleanerHelper extends AppHelper {
  * Constructor
  *
  */
-	public function __construct() {
+	public function __construct(View $View, $settings = array()) {
 		foreach ($this->config['full'] as $key => $value) {
 			$this->{$key} = $value;
 		}
-		return parent::__construct();
+		return parent::__construct($View, $settings);
 	}
 
 /**
@@ -383,10 +384,11 @@ class CleanerHelper extends AppHelper {
 				}
 			}
 			if ($vid) {
-				$this->Javascript->link('vipers-video-quicktags', false);
-				$this->Javascript->codeBlock('vvq_googlevideo("vvq_' . $vid . '", "325", "265", "' . $vid . '");', array('inline' => false), true);
+				$content = '';
+				$content .= $this->Html->script('vipers-video-quicktags');
+				$content .= $this->Html->scriptBlock('vvq_googlevideo("vvq_' . $vid . '", "325", "265", "' . $vid . '");', array('inline' => false), true);
 
-				$content = "<p id=\"vvq_$vid\">";
+				$content .= "<p id=\"vvq_$vid\">";
 				$content .= '<a href="http://video.google.com/videoplay?docid=' . $vid .'">';
 				$content .= 'http://video.google.com/videoplay?docid=' . $vid . '</a></p><br />';
 				if (!$show) {
@@ -407,10 +409,11 @@ class CleanerHelper extends AppHelper {
 				}
 			}
 			if ($vid) {
-				$this->Javascript->link('vipers-video-quicktags', false);
-				$this->Javascript->codeBlock('vvq_youtube("vvq_' . $vid . '", "325", "271", "' . $vid . '");', array('inline' => false), true);
+				$content = '';
+				$this->Html->script('vipers-video-quicktags', false);
+				$this->Html->scriptBlock('vvq_youtube("vvq_' . $vid . '", "325", "271", "' . $vid . '");', array('inline' => false), true);
 
-				$content = "<p id=\"vvq_$vid\">";
+				$content .= "<p id=\"vvq_$vid\">";
 				$content .= '<a href="http://www.youtube.com/watch?v=' . $vid . '">';
 				$content .= 'http://www.youtube.com/watch?v=' . $vid . '</a></p><br />';
 				if (!$show) {

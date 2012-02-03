@@ -1,6 +1,6 @@
 <?php
-App::import('Controller', 'Controller', false);
-App::import('Component', 'Utils.Referer');
+App::uses('Controller', 'Controller');
+App::uses('RefererComponent', 'Utils.Controller/Component');
 
 class Article extends CakeTestModel {
 /**
@@ -58,7 +58,7 @@ class RefererComponentTest extends CakeTestCase {
 		$response = new CakeResponse(); 
 		$this->Controller = new ArticlesTestController($request, $response);
 		$this->Controller->modelClass = 'Article';
-		$this->Controller->Components->init($this->Controller);
+		$this->Controller->Referer = new RefererComponent;
 		$this->Controller->Referer->initialize($this->Controller, array());
 		
 		ClassRegistry::addObject('view', new View($this->Controller));  		
