@@ -53,7 +53,7 @@ class SluggableBehavior extends ModelBehavior {
 		'length' => 255,
 		'unique' => true,
 		'update' => false,
-		'trigger' => falsem,
+		'trigger' => false,
 		'lowercase' => true);
 
 /**
@@ -99,7 +99,6 @@ class SluggableBehavior extends ModelBehavior {
 			$slug = strtolower($slug);
 		}
 
-
 		if ($settings['unique'] === true || is_array($settings['unique'])) {
 			$slug = $this->makeUniqueSlug($Model, $slug);
 		}
@@ -124,12 +123,12 @@ class SluggableBehavior extends ModelBehavior {
 		$settings = $this->settings[$Model->alias];
 		$conditions = array();
 		if ($settings['unique'] === true) {
-			$conditions[$Model->alias . '.' . $settings['slug'] . ' LIKE'] = $slug . '%';
+			$conditions[] = $Model->alias . '.' . $settings['slug'] . ' RLIKE "(' . $slug . ')(-[0-9]+)?$"';
 		} else if (is_array($settings['unique'])) {
 			foreach ($settings['unique'] as $field) {
 				$conditions[$Model->alias . '.' . $field] = $Model->data[$Model->alias][$field];
 			}
-			$conditions[$Model->alias . '.' . $settings['slug'] . ' LIKE'] = $slug . '%';
+			$conditions[] = $Model->alias . '.' . $settings['slug'] . ' RLIKE "(' . $slug . ')(-[0-9]+)?$"';
 		}
 
 		if (!empty($Model->id)) {
@@ -147,7 +146,6 @@ class SluggableBehavior extends ModelBehavior {
 			$duplicates = Set::extract($duplicates, '{n}.' . $Model->alias . '.' . $settings['slug']);
 			$startSlug = $slug;
 			$index = 1;
-
 			while ($index > 0) {
 				if (!in_array($startSlug . $settings['separator'] . $index, $duplicates)) {
 					$slug = $startSlug . $settings['separator'] . $index;
