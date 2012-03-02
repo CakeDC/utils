@@ -53,7 +53,8 @@ class SluggableBehavior extends ModelBehavior {
 		'length' => 255,
 		'unique' => true,
 		'update' => false,
-		'trigger' => false);
+		'trigger' => falsem,
+		'lowercase' => true);
 
 /**
  * Initiate behaviour
@@ -92,7 +93,12 @@ class SluggableBehavior extends ModelBehavior {
 		}
 
 		$settings = $this->settings[$Model->alias];
-		$slug = $this->multibyteSlug($Model, $slug, $settings['separator']);
+		$slug = Inflector::slug($slug, $settings['separator']);
+
+		if ($settings['lowercase'] == true) {
+			$slug = strtolower($slug);
+		}
+
 
 		if ($settings['unique'] === true || is_array($settings['unique'])) {
 			$slug = $this->makeUniqueSlug($Model, $slug);
@@ -102,7 +108,7 @@ class SluggableBehavior extends ModelBehavior {
 			$Model->whitelist[] = $settings['slug'];
 		}
 		$Model->data[$Model->alias][$settings['slug']] = $slug;
-		
+
 		return true;
 	}
 
@@ -112,7 +118,7 @@ class SluggableBehavior extends ModelBehavior {
  * @param object $Model
  * @param string the raw slug
  * @return string The incremented unique slug
- * 
+ *
  */
 	public function makeUniqueSlug(Model $Model, $slug = '') {
 		$settings = $this->settings[$Model->alias];
@@ -151,24 +157,5 @@ class SluggableBehavior extends ModelBehavior {
 			}
 		}
 		return $slug;
-	}
-	
-/**
- * Generates a slug from a (multibyte) string
- *
- * @param object $Model
- * @param string $string
- * @return string
- */
-	public function multibyteSlug(Model $Model, $string = null) {
-		$str = mb_strtolower($string);
-		$str = preg_replace('/\xE3\x80\x80/', ' ', $str);
-		$str = preg_replace('[\'s ]', 's ', $str);
-		$str = str_replace($this->settings[$Model->alias]['separator'], ' ', $str);
-		$str = preg_replace( '#[:\#\*"()~$^{}`@+=;,<>!&%\.\]\/\'\\\\|\[]#', "\x20", $str );
-		$str = str_replace('?', '', $str);
-		$str = trim($str);
-		$str = preg_replace('#\x20+#', $this->settings[$Model->alias]['separator'], $str);
-		return $str;
 	}
 }
