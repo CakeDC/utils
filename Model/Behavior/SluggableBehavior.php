@@ -40,6 +40,8 @@ class SluggableBehavior extends ModelBehavior {
  * unique		- check if the slug is unique
  * update		- update the slug or not
  * trigger		- defines a property in the model that has to be true to generate the slug
+ * method		- multibyte or Inflector::slug()
+ * lowercase	- lowercase the slug or not
  *
  * Note that trigger will temporary bypass update and act like update is set to true.
  *
@@ -54,7 +56,8 @@ class SluggableBehavior extends ModelBehavior {
 		'unique' => true,
 		'update' => false,
 		'trigger' => false,
-		'lowercase' => true);
+		'method' => 'multibyte',
+		'lowercase' => false);
 
 /**
  * Initiate behaviour
@@ -93,7 +96,11 @@ class SluggableBehavior extends ModelBehavior {
 		}
 
 		$settings = $this->settings[$Model->alias];
-		$slug = Inflector::slug($slug, $settings['separator']);
+		if($settings['method'] == 'multibyte') {
+			$slug = $this->multibyteSlug($Model, $slug, $settings['separator']);
+		}else{
+			$slug = Inflector::slug($slug, $settings['separator']);
+		}
 
 		if ($settings['lowercase'] == true) {
 			$slug = strtolower($slug);
@@ -123,12 +130,12 @@ class SluggableBehavior extends ModelBehavior {
 		$settings = $this->settings[$Model->alias];
 		$conditions = array();
 		if ($settings['unique'] === true) {
-			$conditions[] = $Model->alias . '.' . $settings['slug'] . ' RLIKE "(' . $slug . ')(-[0-9]+)?$"';
+			$conditions[] = $Model->alias . '.' . $settings['slug'] . ' RLIKE "(' . $slug . ')(' . $settings['separator'] . '[0-9]+)?$"';
 		} else if (is_array($settings['unique'])) {
 			foreach ($settings['unique'] as $field) {
 				$conditions[$Model->alias . '.' . $field] = $Model->data[$Model->alias][$field];
 			}
-			$conditions[] = $Model->alias . '.' . $settings['slug'] . ' RLIKE "(' . $slug . ')(-[0-9]+)?$"';
+			$conditions[] = $Model->alias . '.' . $settings['slug'] . ' RLIKE "(' . $slug . ')(' . $settings['separator'] . '[0-9]+)?$"';
 		}
 
 		if (!empty($Model->id)) {
@@ -155,5 +162,24 @@ class SluggableBehavior extends ModelBehavior {
 			}
 		}
 		return $slug;
+	}
+
+/**
+ * Generates a slug from a (multibyte) string
+ *
+ * @param object $Model
+ * @param string $string
+ * @return string
+ */
+	public function multibyteSlug(Model $Model, $string = null) {
+		$str = mb_strtolower($string);
+		$str = preg_replace('/\xE3\x80\x80/', ' ', $str);
+		$str = preg_replace('[\'s ]', 's ', $str);
+		$str = str_replace($this->settings[$Model->alias]['separator'], ' ', $str);
+		$str = preg_replace( '#[:\#\*"()~$^{}`@+=;,<>!&%\.\]\/\'\\\\|\[]#', "\x20", $str );
+		$str = str_replace('?', '', $str);
+		$str = trim($str);
+		$str = preg_replace('#\x20+#', $this->settings[$Model->alias]['separator'], $str);
+		return $str;
 	}
 }

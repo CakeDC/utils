@@ -85,16 +85,19 @@ class SluggableTest extends CakeTestCase {
 	public function testSaveUnique() {
 		$this->Model->create(array('title' => 'Fourth Article'));
 		$this->Model->save();
+		$this->Model->create(array('title' => 'Fourth Art'));
+		$this->Model->save();
 		$this->Model->create(array('title' => 'Fourth Article!!'));
 		$this->Model->save();
 		$this->Model->create(array('title' => 'Fourth "Article"'));
 		$this->Model->save();
 
 		$results = $this->Model->find('all', array('conditions' => array('title LIKE' => 'Fourth%')));
-		$this->assertEqual(count($results), 3);
+		$this->assertEqual(count($results), 4);
 		$this->assertEqual($results[0]['SluggedArticle']['slug'], 'fourth_article');
-		$this->assertEqual($results[1]['SluggedArticle']['slug'], 'fourth_article_1');
-		$this->assertEqual($results[2]['SluggedArticle']['slug'], 'fourth_article_2');
+		$this->assertEqual($results[1]['SluggedArticle']['slug'], 'fourth_art');
+		$this->assertEqual($results[2]['SluggedArticle']['slug'], 'fourth_article_1');
+		$this->assertEqual($results[3]['SluggedArticle']['slug'], 'fourth_article_2');
 	}
 
 /**
@@ -142,20 +145,20 @@ class SluggableTest extends CakeTestCase {
  * @return void
  */
 	public function testMultibyteSlug() {
-		$result = $this->Model->multibyteSlug('⽅⽆⽇⽈⽉⽊~!@#$%^&*()=+[]{}\\/,.:;"\'<>');
-		$this->assertEqual('⽅⽆⽇⽈⽉⽊', $result);
+		$result = $this->Model->multibyteSlug('â½…â½†â½‡â½ˆâ½‰â½Š~!@#$%^&*()=+[]{}\\/,.:;"\'<>');
+		$this->assertEqual('â½…â½†â½‡â½ˆâ½‰â½Š', $result);
 
-		$result = $this->Model->multibyteSlug('눡눢눣눤눥눦눧~!@#$%^&*()=+[]{}\\/,.:;"\'<>');
-		$this->assertEqual('눡눢눣눤눥눦눧', $result);
+		$result = $this->Model->multibyteSlug('ëˆ¡ëˆ¢ëˆ£ëˆ¤ëˆ¥ëˆ¦ëˆ§~!@#$%^&*()=+[]{}\\/,.:;"\'<>');
+		$this->assertEqual('ëˆ¡ëˆ¢ëˆ£ëˆ¤ëˆ¥ëˆ¦ëˆ§', $result);
 
-		$result = $this->Model->multibyteSlug('눡~!@#$%^&*()=+[]{}\\/,.:;"\'<>눢눣눤눥눦눧');
-		$this->assertEqual('눡_눢눣눤눥눦눧', $result);
+		$result = $this->Model->multibyteSlug('ëˆ¡~!@#$%^&*()=+[]{}\\/,.:;"\'<>ëˆ¢ëˆ£ëˆ¤ëˆ¥ëˆ¦ëˆ§');
+		$this->assertEqual('ëˆ¡_ëˆ¢ëˆ£ëˆ¤ëˆ¥ëˆ¦ëˆ§', $result);
 
-		$result = $this->Model->multibyteSlug('krämer ~!@ # $% ^& *() =+[]{}\\/,.:;"\'<>');
-		$this->assertEqual('krämer', $result);
+		$result = $this->Model->multibyteSlug('krÃ¤mer ~!@ # $% ^& *() =+[]{}\\/,.:;"\'<>');
+		$this->assertEqual('krÃ¤mer', $result);
 
-		$result = $this->Model->multibyteSlug('Ärgerlich Öl Überzogen Straße ~!@ # $% ^& *() =+[]{}\\/,.:;"\'<>');
-		$this->assertEqual('ärgerlich_öl_überzogen_straße', $result);
+		$result = $this->Model->multibyteSlug('Ã„rgerlich Ã–l Ãœberzogen StraÃŸe ~!@ # $% ^& *() =+[]{}\\/,.:;"\'<>');
+		$this->assertEqual('Ã¤rgerlich_Ã¶l_Ã¼berzogen_straÃŸe', $result);
 
 		$result = $this->Model->multibyteSlug('Foo\'s book');
 		$this->assertEqual('foos_book', $result);
