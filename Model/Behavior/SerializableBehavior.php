@@ -96,7 +96,7 @@ class SerializableBehavior extends ModelBehavior {
  * @param array $data
  * @return boolean
  */
-	public function serialize($Model, $data) {
+	public function serialize($Model, &$data) {
 		if (empty($data[$Model->alias])) {
 			return $data;
 		}
@@ -129,7 +129,7 @@ class SerializableBehavior extends ModelBehavior {
  * @return boolean
  */
 
-	public function deserialize($Model, $data) {
+	public function deserialize($Model, &$data) {
 		if (empty($data[$Model->alias])) {
 			return $data;
 		}
