@@ -1,6 +1,5 @@
 # Utils Plugin for CakePHP #
 
-Version 1.2
 
 The utils plugin contain a lot of reusable components, behaviors and helpers. Here we will list and detail 
 each component.
