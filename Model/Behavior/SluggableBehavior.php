@@ -40,6 +40,8 @@ class SluggableBehavior extends ModelBehavior {
  * unique		- check if the slug is unique
  * update		- update the slug or not
  * trigger		- defines a property in the model that has to be true to generate the slug
+ * method		- multibyte or Inflector::slug()
+ * lowercase	- lowercase the slug or not
  *
  * Note that trigger will temporary bypass update and act like update is set to true.
  *
@@ -53,7 +55,9 @@ class SluggableBehavior extends ModelBehavior {
 		'length' => 255,
 		'unique' => true,
 		'update' => false,
-		'trigger' => false);
+		'trigger' => false,
+		'method' => 'multibyte',
+		'lowercase' => false);
 
 /**
  * Initiate behaviour
@@ -92,7 +96,15 @@ class SluggableBehavior extends ModelBehavior {
 		}
 
 		$settings = $this->settings[$Model->alias];
-		$slug = $this->multibyteSlug($Model, $slug, $settings['separator']);
+		if($settings['method'] == 'multibyte') {
+			$slug = $this->multibyteSlug($Model, $slug, $settings['separator']);
+		}else{
+			$slug = Inflector::slug($slug, $settings['separator']);
+		}
+
+		if ($settings['lowercase'] == true) {
+			$slug = strtolower($slug);
+		}
 
 		if ($settings['unique'] === true || is_array($settings['unique'])) {
 			$slug = $this->makeUniqueSlug($Model, $slug);
@@ -102,7 +114,7 @@ class SluggableBehavior extends ModelBehavior {
 			$Model->whitelist[] = $settings['slug'];
 		}
 		$Model->data[$Model->alias][$settings['slug']] = $slug;
-		
+
 		return true;
 	}
 
@@ -112,18 +124,18 @@ class SluggableBehavior extends ModelBehavior {
  * @param object $Model
  * @param string the raw slug
  * @return string The incremented unique slug
- * 
+ *
  */
 	public function makeUniqueSlug(Model $Model, $slug = '') {
 		$settings = $this->settings[$Model->alias];
 		$conditions = array();
 		if ($settings['unique'] === true) {
-			$conditions[$Model->alias . '.' . $settings['slug'] . ' LIKE'] = $slug . '%';
+			$conditions[] = $Model->alias . '.' . $settings['slug'] . ' RLIKE "(' . $slug . ')(' . $settings['separator'] . '[0-9]+)?$"';
 		} else if (is_array($settings['unique'])) {
 			foreach ($settings['unique'] as $field) {
 				$conditions[$Model->alias . '.' . $field] = $Model->data[$Model->alias][$field];
 			}
-			$conditions[$Model->alias . '.' . $settings['slug'] . ' LIKE'] = $slug . '%';
+			$conditions[] = $Model->alias . '.' . $settings['slug'] . ' RLIKE "(' . $slug . ')(' . $settings['separator'] . '[0-9]+)?$"';
 		}
 
 		if (!empty($Model->id)) {
@@ -141,7 +153,6 @@ class SluggableBehavior extends ModelBehavior {
 			$duplicates = Set::extract($duplicates, '{n}.' . $Model->alias . '.' . $settings['slug']);
 			$startSlug = $slug;
 			$index = 1;
-
 			while ($index > 0) {
 				if (!in_array($startSlug . $settings['separator'] . $index, $duplicates)) {
 					$slug = $startSlug . $settings['separator'] . $index;
@@ -152,7 +163,7 @@ class SluggableBehavior extends ModelBehavior {
 		}
 		return $slug;
 	}
-	
+
 /**
  * Generates a slug from a (multibyte) string
  *
