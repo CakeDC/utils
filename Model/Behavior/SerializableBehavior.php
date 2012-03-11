@@ -33,7 +33,8 @@ class SerializableBehavior extends ModelBehavior {
  */
 	protected $_defaults = array(
 		'engine' => 'serialize',
-		'field' => array()
+		'fields' => array(),
+		'field' => null
 	);
 
 /**
@@ -42,10 +43,13 @@ class SerializableBehavior extends ModelBehavior {
  * @param object AppModel
  * @param array $config
  */
-	public function setup(&$Model, $config = array()) {
+	public function setup($Model, $config = array()) {
 		$settings = array_merge($this->_defaults, $config);
-		if (!is_array($settings['field'])) {
-			$settings['field'] = array($settings['field']);
+		if(!empty($settings['field']) && empty($settings['fields'])) {
+			$settings['fields'] = $settings['field'];
+		}
+		if (!is_array($settings['fields'])) {
+			$settings['fields'] = array($settings['fields']);
 		}
 		$this->settings[$Model->alias] = $settings;
 	}
@@ -57,7 +61,7 @@ class SerializableBehavior extends ModelBehavior {
  * @param boolean $primary Whether this model is being queried directly (vs. being queried as an association)
  * @return mixed Result of the find operation
  */
-	function afterFind($Model, $results, $primary = false) {
+	public function afterFind($Model, $results, $primary = false) {
 		if (!empty($results)) {
 			foreach ($results as $key => $result) {
 				$results[$key] = $Model->deserialize($result);
@@ -71,9 +75,18 @@ class SerializableBehavior extends ModelBehavior {
  *
  * @return boolean True if the operation should continue, false if it should abort
  */
-	function beforeSave(&$Model, $options = array()) {
+	public function beforeSave($Model, $options = array()) {
 		$Model->data = $Model->serialize($Model->data);
 		return true;
+	}
+
+/**
+ * Called after each save operation
+ *
+ * @return void
+ */
+	public function afterSave($Model, $created, $options = array()) {
+		if(!empty($options['deserialize'])) $Model->data = $Model->deserialize($Model->data);
 	}
 
 /**
@@ -83,11 +96,11 @@ class SerializableBehavior extends ModelBehavior {
  * @param array $data
  * @return boolean
  */
-	public function serialize($Model, &$data) {
+	public function serialize($Model, $data) {
 		if (empty($data[$Model->alias])) {
 			return $data;
 		}
-		$fields = $this->settings[$Model->alias]['field'];
+		$fields = $this->settings[$Model->alias]['fields'];
 		$engine = $this->settings[$Model->alias]['engine'];
 		if (!empty($data[$Model->alias][0]) && array_intersect_key($fields, array_keys($data[$Model->alias][0]))) {
 			foreach ($data[$Model->alias] as $key => $model) {
@@ -115,11 +128,13 @@ class SerializableBehavior extends ModelBehavior {
  * @param array $data
  * @return boolean
  */
-	public function deserialize($Model, &$data) {
+
+	public function deserialize($Model, $data) {
 		if (empty($data[$Model->alias])) {
 			return $data;
 		}
-		$fields = $this->settings[$Model->alias]['field'];
+		$fields = $this->settings[$Model->alias]['fields'];
+
 		$engine = $this->settings[$Model->alias]['engine'];
 		foreach ($fields as $field) {
 			if (!empty($data[$Model->alias][$field])) {
@@ -133,7 +148,8 @@ class SerializableBehavior extends ModelBehavior {
 						$data[$Model->alias][$field] = array();
 					}
 				}
-			} elseif (array_key_exists($field, $data[$Model->alias])) {
+
+			} elseif (!empty($data[$Model->alias]) && array_key_exists($field, $data[$Model->alias])) {
 				$data[$Model->alias][$field] = array();
 			}
 		}
