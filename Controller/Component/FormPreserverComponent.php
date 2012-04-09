@@ -153,7 +153,7 @@ class FormPreserverComponent extends Object {
  */
 	public function restore($sessionPath = null) {
 		$this->_overridPath($sessionPath);
-		if (empty($this->Controller->data) && $this->Controller->Session->check($this->sessionPath)) {
+		if ($this->Controller->Session->check($this->sessionPath)) {
 			if (!empty($this->Controller->data)) {
 				$this->Controller->data = array_merge($this->Controller->Session->read($this->sessionPath), $this->Controller->data);
 			} else {
