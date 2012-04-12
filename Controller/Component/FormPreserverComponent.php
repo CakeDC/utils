@@ -72,8 +72,8 @@ class FormPreserverComponent extends Object {
  *
  * @return void
  */
-	public function __construct() {
-		parent::__construct();
+	public function __construct(ComponentCollection $collection, $settings = array()) {
+		parent::__construct($collection, $settings);
 		$this->redirectMessage = __d('utils', 'Your form data is preserved you\'ll be redirected to it after login.');
 	}
 
@@ -153,7 +153,7 @@ class FormPreserverComponent extends Object {
  */
 	public function restore($sessionPath = null) {
 		$this->_overridPath($sessionPath);
-		if (empty($this->Controller->data) && $this->Controller->Session->check($this->sessionPath)) {
+		if ($this->Controller->Session->check($this->sessionPath)) {
 			if (!empty($this->Controller->data)) {
 				$this->Controller->data = array_merge($this->Controller->Session->read($this->sessionPath), $this->Controller->data);
 			} else {
