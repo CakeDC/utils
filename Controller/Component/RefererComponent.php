@@ -17,7 +17,7 @@
  * @package utils
  * @subpackage utils.controllers.components
  */
-class RefererComponent extends Object {
+class RefererComponent extends Component {
 
 /**
  * Controller object instance
@@ -31,7 +31,7 @@ class RefererComponent extends Object {
  *
  * @param object Controller object
  */
-	public function initialize(&$controller) {
+	public function initialize($controller) {
 		$this->Controller = $controller;
 	} 
 
@@ -40,7 +40,7 @@ class RefererComponent extends Object {
  *
  * @param object Controller object
  */
-	public function startup(&$controller) {
+	public function startup($controller) {
 		$this->setReferer();
 	}
 
