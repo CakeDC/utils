@@ -21,14 +21,14 @@ class KeyvalueBehavior extends ModelBehavior {
 
 /**
  * Settings
- * 
+ *
  * @var mixed
  */
 	public $settings = array();
 
 /**
  * Default settings
- * 
+ *
  * @var array
  */
 	protected $_defaults = array(
@@ -47,19 +47,19 @@ class KeyvalueBehavior extends ModelBehavior {
 
 /**
  * Returns details for named section
- * 
- * @var string
- * @var string
+ *
+ * @var integer $foreignKey
+ * @var string $section
  * @return array
  */
 	public function getSection($Model, $foreignKey = null, $section = null) {
 		$Model->recursive = -1;
 		$results = $Model->find('all',
-			array('conditions' => array($this->settings[$model->alias]['foreignKey'] => $foreignKey)),
+			array('conditions' => array($this->settings[$Model->alias]['foreignKey'] => $foreignKey)),
 			array('fields' => array('field', 'value')));
 
 		foreach($results as $result) {
-			$details[] = array('field' => $result[$model->alias]['field'], 'value' => $result[$model->alias]['value']);
+			$details[] = array('field' => $result[$Model->alias]['field'], 'value' => $result[$Model->alias]['value']);
 		}
 
 		$detailArray = array();
@@ -73,26 +73,33 @@ class KeyvalueBehavior extends ModelBehavior {
 
 /**
  * Save details for named section
- * 
- * @var string
- * @var array
- * @var string
+ *
+ * @var integer $foreignKey
+ * @var array $data
+ * @var string $section
+ * @return boolean True on success, or false on failure
  */
 	public function saveSection($Model, $foreignKey = null, $data = null, $section = null) {
-		foreach($data as $model => $details) {
+		$saveAll = array();
+		foreach($data as $details) {
 			foreach($details as $key => $value) {
-				$newDetail = array();
+				$conditions = array(
+					$this->settings[$Model->alias]['foreignKey'] => $foreignKey,
+					'field' => $section . '.' . $key
+				);
 				$Model->recursive = -1;
-				$tmp = $this->find('first', array(
-					'conditions' => array(
-						$this->settings[$model->alias]['foreignKey'] => $foreignKey,
-						'field' => $section . '.' . $key),
-					'fields' => array('id')));
-				$newDetail[$Model->alias]['id'] = $tmp[$model->alias]['id'];
-				$newDetail[$Model->alias]['field'] = $section . '.' . $key;
-				$newDetail[$Model->alias]['value'] = $value;
-				$this->save($newDetail);
+				$primaryKey = $Model->field($Model->primaryKey, $conditions);
+				$newDetail = array(
+					$Model->primaryKey => $primaryKey,
+					$this->settings[$Model->alias]['foreignKey'] => $foreignKey,
+					'field' => $section . '.' . $key,
+					'value' => $value
+				);
+				$saveAll[] = $newDetail;
 			}
 		}
+
+		return $Model->saveAll($saveAll);
 	}
+
 }
