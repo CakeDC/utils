@@ -21,14 +21,14 @@ class KeyvalueBehavior extends ModelBehavior {
 
 /**
  * Settings
- * 
+ *
  * @var mixed
  */
 	public $settings = array();
 
 /**
  * Default settings
- * 
+ *
  * @var array
  */
 	protected $_defaults = array(
@@ -47,7 +47,7 @@ class KeyvalueBehavior extends ModelBehavior {
 
 /**
  * Returns details for named section
- * 
+ *
  * @var string
  * @var string
  * @return array
@@ -55,11 +55,11 @@ class KeyvalueBehavior extends ModelBehavior {
 	public function getSection($Model, $foreignKey = null, $section = null) {
 		$Model->recursive = -1;
 		$results = $Model->find('all',
-			array('conditions' => array($this->settings[$model->alias]['foreignKey'] => $foreignKey)),
+			array('conditions' => array($this->settings[$Model->alias]['foreignKey'] => $foreignKey)),
 			array('fields' => array('field', 'value')));
 
 		foreach($results as $result) {
-			$details[] = array('field' => $result[$model->alias]['field'], 'value' => $result[$model->alias]['value']);
+			$details[] = array('field' => $result[$Model->alias]['field'], 'value' => $result[$Model->alias]['value']);
 		}
 
 		$detailArray = array();
@@ -73,8 +73,8 @@ class KeyvalueBehavior extends ModelBehavior {
 
 /**
  * Save details for named section
- * 
- * @var string
+ *
+ * @var integer
  * @var array
  * @var string
  */
@@ -82,16 +82,17 @@ class KeyvalueBehavior extends ModelBehavior {
 		foreach($data as $model => $details) {
 			foreach($details as $key => $value) {
 				$newDetail = array();
+				$conditions = array(
+					$this->settings[$Model->alias]['foreignKey'] => $foreignKey,
+					'field' => $section . '.' . $key
+				);
 				$Model->recursive = -1;
-				$tmp = $this->find('first', array(
-					'conditions' => array(
-						$this->settings[$model->alias]['foreignKey'] => $foreignKey,
-						'field' => $section . '.' . $key),
-					'fields' => array('id')));
-				$newDetail[$Model->alias]['id'] = $tmp[$model->alias]['id'];
+				$primaryKey = $Model->field($Model->primaryKey, $conditions);
+				$newDetail[$Model->alias][$Model->primaryKey] = $primaryKey;
+				$newDetail[$Model->alias][$this->settings[$Model->alias]['foreignKey']] = $foreignKey;
 				$newDetail[$Model->alias]['field'] = $section . '.' . $key;
 				$newDetail[$Model->alias]['value'] = $value;
-				$this->save($newDetail);
+				$Model->save($newDetail);
 			}
 		}
 	}
