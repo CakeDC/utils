@@ -48,8 +48,8 @@ class KeyvalueBehavior extends ModelBehavior {
 /**
  * Returns details for named section
  *
- * @var string
- * @var string
+ * @var integer $foreignKey
+ * @var string $section
  * @return array
  */
 	public function getSection($Model, $foreignKey = null, $section = null) {
@@ -74,26 +74,32 @@ class KeyvalueBehavior extends ModelBehavior {
 /**
  * Save details for named section
  *
- * @var integer
- * @var array
- * @var string
+ * @var integer $foreignKey
+ * @var array $data
+ * @var string $section
+ * @return boolean True on success, or false on failure
  */
 	public function saveSection($Model, $foreignKey = null, $data = null, $section = null) {
-		foreach($data as $model => $details) {
+		$saveAll = array();
+		foreach($data as $details) {
 			foreach($details as $key => $value) {
-				$newDetail = array();
 				$conditions = array(
 					$this->settings[$Model->alias]['foreignKey'] => $foreignKey,
 					'field' => $section . '.' . $key
 				);
 				$Model->recursive = -1;
 				$primaryKey = $Model->field($Model->primaryKey, $conditions);
-				$newDetail[$Model->alias][$Model->primaryKey] = $primaryKey;
-				$newDetail[$Model->alias][$this->settings[$Model->alias]['foreignKey']] = $foreignKey;
-				$newDetail[$Model->alias]['field'] = $section . '.' . $key;
-				$newDetail[$Model->alias]['value'] = $value;
-				$Model->save($newDetail);
+				$newDetail = array(
+					$Model->primaryKey => $primaryKey,
+					$this->settings[$Model->alias]['foreignKey'] => $foreignKey,
+					'field' => $section . '.' . $key,
+					'value' => $value
+				);
+				$saveAll[$Model->alias][] = $newDetail;
 			}
 		}
+
+		return $Model->saveAll($saveAll);
 	}
+
 }
