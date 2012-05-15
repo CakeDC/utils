@@ -89,13 +89,14 @@ class KeyvalueBehavior extends ModelBehavior {
 				);
 				$Model->recursive = -1;
 				$primaryKey = $Model->field($Model->primaryKey, $conditions);
+				if ($primaryKey === false) $primaryKey = null;
 				$newDetail = array(
 					$Model->primaryKey => $primaryKey,
 					$this->settings[$Model->alias]['foreignKey'] => $foreignKey,
 					'field' => $section . '.' . $key,
 					'value' => $value
 				);
-				$saveAll[$Model->alias][] = $newDetail;
+				$saveAll[] = $newDetail;
 			}
 		}
 
