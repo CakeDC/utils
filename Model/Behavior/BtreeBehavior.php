@@ -653,7 +653,7 @@ class BTreeBehavior extends ModelBehavior {
                 }
             }
         } else {
-            $db =& ConnectionManager::getDataSource($Model->useDbConfig);
+            $db = ConnectionManager::getDataSource($Model->useDbConfig);
             foreach ($Model->find('all', array('conditions' => $scope, 'fields' => array($Model->primaryKey, $parent), 'order' => $left)) as $array) {
                 $path = $this->getPath($Model, $array[$Model->alias][$Model->primaryKey]);
                 if ($path == null || count($path) < 2) {
@@ -752,7 +752,7 @@ class BTreeBehavior extends ModelBehavior {
             $parentNode[$right] = $node[$right] + 1;
         }
 
-        $db =& ConnectionManager::getDataSource($Model->useDbConfig);
+        $db = ConnectionManager::getDataSource($Model->useDbConfig);
         $Model->updateAll(array($parent => $db->value($node[$parent], $parent)), array($parent => $node[$Model->primaryKey]));
 
         $Model->id = $id;
@@ -1005,7 +1005,7 @@ class BTreeBehavior extends ModelBehavior {
     function __getPartition($Model, $scope, $recursive = -1, $created = false) {
         extract($this->settings[$Model->alias]);
 
-        $db =& ConnectionManager::getDataSource($Model->useDbConfig);
+        $db = ConnectionManager::getDataSource($Model->useDbConfig);
         if ($created) {
             if (is_string($scope)) {
                 $scope .= " AND {$Model->alias}.{$Model->primaryKey} <> ";
@@ -1048,7 +1048,7 @@ class BTreeBehavior extends ModelBehavior {
  * @return int
  */
     function __getMax($Model, $scope, $right, $recursive = -1, $created = false) {
-        $db =& ConnectionManager::getDataSource($Model->useDbConfig);
+        $db = ConnectionManager::getDataSource($Model->useDbConfig);
         if ($created) {
             if (is_string($scope)) {
                 $scope .= " AND {$Model->alias}.{$Model->primaryKey} <> ";
@@ -1078,7 +1078,7 @@ class BTreeBehavior extends ModelBehavior {
  * @return int
  */
     function __getMin($Model, $scope, $left, $recursive = -1) {
-        $db =& ConnectionManager::getDataSource($Model->useDbConfig);
+        $db = ConnectionManager::getDataSource($Model->useDbConfig);
         list($edge) = array_values($Model->find('first', array(
             'conditions' => $scope,
             'fields' => $db->calculate($Model, 'min', array($left)),
