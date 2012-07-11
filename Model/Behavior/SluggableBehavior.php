@@ -11,6 +11,7 @@
 
 
 App::uses('Multibyte', 'I18n');
+App::uses('ModelBehavior', 'Model');
 
 /**
  * Utils Plugin
