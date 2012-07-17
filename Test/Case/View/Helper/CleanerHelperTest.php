@@ -102,8 +102,8 @@ class CleanerHelperTest extends CakeTestCase {
 
 	function testBbcode2js() {
 		$result = $this->Cleaner->bbcode2js('[googlevideo]http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays[/googlevideo]');
-		$this->assertEqual($result, '<p id="vvq_S1IjqhLFv5bl07AWays"><a href="http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays">http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays</a></p><br />');
-
+		$this->assertEqual($result, '<script type="text/javascript" src="/js/vipers-video-quicktags.js"></script><p id="vvq_S1IjqhLFv5bl07AWays"><a href="http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays">http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays</a></p><br />');
+				
 		$result = $this->Cleaner->bbcode2js('[googlevideo]http://video.google.com/videoplay?docid=e2HwisfuVokRIKTXCa7[/googlevideo]');
 		$this->assertEqual($result, '<p id="vvq_e2HwisfuVokRIKTXCa7"><a href="http://video.google.com/videoplay?docid=e2HwisfuVokRIKTXCa7">http://video.google.com/videoplay?docid=e2HwisfuVokRIKTXCa7</a></p><br />');
 
