@@ -17,7 +17,9 @@
  * @package utils
  * @subpackage utils.controllers.components
  */
-class RefererComponent extends Object {
+App::uses('Component', 'Controller');
+
+class RefererComponent extends Component {
 
 /**
  * Controller object instance
