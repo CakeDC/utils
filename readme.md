@@ -74,7 +74,7 @@ The list behavior allows you to have records act like a list, for example a trac
 
 The languages lib is basically just a helper lib that extends I10n to get a three character language code => country name array.
 
-	App::import('Lib', 'Utils.Languages');
+	App::uses('Lib', 'Utils.Languages');
 	$Languages = new Languages();
 	$languageList = $Languages->lists();
 
