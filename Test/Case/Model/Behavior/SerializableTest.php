@@ -46,8 +46,8 @@ class SerializableTestCase extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function setUp() {
-		parent::setUp();
+	public function startTest($method) {
+		parent::startTest($method);
 
 		$this->Session = ClassRegistry::init('SerializedSession');
 		$this->Content = ClassRegistry::init('SerializedContent');
@@ -61,7 +61,8 @@ class SerializableTestCase extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function tearDown() {
+	public function endTest($method) {
+		parent::endTest($method);
 		unset($this->Session, $this->Content, $this->settings);
 	}
 

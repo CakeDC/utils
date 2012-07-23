@@ -1,30 +1,58 @@
 <?php
-App::import('Core', 'Helper');
-App::import('Helper', 'AppHelper');
-App::import('Helper', 'Html');
-App::import('Helper', 'Utils.Cleaner');
+/**
+ * CakePHP Gravatar Helper Test
+ *
+ * @copyright Copyright 2010, Graham Weldon
+ * @license http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @package goodies
+ * @subpackage goodies.tests.cases.helpers
+ *
+ */
+App::uses('CleanerHelper', 'Utils.View/Helper');
+App::uses('HtmlHelper', 'View/Helper');
+App::uses('Controller', 'Controller');
 App::uses('View', 'View');
-App::uses('Javascript', 'View'); 
 
 /**
- * Short description for class.
+ * GravatarHelper Test
  *
- * @package		cake.tests
- * @subpackage	cake.tests.cases.libs
+ * @package goodies
+ * @subpackage goodies.test.cases.views.helpers
  */
 class CleanerHelperTest extends CakeTestCase {
 
-	public function setUp() {
-		ClassRegistry::flush();
-		Router::reload();
-		$null = null;
-		$this->View = new View(null);
-		$this->Helper = new Helper($this->View);
-		$this->Helper = new Helper($this->View);
+/**
+ * Gravatar helper
+ *
+ * @var GravatarHelper
+ * @access public
+ */
+	public $Cleaner = null;
+
+/**
+ * Start Test
+ *
+ * @return void
+ * @access public
+ */
+	public function startTest($method) {
+        parent::startTest($method);
+        $request = new CakeRequest('contacts/add', false);
+        $Controller = new Controller($request);
+		$this->View = new View($Controller);
 		$this->Cleaner = new CleanerHelper($this->View);
 		$this->Cleaner->Html = new HtmlHelper($this->View);
-		$this->Cleaner->Html->request = new CakeRequest(null, false);
-		$this->Cleaner->Html->request->webroot = '';
+	}
+
+/**
+ * End Test
+ *
+ * @return void
+ * @access public
+ */
+	public function endTest($method) {
+        parent::endTest($method);
+		unset($this->Cleaner);
 	}
 
 	public function testClean() {
@@ -63,7 +91,8 @@ class CleanerHelperTest extends CakeTestCase {
 		$this->assertEqual($result, '<img src="/media/display/thumb/47ce0324-2238-40ec-b68a-a7994a35e6b2" />data');
 
 	}
-	function _testImgThumb() {
+
+    public function _testImgThumb() {
 		$tagsArray = array('br', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'dl', 'dd', 'dt', 'a', 'img', 'i', 'u', 'b');
 		$attributesArray = array('src', 'href', 'title');
 		$replaceImgThumb = false;
@@ -77,7 +106,7 @@ class CleanerHelperTest extends CakeTestCase {
 
 	}
 
-	function testBbcode2js() {
+    public function testBbcode2js() {
 		$result = $this->Cleaner->bbcode2js('[googlevideo]http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays[/googlevideo]');
 		$this->assertEqual($result, '<p id="vvq_S1IjqhLFv5bl07AWays"><a href="http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays">http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays</a></p><br />');
 
@@ -145,7 +174,7 @@ class CleanerHelperTest extends CakeTestCase {
 		$this->assertEqual($result, '<object width="464" height="392"><param name="movie" value="http://embed.break.com/NTc3MjQ5"></param><param name="allowScriptAccess" value="always"></param><embed src="http://embed.break.com/NTc3MjQ5" type="application/x-shockwave-flash" allowScriptAccess=always width="464" height="392"></embed></object>text');
 	}
 
-	public function testOverCleaning() {
+    public function testOverCleaning() {
 		$tagsArray = array('br', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'dl'	, 'dd', 'dt', 'a', 'img', 'i', 'u', 'b');
 		$attributesArray = array('src', 'href', 'title');
 		$replaceImgThumb = false;
@@ -181,11 +210,5 @@ Noon-3pm Trojan Soundsystem  (LIVE)
 		$this->assertEqual($result, $text2);
 		return ;
 	}
-	
-	
-	public function tearDown() {
-		unset($this->Helper, $this->View);
-		ClassRegistry::flush();
-	}
+
 }
-?>

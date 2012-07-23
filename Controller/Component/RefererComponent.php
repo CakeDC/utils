@@ -17,7 +17,7 @@
  * @package utils
  * @subpackage utils.controllers.components
  */
-class RefererComponent extends Object {
+class RefererComponent extends Component {
 
 /**
  * Controller object instance
@@ -31,7 +31,7 @@ class RefererComponent extends Object {
  *
  * @param object Controller object
  */
-	public function initialize(&$controller) {
+	public function initialize($controller) {
 		$this->Controller = $controller;
 	} 
 
@@ -40,7 +40,7 @@ class RefererComponent extends Object {
  *
  * @param object Controller object
  */
-	public function startup(&$controller) {
+	public function startup($controller) {
 		$this->setReferer();
 	}
 
@@ -51,7 +51,7 @@ class RefererComponent extends Object {
  */
 	public function setReferer($default = null) {
 		if (empty($this->Controller->request->data['Data']['referer'])) {
-			$referer = $this->Controller->request->referer();
+			$referer = $this->Controller->referer();
 
 			if ($referer == '/' && !empty($default)) {
 				$referer = $default;
@@ -78,7 +78,7 @@ class RefererComponent extends Object {
 		if (isset($this->Controller->data['Data']['referer'])) {
 			$referer = $this->Controller->request->data['Data']['referer'];
 		} else {
-			$referer = $this->Controller->request->referer();
+			$referer = $this->Controller->referer();
 		}
 
 		if (strlen($referer) == 0 || $referer == '/') {

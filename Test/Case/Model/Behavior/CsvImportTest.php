@@ -67,9 +67,13 @@ class CsvImportTest extends CakeTestCase {
  */
 	public function testImportCSVNoFile() {
 		$this->Content->Behaviors->load('Utils.CsvImport');
-		$this->expectException();
-		$this->expectError();
-		$this->Content->importCSV('/unexistent/file');
+		// $this->expectException();
+		// $this->expectError();
+		try {
+			$this->Content->importCSV('/unexistent/file');
+			$this->fail();
+		} catch (Exception $ex) {
+		}
 	}
 	
 /**

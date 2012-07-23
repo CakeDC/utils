@@ -100,8 +100,11 @@ class ToggleableTest extends CakeTestCase {
 			'fields' => array(
 				'deleted' => array(1))));
 
-		$this->expectException('Exception');
-		$this->Post->toggle('invalid-record-id', 'deleted');
+		try {
+			$this->Post->toggle('invalid-record-id', 'deleted');
+			$this->fail();
+		} catch (Exception $ex) {
+		}
 	}
 
 }

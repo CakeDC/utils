@@ -17,6 +17,8 @@
  * @package utils
  * @subpackage utils.models.behaviors
  */
+ App::uses('ModelBehavior', 'Model');
+
 class LookupableBehavior extends ModelBehavior {
 
 /**

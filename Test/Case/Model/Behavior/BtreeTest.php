@@ -1,6 +1,5 @@
 <?php
-App::import('Behavior', 'Utils.Btree');
-
+App::uses('BtreeBehavior', 'Utils.Model/Behavior');
 class BArticle extends CakeTestModel {
 	public $useTable = 'b_articles';
 	public $actsAs = array('Utils.Btree');
@@ -42,8 +41,8 @@ class BtreeTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function setUp() {
-		parent::setUp();
+	public function startTest($method) {
+		parent::startTest($method);
 		$this->Model = new BArticle();
 		$this->Behavior = $this->Model->Behaviors->Btree;
 	}
@@ -54,8 +53,8 @@ class BtreeTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function tearDown() {
-		parent::tearDown();
+	public function endTest($method) {
+		parent::endTest($method);
 		unset($this->Model, $this->Behavior);
 		ClassRegistry::flush();
 	}
@@ -144,3 +143,4 @@ class BtreeTest extends CakeTestCase {
 	}
 
 }
+?>

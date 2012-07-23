@@ -9,12 +9,8 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::uses('HttpSocket', 'Network/Http');
-App::uses('Xml', 'Utility');
-
-App::uses('ModelBehavior', 'Model');
-
-
+App::import('Core', 'HttpSocket');
+App::import('Core', 'Xml');
 App::import('Lib', 'Xmlrpc.Xmlrpc');
 
 /**
@@ -61,7 +57,7 @@ class PingbackableBehavior extends ModelBehavior {
 		if (!isset($this->settings[$model->alias])) {
 			$this->settings[$model->alias] = $this->defaults;
 		}
-		$this->settings[$model->alias] = am($this->settings[$model->alias], empty(is_array($settings)) ? $settings : array());
+		$this->settings[$model->alias] = am($this->settings[$model->alias], !empty(is_array($settings)) ? $settings : array());
 	}
 
 /**

@@ -82,7 +82,7 @@ class FormPreserverComponent extends Object {
  *
  * @param object Controller object
  */
-	public function initialize(&$Controller) {
+	public function initialize(Controller $Controller) {
 		$this->Controller = $Controller;
 		$this->sessionPath = $this->sessionKey . '.' . $Controller->name . '.' . $Controller->action;
 	}
@@ -94,15 +94,15 @@ class FormPreserverComponent extends Object {
  * @return void
  */
 
-	public function startUp(&$Controller) {
+	public function startUp(Controller $Controller) {
 		if (in_array($Controller->action, $this->actions)) {
-			if (empty($Controller->data) && $Controller->Session->check($this->sessionPath)) {
+			if (empty($Controller->request->data) && $Controller->Session->check($this->sessionPath)) {
 				if ($this->directPost == true) {
-					$Controller->data = $Controller->Session->read($this->sessionPath);
+					$Controller->request->data = $Controller->Session->read($this->sessionPath);
 					$Controller->Session->delete($this->sessionPath);
 				}
-			} elseif (!empty($Controller->data) && !$Controller->Auth->user()) {
-				$this->preserve($Controller->data);
+			} elseif (!empty($Controller->request->data) && !$Controller->Auth->user()) {
+				$this->preserve($Controller->request->data);
 				if (empty($this->loginAction) && !empty($Controller->Auth->loginAction)) {
 					$this->loginAction = $Controller->Auth->loginAction;
 					if (!empty($this->redirectMessage)) {
@@ -153,11 +153,11 @@ class FormPreserverComponent extends Object {
  */
 	public function restore($sessionPath = null) {
 		$this->_overridPath($sessionPath);
-		if (empty($this->Controller->data) && $this->Controller->Session->check($this->sessionPath)) {
-			if (!empty($this->Controller->data)) {
-				$this->Controller->data = array_merge($this->Controller->Session->read($this->sessionPath), $this->Controller->data);
+		if (empty($this->Controller->request->data) && $this->Controller->Session->check($this->sessionPath)) {
+			if (!empty($this->Controller->request->data)) {
+				$this->Controller->request->data = array_merge($this->Controller->Session->read($this->sessionPath), $this->Controller->request->data);
 			} else {
-				$this->Controller->data = $this->Controller->Session->read($this->sessionPath);
+				$this->Controller->request->data = $this->Controller->Session->read($this->sessionPath);
 			}
 			$this->Controller->Session->delete($this->sessionPath);
 		}
