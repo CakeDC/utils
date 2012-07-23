@@ -347,9 +347,9 @@ class TreeHelper extends AppHelper {
  * to set properties of the holding type - pass 'previous' for the 4th param
  * i.e.
  * // Hide children (2)
- * $tree->addTypeAttribute('style', 'display', 'hidden');
+ * $this->Tree->addTypeAttribute('style', 'display', 'hidden');
  * // give top level type (1) a class
- * $tree->addTypeAttribute('class', 'hasHiddenGrandChildren', null, 'previous');
+ * $this->Tree->addTypeAttribute('class', 'hasHiddenGrandChildren', null, 'previous');
  *
  * @param string $id
  * @param string $key

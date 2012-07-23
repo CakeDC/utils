@@ -1,6 +1,8 @@
 <?php
-App::uses('Controller', 'Controller');
-App::uses('RefererComponent', 'Utils.Controller/Component');
+App::import('Controller', 'Controller', false);
+//App::uses('Referer', 'Utils.Controller/Component/Referer');
+App::import('Component', 'Utils.Referer');
+App::uses('Router', 'Routing');
 
 class Article extends CakeTestModel {
 /**
@@ -39,34 +41,37 @@ class ArticlesTestController extends Controller {
 }
 
 
-class RefererComponentTest extends CakeTestCase {
+class PrgComponentTest extends CakeTestCase {
 /**
  * Fixtures
  *
  * @var array
+ * @access public
  */
 	public $fixtures = array(
 		'plugin.utils.article');
-
 /**
  * setUp method
  *
+ * @access public
  * @return void
  */
 	function setUp() {
-		$request = new CakeRequest('controller_posts/index');
-		$response = new CakeResponse(); 
-		$this->Controller = new ArticlesTestController($request, $response);
+		$request = new CakeRequest();
+		$this->Controller = new ArticlesTestController($request);
+		$this->Controller->constructClasses();
+		$this->Controller->params = array(
+			'named' => array(),
+			'pass' => array(),
+			'url' => array());
 		$this->Controller->modelClass = 'Article';
-		$this->Controller->Referer = new RefererComponent;
-		$this->Controller->Referer->initialize($this->Controller, array());
-		
-		ClassRegistry::addObject('view', new View($this->Controller));  		
+		$this->Controller->Referer->initialize($this->Controller);
 	}
 
 /**
  * tearDown method
  *
+ * @access public
  * @return void
  */
 	function tearDown() {
@@ -77,6 +82,7 @@ class RefererComponentTest extends CakeTestCase {
 /**
  * testSetReferer
  *
+ * @access public
  * @return void
  */
 	public function testSetReferer() {
@@ -100,6 +106,7 @@ class RefererComponentTest extends CakeTestCase {
 /**
  * testRedirect
  *
+ * @access public
  * @return void
  */
 	public function testRedirect() {
@@ -114,3 +121,4 @@ class RefererComponentTest extends CakeTestCase {
 	}
 
 }
+?>

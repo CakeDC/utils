@@ -10,6 +10,7 @@
  */
 App::uses('CleanerHelper', 'Utils.View/Helper');
 App::uses('HtmlHelper', 'View/Helper');
+App::uses('Controller', 'Controller');
 App::uses('View', 'View');
 
 /**
@@ -34,9 +35,11 @@ class CleanerHelperTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function setUp() {
-		$null = null;
-		$this->View = new View($null);
+	public function startTest($method) {
+        parent::startTest($method);
+        $request = new CakeRequest('contacts/add', false);
+        $Controller = new Controller($request);
+		$this->View = new View($Controller);
 		$this->Cleaner = new CleanerHelper($this->View);
 		$this->Cleaner->Html = new HtmlHelper($this->View);
 	}
@@ -47,10 +50,12 @@ class CleanerHelperTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function tearDown() {
+	public function endTest($method) {
+        parent::endTest($method);
 		unset($this->Cleaner);
 	}
-	function testClean() {
+
+	public function testClean() {
 		$tagsArray = array('br', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'dl'	, 'dd', 'dt', 'a', 'img', 'i', 'u', 'b');
 		$attributesArray = array('src', 'href', 'title');
 		$replaceImgThumb = false;
@@ -86,7 +91,8 @@ class CleanerHelperTest extends CakeTestCase {
 		$this->assertEqual($result, '<img src="/media/display/thumb/47ce0324-2238-40ec-b68a-a7994a35e6b2" />data');
 
 	}
-	function _testImgThumb() {
+
+    public function _testImgThumb() {
 		$tagsArray = array('br', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'dl', 'dd', 'dt', 'a', 'img', 'i', 'u', 'b');
 		$attributesArray = array('src', 'href', 'title');
 		$replaceImgThumb = false;
@@ -100,10 +106,10 @@ class CleanerHelperTest extends CakeTestCase {
 
 	}
 
-	function testBbcode2js() {
+    public function testBbcode2js() {
 		$result = $this->Cleaner->bbcode2js('[googlevideo]http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays[/googlevideo]');
-		$this->assertEqual($result, '<script type="text/javascript" src="/js/vipers-video-quicktags.js"></script><p id="vvq_S1IjqhLFv5bl07AWays"><a href="http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays">http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays</a></p><br />');
-				
+		$this->assertEqual($result, '<p id="vvq_S1IjqhLFv5bl07AWays"><a href="http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays">http://video.google.com/videoplay?docid=S1IjqhLFv5bl07AWays</a></p><br />');
+
 		$result = $this->Cleaner->bbcode2js('[googlevideo]http://video.google.com/videoplay?docid=e2HwisfuVokRIKTXCa7[/googlevideo]');
 		$this->assertEqual($result, '<p id="vvq_e2HwisfuVokRIKTXCa7"><a href="http://video.google.com/videoplay?docid=e2HwisfuVokRIKTXCa7">http://video.google.com/videoplay?docid=e2HwisfuVokRIKTXCa7</a></p><br />');
 
@@ -168,7 +174,7 @@ class CleanerHelperTest extends CakeTestCase {
 		$this->assertEqual($result, '<object width="464" height="392"><param name="movie" value="http://embed.break.com/NTc3MjQ5"></param><param name="allowScriptAccess" value="always"></param><embed src="http://embed.break.com/NTc3MjQ5" type="application/x-shockwave-flash" allowScriptAccess=always width="464" height="392"></embed></object>text');
 	}
 
-	function testOverCleaning() {
+    public function testOverCleaning() {
 		$tagsArray = array('br', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'dl'	, 'dd', 'dt', 'a', 'img', 'i', 'u', 'b');
 		$attributesArray = array('src', 'href', 'title');
 		$replaceImgThumb = false;
@@ -204,4 +210,5 @@ Noon-3pm Trojan Soundsystem  (LIVE)
 		$this->assertEqual($result, $text2);
 		return ;
 	}
+
 }

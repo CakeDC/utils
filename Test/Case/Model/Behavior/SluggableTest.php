@@ -1,18 +1,24 @@
 <?php
-App::uses('SluggableBehavior', 'Utils.Model/Behavior');
-
-/**
- * Sluggable Test Behavior
- **/
-class SluggableTestBehavior extends SluggableBehavior {
-}
+App::uses('Utils.Sluggable', 'Model/Behavior');
 
 /**
  * Slugged Article
  */
 class SluggedArticle extends CakeTestModel {
 	public $useTable = 'articles';
-	public $actsAs = array('SluggableTest');
+	public $actsAs = array('Utils.Sluggable');
+}
+
+/**
+ * Slugged Article
+ */
+class SluggedCustomArticle extends CakeTestModel {
+	public $useTable = 'articles';
+	public $actsAs = array('Utils.Sluggable');
+
+	function multibyteSlug($string = null, $separator = '_') {
+		return 'slug';
+	}
 }
 
 /**
@@ -32,9 +38,10 @@ class SluggableTest extends CakeTestCase {
  *
  * @return void
  */
-	public function startTest() {
+	public function setUp() {
 		$this->Model = new SluggedArticle();
-		$this->Behavior = new SluggableTestBehavior();
+		$this->ModelTwo = new SluggedCustomArticle();
+		$this->Behavior = new SluggableBehavior();
 	}
 
 /**
@@ -42,7 +49,7 @@ class SluggableTest extends CakeTestCase {
  *
  * @return void
  */
-	public function endTest() {
+	public function tearDown() {
 		unset($this->Model);
 		unset($this->Behavior);
 		ClassRegistry::flush();
@@ -54,8 +61,10 @@ class SluggableTest extends CakeTestCase {
  * @return void
  */
 	public function testSave() {
-		$this->Model->create(array('title' => 'Fourth Article'));
-		$this->Model->save();
+		$this->Model->create(array(
+			'SluggedArticle' => array(
+				'title' => 'Fourth Article')));
+		$this->Model->save();	
 
 		$result = $this->Model->read();
 		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article');
@@ -66,7 +75,7 @@ class SluggableTest extends CakeTestCase {
 		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article');
 
 		// Should update
-		$this->Model->Behaviors->SluggableTest->settings['SluggedArticle']['update'] = true;
+		$this->Model->Behaviors->load('Utils.Sluggable', array('update' => true));
 		$this->Model->saveField('title', 'Fourth Article (Part 2)');
 		$result = $this->Model->read();
 		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article_part_2');
@@ -75,6 +84,19 @@ class SluggableTest extends CakeTestCase {
 		$this->Model->saveField('body', 'Here goes the content.');
 		$result = $this->Model->read();
 		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article_part_2');
+	}
+
+/**
+ * Test saving a item
+ *
+ * @return void
+ */
+	public function testCustomMultibyteSlug() {
+		$this->ModelTwo->create(array('title' => 'Fifth Article'));
+		$this->ModelTwo->save();
+
+		$result = $this->ModelTwo->read();
+		$this->assertEqual($result['SluggedCustomArticle']['slug'], 'slug');
 	}
 
 /**
@@ -104,8 +126,8 @@ class SluggableTest extends CakeTestCase {
  * @return void
  */
 	public function testSluggenerationBasedOnTrigger() {
-		$this->Model->Behaviors->detach('SluggableTest');
-		$this->Model->Behaviors->attach('SluggableTest', array(
+		$this->Model->Behaviors->unload('Sluggable');
+		$this->Model->Behaviors->load('Sluggable', array(
 			'trigger' => 'generateSlug'));
 
 		$this->Model->generateSlug = false;
@@ -124,7 +146,9 @@ class SluggableTest extends CakeTestCase {
  * @return void
  */
 	public function testSaveDuplicate() {
-		$this->Model->Behaviors->SluggableTest->settings['SluggedArticle']['unique'] = false;
+		$this->Model->Behaviors->unload('Sluggable');
+		$this->Model->Behaviors->load('Sluggable', array('unique' => false));
+
 		$this->Model->create(array('title' => 'Fourth Article'));
 		$this->Model->save();
 		$this->Model->create(array('title' => 'Fourth Article'));
@@ -168,8 +192,8 @@ class SluggableTest extends CakeTestCase {
  * @access public
  */
 	public function testUpdatingSlug() {
-		$this->Model->Behaviors->detach('SluggableTest');
-		$this->Model->Behaviors->attach('SluggableTest', array(
+		$this->Model->Behaviors->unload('Sluggable');
+		$this->Model->Behaviors->load('Sluggable', array(
 			'update' => true));
 
 		$this->Model->create(array('title' => "Andersons Fairy Tales"));
@@ -181,6 +205,4 @@ class SluggableTest extends CakeTestCase {
 		$result = $this->Model->read();
 		$this->assertEqual($result['SluggedArticle']['slug'], 'andersons_fairy_tales_ii');
 	}
-
 }
-?>

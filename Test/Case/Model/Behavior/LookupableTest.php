@@ -1,12 +1,10 @@
 <?php
-App::uses('LookupableBehavior', 'Utils.Model/Behavior');
 
 /**
  * Post Test Model
  */
 class Post extends CakeTestModel {
 	public $useTable = 'posts';
-	//public $actsAs = array('Utils.Lookupable');
 	public $alias = 'Post';
 	public $belongsTo = array(
 		'Article');
@@ -32,7 +30,7 @@ class LookupableTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function startTest() {
+	public function setUp() {
 		$this->Post = new Post();
 	}
 
@@ -42,7 +40,7 @@ class LookupableTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function endTest() {
+	public function tearDown() {
 		unset($this->Post);
 		ClassRegistry::flush();
 	}
@@ -54,7 +52,7 @@ class LookupableTest extends CakeTestCase {
  * @access public
  */
 	public function testAddRecordAndLookup() {
-		$this->Post->Behaviors->attach('Utils.Lookupable', array(
+		$this->Post->Behaviors->load('Utils.Lookupable', array(
 			'types' => array(
 				'Article')));
 		$this->Post->create();
@@ -82,4 +80,3 @@ class LookupableTest extends CakeTestCase {
 	}
 
 }
-?>

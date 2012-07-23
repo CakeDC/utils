@@ -11,7 +11,6 @@ class ArticleFixture extends CakeTestFixture {
  * name property
  *
  * @var string 'AnotherArticle'
- * @access public
  */
 	public $name = 'Article';
 
@@ -19,7 +18,6 @@ class ArticleFixture extends CakeTestFixture {
  * fields property
  *
  * @var array
- * @access public
  */
 	public $fields = array(
 		'id' => array('type' => 'integer', 'key' => 'primary'),
@@ -31,10 +29,9 @@ class ArticleFixture extends CakeTestFixture {
 		'updated' => 'datetime');
 
 /**
- * records property
+ * Records property
  *
  * @var array
- * @access public
  */
 	public $records = array(
 		array('id' => 1, 'title' => 'First Article', 'slug' => 'first_article', 'tiny_slug' => '0', 'position' => 1, 'created' => '2007-03-18 10:39:23', 'updated' => '2007-03-18 10:41:31'),
@@ -42,5 +39,3 @@ class ArticleFixture extends CakeTestFixture {
 		array('id' => 3, 'title' => 'Third Article', 'slug' => 'third_article', 'tiny_slug' => '2', 'position' => 3, 'created' => '2007-03-18 10:43:23', 'updated' => '2007-03-18 10:45:31'));
 
 }
-
-?>

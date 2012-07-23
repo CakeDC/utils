@@ -1,6 +1,5 @@
 <?php
-
-App::uses('TinySluggableBehavior', 'Utils.Model/Behavior');
+App::uses('Utils.Sluggable', 'Model/Behavior');
 
 /**
  * TinySluggableArticle model used for tests
@@ -22,7 +21,6 @@ class TinySluggableArticle extends CakeTestModel {
  * @access public
  */
 	public $actsAs = array('Utils.TinySluggable');
-
 }
 
 /**
@@ -45,8 +43,10 @@ class TinySluggableBehaviorTest extends CakeTestCase {
  * @access public
  */
 	public function setUp() {
-		$this->Model = ClassRegistry::init('TinySluggableArticle');
-		$this->Model->Behaviors->attach('Utils.TinySluggable', array());
+		$this->Model = new TinySluggableArticle();
+		//debug($this->Model);
+		//$this->Model->useTable = 'test_suite_articles';
+		$this->Model->Behaviors->load('Utils.TinySluggable', array());
 	}
 
 /**
@@ -81,8 +81,8 @@ class TinySluggableBehaviorTest extends CakeTestCase {
  * @access public
  */
 	public function testCustomConfig() {
-		$this->Model->Behaviors->detach('TinySluggable');
-		$this->Model->Behaviors->attach('TinySluggable', array(
+		$this->Model->Behaviors->unload('TinySluggable');
+		$this->Model->Behaviors->load('TinySluggable', array(
 			'tinySlug' => 'tiny_slug',
 			'codeset' => '2abcdefg'));
 
@@ -102,7 +102,7 @@ class TinySluggableBehaviorTest extends CakeTestCase {
  * @access public
  */
 	public function testFirstSlugUsingStdCodeset() {
-		$this->Model->query('truncate table test_suite_articles');
+		$this->Model->query('truncate table ' . $this->Model->useTable);
 
 		$result = $this->Model->save(array(
 			'TinySluggableArticle' => array(
@@ -118,7 +118,7 @@ class TinySluggableBehaviorTest extends CakeTestCase {
  * @access public
  */
 	public function testManySlugs() {
-		$this->Model->query('truncate table test_suite_articles');
+		$this->Model->query('truncate table ' . $this->Model->useTable);
 		$codeset = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		for ($i = 0; $i <= 25; $i++) {
 			$expect[$i] = $codeset[$i];
@@ -132,5 +132,5 @@ class TinySluggableBehaviorTest extends CakeTestCase {
 		$results = Set::extract($this->Model->find('all'), '{n}.TinySluggableArticle.tiny_slug');
 		$this->assertEqual($results, $expect);
 	}
+
 }
-?>

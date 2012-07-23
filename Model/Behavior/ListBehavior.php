@@ -313,6 +313,7 @@ class ListBehavior extends ModelBehavior {
 		if (!$this->isInList($model)) {
 			return null;
 		}
+		$positionColumn = $this->settings[$model->alias]['positionColumn'];
 		return $model->find('first', array('conditions' => array($this->__scopeCondition($model), $model->alias . '.' . $positionColumn => $model->data[$model->alias][$positionColumn] - 1), 'recursive' => 0));
 	}
 
@@ -330,6 +331,7 @@ class ListBehavior extends ModelBehavior {
 		if (!$this->isInList($model)) {
 			return null;
 		}
+		$positionColumn = $this->settings[$model->alias]['positionColumn'];
 		return $model->find('first', array('conditions' => array($this->__scopeCondition($model), $model->alias . '.' . $positionColumn => $model->data[$model->alias][$positionColumn] + 1), 'recursive' => 0));
 	}
 
@@ -340,6 +342,7 @@ class ListBehavior extends ModelBehavior {
  */
 	public function isInList($model) {
 		extract($this->settings[$model->alias]);
+		$positionColumn = $this->settings[$model->alias]['positionColumn'];
 		if (empty($model->data[$model->alias][$positionColumn])) {
 			return false;
 		}
@@ -360,8 +363,14 @@ class ListBehavior extends ModelBehavior {
 			}
 			$scopes[$model->alias . '.' . $scope] = $model->data[$model->alias][$scope];
 		} elseif (is_array($scope)) {
-			foreach ($scope as $scopeEl) {
-				$scopes[$model->alias . '.' . $scopeEl] = $model->data[$model->alias][$scopeEl];
+			foreach ($scope as $k => $v) {
+				if (is_numeric($k)) {
+					$scopeEl = $v;
+					$v = $model->data[$model->alias][$scopeEl];
+				} else {
+					$scopeEl = $k;
+				}
+				$scopes[$model->alias . '.' . $scopeEl] = $v;
 			}
 		}
 		return $scopes;
@@ -385,6 +394,7 @@ class ListBehavior extends ModelBehavior {
  */
 	private function __addToListBottom($model) {
 		extract($this->settings[$model->alias]);
+		$positionColumn = $this->settings[$model->alias]['positionColumn'];
 		$model->data[$model->alias][$positionColumn] = $this->__bottomPositionInList($model) + 1;
 	}
 
@@ -397,8 +407,8 @@ class ListBehavior extends ModelBehavior {
  */
 	private function __bottomPositionInList($model, $except = null) {
 		extract($this->settings[$model->alias]);
+		$positionColumn = $this->settings[$model->alias]['positionColumn'];
 		$item = $this->__bottomItem($model, $except);
-
 		if (!empty($item) && isset($item[$model->alias][$positionColumn])) {
 			return $item[$model->alias][$positionColumn];
 		} else {
@@ -423,7 +433,10 @@ class ListBehavior extends ModelBehavior {
 			$conditions = array_merge($conditions, array($model->alias . '.' . $model->primaryKey . ' != ' => $except[$model->alias][$model->primaryKey]));
 		}
 		$model->recursive = 0;
-		return $model->find($conditions, null, array($model->alias . '.' . $positionColumn => 'DESC'));
+		$options = array(
+			'conditions' => $conditions,
+			'order' => array($model->alias . '.' . $positionColumn => 'DESC'));
+		return $model->find('first', $options);
 	}
 
 /**
@@ -434,6 +447,7 @@ class ListBehavior extends ModelBehavior {
  */
 	private function __assumeBottomPosition($model) {
 		extract($this->settings[$model->alias]);
+		$positionColumn = $this->settings[$model->alias]['positionColumn'];
 		$model->data[$model->alias][$positionColumn] = $this->__bottomPositionInList($model, $model->data)+1;
 		return $model->save(null, array(
 			'validate' => $validate,
@@ -448,6 +462,7 @@ class ListBehavior extends ModelBehavior {
  */
 	private function __assumeTopPosition($model) {
 		extract($this->settings[$model->alias]);
+		$positionColumn = $this->settings[$model->alias]['positionColumn'];
 		$model->data[$model->alias][$positionColumn] = 1;
 		return $model->save(null, array(
 			'validate' => $validate,
@@ -478,6 +493,7 @@ class ListBehavior extends ModelBehavior {
 	private function __decrementPositionsOnLowerItems($model) {
 		if (!$this->isInList($model)) return;
 		extract($this->settings[$model->alias]);
+		$positionColumn = $this->settings[$model->alias]['positionColumn'];
 		return $model->updateAll(
 			array($model->alias . '.' . $positionColumn => $model->alias . '.' . $positionColumn . ' - 1'),
 			array($this->__scopeCondition($model), $model->alias . '.' . $positionColumn . ' > ' =>  $model->data[$model->alias][$positionColumn])
@@ -493,6 +509,7 @@ class ListBehavior extends ModelBehavior {
 	private function __incrementPositionsOnHigherItems($model) {
 		if (!$this->isInList($model)) return;
 		extract($this->settings[$model->alias]);
+		$positionColumn = $this->settings[$model->alias]['positionColumn'];
 		return $model->updateAll(
 			array($model->alias . '.' . $positionColumn => $model->alias . '.' . $positionColumn . '+1'),
 			array($this->__scopeCondition($model), $model->alias . '.' . $positionColumn . ' < ' => $model->data[$model->alias][$positionColumn])
@@ -508,6 +525,7 @@ class ListBehavior extends ModelBehavior {
  */
 	private function __incrementPositionsOnLowerItems($model, $position) {
 		extract($this->settings[$model->alias]);
+		$positionColumn = $this->settings[$model->alias]['positionColumn'];
 		return $model->updateAll(
 			array($model->alias . '.' . $positionColumn => $model->alias . '.' . $positionColumn . '+1'),
 			array($this->__scopeCondition($model), $model->alias . '.' . $positionColumn . ' >= ' => $position)
@@ -555,5 +573,27 @@ class ListBehavior extends ModelBehavior {
 				'callbacks' => $callbacks));
 		}
 		return $result;
+	}
+	
+/**
+ * Repair list method
+ *
+ * @param object AppModel
+ * @return boolean
+ */
+	public function fixListOrder($model) {
+		extract($this->settings[$model->alias]);
+		$data = $model->find('all', array(
+			'conditions' => $this->__scopeCondition($model), 
+			'order' => array($model->alias . '.' . $positionColumn => 'asc'), 
+			'recursive' => -1));
+		$position = 1;
+		foreach ($data as $row) {
+			$model->id = $row[$model->alias][$model->primaryKey];
+			$model->saveField($positionColumn, $position, array(
+			'validate' => $validate,
+			'callbacks' => $callbacks));
+			$position += 1;
+		}
 	}
 }

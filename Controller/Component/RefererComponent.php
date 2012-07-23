@@ -50,7 +50,7 @@ class RefererComponent extends Component {
  * @param string $default
  */
 	public function setReferer($default = null) {
-		if (empty($this->Controller->data['Data']['referer'])) {
+		if (empty($this->Controller->request->data['Data']['referer'])) {
 			$referer = $this->Controller->referer();
 
 			if ($referer == '/' && !empty($default)) {
@@ -61,7 +61,7 @@ class RefererComponent extends Component {
 				}
 			}
 		} else {
-			$referer = $this->Controller->data['Data']['referer'];
+			$referer = $this->Controller->request->data['Data']['referer'];
 		}
 		$this->Controller->set(compact('referer'));
 	}
@@ -76,7 +76,7 @@ class RefererComponent extends Component {
  */
 	public function redirect($url, $status = null, $exit = true) {
 		if (isset($this->Controller->data['Data']['referer'])) {
-			$referer = $this->Controller->data['Data']['referer'];
+			$referer = $this->Controller->request->data['Data']['referer'];
 		} else {
 			$referer = $this->Controller->referer();
 		}
