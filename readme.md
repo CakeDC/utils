@@ -16,6 +16,7 @@ each component.
 * Publishable    - 
 * Serializable   - allows serialize/deserialize array data into large text field.
 * Sluggable      - implement slugs for model.
+* StateMachine - implements simple state machine no top of model with flexible configuration.
 * SoftDelete     - soft deleting for model.
 * TinySluggable  - creates tiny slugs similar to known url shorteners like bit.ly
 * Toggleable     - toggle field values
@@ -70,6 +71,42 @@ The list behavior allows you to have records act like a list, for example a trac
 * validate       - validate the data when the behavior is saving the changes, default is false.
 * callbacks      - use callbacks when the behavior saves the data, default is false.
 
+### StateMachine
+
+#### Behavior Configuration
+	
+* initial - string literal, declare initial state
+* column - string literal, describe column name storing current state
+* states - array, describing list of states, with action to trigger on diferent events.
+	Keys of this array are event names, and values is array with methods to trigger on three operation:
+	 * exit - called when we leave state 
+	 * enter - called before we entering new state 
+	 * after - called after we enter new state 
+
+		'states' => array(
+			'in' => array('exit' => 'exitTest'),
+			'ready' => array('after'=>'afterTest', 'enter'=>'enterTest'),
+			'out' => array()),
+	 
+	 
+* events - array, list of transitions between states.
+	Keys of this array are event names. Transition has inside 'from' and 'to' keys, that contain set of states allowed for this transition.
+	
+
+			'events' => array(
+				'prepare' => array(
+					'transitions' => array(
+						'to'=>'ready',
+						'from'=>array('in', 'out'))),
+				'close' => array(
+					'transitions' => array (
+  						'to'=>'out',
+						'from'=>array('ready', 'in'))),
+	
+	
+To trigger transition behavior provide two ways. First is calling Model::fire with event name. Second call magic method Model::setState{$CamelizedEventName}. Both methods change event state only if this transition is allowed.
+
+	
 ## Languages Lib
 
 The languages lib is basically just a helper lib that extends I10n to get a three character language code => country name array.
@@ -99,14 +136,14 @@ For more information about our Professional CakePHP Services please visit the [C
 
 ## License ##
 
-Copyright 2009-2010, [Cake Development Corporation](http://cakedc.com)
+Copyright 2009-2012, [Cake Development Corporation](http://cakedc.com)
 
 Licensed under [The MIT License](http://www.opensource.org/licenses/mit-license.php)<br/>
 Redistributions of files must retain the above copyright notice.
 
 ## Copyright ###
 
-Copyright 2009-2011<br/>
+Copyright 2009-2012<br/>
 [Cake Development Corporation](http://cakedc.com)<br/>
 1785 E. Sahara Avenue, Suite 490-423<br/>
 Las Vegas, Nevada 89104<br/>
