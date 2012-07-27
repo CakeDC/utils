@@ -1,50 +1,47 @@
 <?php
-App::uses('Controller', 'Controller', false);
-App::uses('Component', 'Utils.Referer');
+App::import('Controller', 'Controller', false);
+//App::uses('Referer', 'Utils.Controller/Component/Referer');
+App::import('Component', 'Utils.Referer');
 App::uses('Router', 'Routing');
 
-if (!class_exists('Article')) {
-	class Article extends CakeTestModel {
-	/**
-	* 
-	*/
-		public $name = 'Article';
-	}
+class Article extends CakeTestModel {
+/**
+ * 
+ */
+	public $name = 'Article';
 }
 
-if (!class_exists('ArticlesRefererTestController')) {
-	class ArticlesRefererTestController extends Controller {
+class ArticlesTestController extends Controller {
 
-	/**
-	* @var string
-	* @access public
-	*/
-		public $name = ' ArticlesRefererTest';
+/**
+ * @var string
+ * @access public
+ */
+	public $name = 'ArticlesTest';
 
-	/**
-	* @var array
-	* @access public
-	*/
-		public $uses = array('Article');
+/**
+ * @var array
+ * @access public
+ */
+	public $uses = array('Article');
 
-	/**
-	* @var array
-	* @access public
-	*/
-		public $components = array('Utils.Referer');
+/**
+ * @var array
+ * @access public
+ */
+	public $components = array('Utils.Referer');
 
-	/**
-	* 
-	*/
-		public function redirect($url, $status = NULL, $exit = true) {
-			$this->redirectUrl = $url;
-		}
-
+/**
+ * 
+ */
+	public function redirect($url, $status = NULL, $exit = true) {
+		$this->redirectUrl = $url;
 	}
+
 }
 
 
-class RefererTest extends CakeTestCase {
+class PrgComponentTest extends CakeTestCase {
 /**
  * Fixtures
  *
@@ -61,7 +58,7 @@ class RefererTest extends CakeTestCase {
  */
 	function setUp() {
 		$request = new CakeRequest();
-		$this->Controller = new ArticlesRefererTestController($request);
+		$this->Controller = new ArticlesTestController($request);
 		$this->Controller->constructClasses();
 		$this->Controller->params = array(
 			'named' => array(),

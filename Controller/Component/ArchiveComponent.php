@@ -57,7 +57,7 @@ class ArchiveComponent extends Object {
  *
  * @param object
  */
-	public function startup(&$controller) {
+	public function startup(Controller $controller) {
 		$this->controller =& $controller;
 		if (empty($this->modelName)) {
 			$this->modelName = $controller->modelClass;
@@ -65,8 +65,8 @@ class ArchiveComponent extends Object {
 		$parsedParams = array();
 
 		foreach ($this->_parameters as $param) {
-			if (isset($controller->params[$param]) && is_numeric($controller->params[$param])) {
-				$parsedParams[$param] = $controller->params[$param];
+			if (isset($controller->request->params[$param]) && is_numeric($controller->request->params[$param])) {
+				$parsedParams[$param] = $controller->request->params[$param];
 			}
 		}
 		if (empty($parsedParams)) {

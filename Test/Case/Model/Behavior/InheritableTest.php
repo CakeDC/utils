@@ -13,43 +13,29 @@
 //App::import('Core', array('AppModel', 'Model'));
 
 // STI Models
-if (!class_exists('ContentInheritable')) {
-	class ContentInheritable extends CakeTestModel {
-		public $useTable = 'contents';
-	}
+class Content extends CakeTestModel {
+	public $useTable = 'contents';
 }
 
-if (!class_exists('ArticleInheritable')) {
-	class ArticleInheritable extends ContentInheritable {
-		public $useTable = 'articles';
-		//public $actsAs = array('Utils.Inheritable');
-	}
+class Article extends Content {
+	public $actsAs = array('Utils.Inheritable');
 }
 
-if (!class_exists('PageInheritable')) {
-	class PageInheritable extends ContentInheritable {
-	//	public $actsAs = array('Utils.Inheritable');
-	}
+class Page extends Content {
+	public $actsAs = array('Utils.Inheritable');
 }
 
 // CTI models
-if (!class_exists('Asset')) {
-	class Asset extends CakeTestModel {
-		public $validate = array('title' => array('rule' => 'notEmpty'));
-	}
+class Asset extends CakeTestModel {
+	public $validate = array('title' => array('rule' => 'notEmpty'));
 }
 
-//if (!class_exists('Link')) {
-	class Link extends Asset {
-		public $actsAs = array('Utils.Inheritable' => array('method'=>'CTI'));
-		public $validate = array('url' => array('rule' => 'notEmpty'));
-	}
-//}
-
-if (!class_exists('Image')) {
-	class Image extends Asset {
-		public $actsAs = array('Utils.Inheritable' => array('method'=>'CTI'));
-	}
+class Link extends Asset {
+	public $actsAs = array('Utils.Inheritable' => array('method'=>'CTI'));
+	public $validate = array('url' => array('rule' => 'notEmpty'));
+}
+class Image extends Asset {
+	public $actsAs = array('Utils.Inheritable' => array('method'=>'CTI'));
 }
 
 
@@ -67,7 +53,7 @@ class InheritableTest extends CakeTestCase {
  * @var array
  * @access public
  */
-	public $fixtures = array('plugin.utils.article', 'plugin.utils.content', 'plugin.utils.asset', 'plugin.utils.link', 'plugin.utils.image');
+	public $fixtures = array('plugin.utils.content', 'plugin.utils.asset', 'plugin.utils.link', 'plugin.utils.image');
 
 /**
  * Start Test callback
@@ -80,17 +66,12 @@ class InheritableTest extends CakeTestCase {
 		parent::setUp();
 
 		// STI models
-		$this->Article = ClassRegistry::init('ArticleInheritable');
-		$this->Article->Behaviors->load('Utils.Inheritable');
-		$this->Article->Behaviors->load('Containable');
-		
-		$this->Page = ClassRegistry::init('PageInheritable');
-		$this->Page->Behaviors->load('Utils.Inheritable');
-		$this->Content = ClassRegistry::init('ContentInheritable');
-		$this->Content->useTable = 'contents';
+		$this->Article = ClassRegistry::init('Article');
+		$this->Page = ClassRegistry::init('Page');
+		$this->Content = ClassRegistry::init('Content');
 
 		$this->Page->Behaviors->load('Containable');
-		//$this->Article->Behaviors->load('Containable');
+		$this->Article->Behaviors->load('Containable');
 
 		// CTI models
 		$this->Asset = ClassRegistry::init('Asset');
@@ -118,8 +99,8 @@ class InheritableTest extends CakeTestCase {
  * @access public
  */
 	public function testSubclassParentClass() {
-		$this->assertIsA($this->Article->parent, 'ContentInheritable');
-		$this->assertIsA($this->Page->parent, 'ContentInheritable');
+		$this->assertIsA($this->Article->parent, 'Content');
+		$this->assertIsA($this->Page->parent, 'Content');
 		$this->assertEqual($this->Content->find('all'), $this->Article->parent->find('all'));
 	}
 
@@ -132,28 +113,26 @@ class InheritableTest extends CakeTestCase {
 	public function testSubclassFind() {
 		// Test subclass Article
 		$result = $this->Article->find('all');
-		//debug($result);
-
-		$this->assertTrue(Set::matches('/ArticleInheritable[type=Article]', $result));
-		$this->__assertMatches('/ArticleInheritable[type=Article]', $result);
-		$this->__assertMatches('/ArticleInheritable[type!=Page]', $result);
+		$this->assertTrue(Set::matches('/Article[type=Article]', $result));
+		$this->__assertMatches('/Article[type=Article]', $result);
+		$this->__assertMatches('/Article[type!=Page]', $result);
 
 		// Test Suclass Page
-//		$result = $this->Page->find('all');
-//		$this->__assertMatches('/Page[type=Page]', $result);
-//		$this->__assertMatches('/Page[type!=Article]', $result);
+		$result = $this->Page->find('all');
+		$this->__assertMatches('/Page[type=Page]', $result);
+		$this->__assertMatches('/Page[type!=Article]', $result);
 
-//		// Test String Condition
-//		$r1 = $this->Page->find('all', array('conditions' => array('Page.permalink' => 'about-us')));
-//		$r2 = $this->Page->find('all', array('conditions' => 'Page.permalink = "about-us"'));
-//		$this->assertEqual($r1, $r2, "should support string conditions");
+		// Test String Condition
+		$r1 = $this->Page->find('all', array('conditions' => array('Page.permalink' => 'about-us')));
+		$r2 = $this->Page->find('all', array('conditions' => 'Page.permalink = "about-us"'));
+		$this->assertEqual($r1, $r2, "should support string conditions");
 
-//		// Test condition build properly for different subclasses, should not conflict
-//		$r1 = $this->Page->find('all', array('conditions' => "permalink = 'about-us'"));
-//		$r2 = $this->Article->find('all', array('conditions' => "permalink = 'about-us'"));
-//		$this->__assertMatches('/Page[body=/CakePHP is a MVC PHP framework/i]', $r1);
-//		$this->__assertMatches('/Article[body=/company/i]', $r2, "shit");
-//		$this->assertNotEqual($r1, $r2);
+		// Test condition build properly for different subclasses, should not conflict
+		$r1 = $this->Page->find('all', array('conditions' => "permalink = 'about-us'"));
+		$r2 = $this->Article->find('all', array('conditions' => "permalink = 'about-us'"));
+		$this->__assertMatches('/Page[body=/CakePHP is a MVC PHP framework/i]', $r1);
+		$this->__assertMatches('/Article[body=/company/i]', $r2, "shit");
+		$this->assertNotEqual($r1, $r2);
 	}
 
 /**

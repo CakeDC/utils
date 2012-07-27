@@ -157,7 +157,7 @@ class PublishableBehavior extends ModelBehavior {
 		}
 
 		if ($this->__settings[$Model->alias]['find'] && $Model->hasField($this->__settings[$Model->alias]['field'])) {
-			$Db = ConnectionManager::getDataSource($Model->useDbConfig);
+			$Db =& ConnectionManager::getDataSource($Model->useDbConfig);
 			$include = false;
 
 			if (!empty($queryData['conditions']) && is_string($queryData['conditions'])) {
@@ -173,16 +173,16 @@ class PublishableBehavior extends ModelBehavior {
 				foreach($fields as $field) {
 					if (preg_match('/^' . preg_quote($field) . '[\s=!]+/i', $queryData['conditions']) ||
 						preg_match('/\\x20+' . preg_quote($field) . '[\s=!]+/i', $queryData['conditions'])) {
-
+							
 						$include = false;
 						break;
 					}
 				}
 			}
 			else if (empty($queryData['conditions']) ||
-				(!in_array($this->__settings[$Model->alias]['field'], array_keys($queryData['conditions'])) &&
+				(!in_array($this->__settings[$Model->alias]['field'], array_keys($queryData['conditions'])) && 
 				!in_array($Model->alias . '.' . $this->__settings[$Model->alias]['field'], array_keys($queryData['conditions'])))) {
-
+					
 				$include = true;
 			}
 
@@ -204,7 +204,7 @@ class PublishableBehavior extends ModelBehavior {
 					}
 				}
 			}
-
+			
 			if (is_null($recursive) && !empty($queryData['recursive'])) {
 				$recursive = $queryData['recursive'];
 			} elseif (is_null($recursive)) {

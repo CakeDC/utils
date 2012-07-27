@@ -8,11 +8,9 @@
  * @subpackage goodies.tests.cases.helpers
  *
  */
-App::import('Helper', array('Html', 'Utils.Gravatar'));
-App::uses('View', 'View'); 
-App::uses('String', 'Utility');
-App::uses('Security', 'Utility');
-App::uses('Validation', 'Utility');
+App::uses('View', 'View');
+App::uses('GravatarHelper', 'Utils.View/Helper');
+App::uses('HtmlHelper', 'View/Helper');
 
 /**
  * GravatarHelper Test
@@ -36,7 +34,7 @@ class GravatarHelperTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function setUp() {
+	public function startTest() {
 		$null = null;
 		$this->View = new View($null);
 		$this->Gravatar = new GravatarHelper($this->View);
@@ -49,7 +47,7 @@ class GravatarHelperTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function tearDown() {
+	public function endTest() {
 		unset($this->Gravatar);
 	}
 
@@ -187,7 +185,7 @@ class GravatarHelperTest extends CakeTestCase {
 
 		$_SERVER['HTTPS'] = true;
 		
-		$expected = 'http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
+		$expected = 'https://secure.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
 		$result = $this->Gravatar->url('example@gravatar.com', array('ext' => false));
 		$this->assertEqual($expected, $result);
 

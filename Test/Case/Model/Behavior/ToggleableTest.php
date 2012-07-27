@@ -4,12 +4,12 @@ App::import('Behavior', 'Utils.Toggleable');
 /**
  * Post Test Model
  */
-if (!class_exists('Post')) {
-	class Post extends CakeTestModel {
-		public $useTable = 'posts';
-		public $alias = 'Post';
-	}
+class Post extends CakeTestModel {
+	public $useTable = 'posts';
+	//public $actsAs = array('Toggleable');
+	public $alias = 'Post';
 }
+
 /**
  * Toggleable Test case
  */
@@ -100,8 +100,11 @@ class ToggleableTest extends CakeTestCase {
 			'fields' => array(
 				'deleted' => array(1))));
 
-		$this->expectException('InvalidArgumentException');
-		$this->Post->toggle('invalid-record-id', 'deleted');
+		try {
+			$this->Post->toggle('invalid-record-id', 'deleted');
+			$this->fail();
+		} catch (Exception $ex) {
+		}
 	}
 
 }

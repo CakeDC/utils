@@ -1,6 +1,5 @@
 <?php
-App::import('Behavior', 'Utils.Btree');
-
+App::uses('BtreeBehavior', 'Utils.Model/Behavior');
 class BArticle extends CakeTestModel {
 	public $useTable = 'b_articles';
 	public $actsAs = array('Utils.Btree');
@@ -42,8 +41,8 @@ class BtreeTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function setUp() {
-		parent::setUp();
+	public function startTest($method) {
+		parent::startTest($method);
 		$this->Model = new BArticle();
 		$this->Behavior = $this->Model->Behaviors->Btree;
 	}
@@ -54,8 +53,8 @@ class BtreeTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function tearDown() {
-		parent::tearDown();
+	public function endTest($method) {
+		parent::endTest($method);
 		unset($this->Model, $this->Behavior);
 		ClassRegistry::flush();
 	}
@@ -98,7 +97,7 @@ class BtreeTest extends CakeTestCase {
  * @access public
  */
 	public function testGeneratetreelist() {
-		$result = $this->Model->generateTreeList();		
+		$result = $this->Model->generatetreelist();
 		$expected = array(
 			1 => 'First article',
 			2 => '_First article - child 1',
@@ -114,10 +113,10 @@ class BtreeTest extends CakeTestCase {
  * @access public
  */
 	public function testGetParentNode() {
-		$result = $this->Model->getParentNode(2);
+		$result = $this->Model->getparentnode(2);
 		$this->assertEqual($result['BArticle']['id'], 1);
 
-		$result = $this->Model->getParentNode(3);
+		$result = $this->Model->getparentnode(3);
 		$this->assertEqual($result['BArticle']['id'], 2);
 	}
 
@@ -128,7 +127,7 @@ class BtreeTest extends CakeTestCase {
  * @access public
  */
 	public function testGetPath() {
-		$result = $this->Model->getPath(3);
+		$result = $this->Model->getpath(3);
 		$this->assertEqual(Set::extract('/BArticle/id', $result), array(1, 2, 3));
 	}
 
@@ -139,8 +138,9 @@ class BtreeTest extends CakeTestCase {
  * @access public
  */
 	public function testChildcount() {
-		$this->assertEqual($this->Model->childCount(1, true), 1);
-		$this->assertEqual($this->Model->childCount(null, false), 4);
+		$this->assertEqual($this->Model->childcount(1, true), 1);
+		$this->assertEqual($this->Model->childcount(null, false), 4);
 	}
 
 }
+?>

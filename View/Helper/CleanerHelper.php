@@ -17,6 +17,7 @@
  * @package utils
  * @subpackage utils.views.cleaner
  */
+App::uses('AppHelper', 'View/Helper');
 class CleanerHelper extends AppHelper {
 
 /**

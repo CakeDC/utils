@@ -17,8 +17,6 @@
  * @package utils
  * @subpackage utils.controllers.components
  */
-App::uses('Component', 'Controller');
-
 class RefererComponent extends Component {
 
 /**
@@ -33,7 +31,7 @@ class RefererComponent extends Component {
  *
  * @param object Controller object
  */
-	public function initialize(&$controller) {
+	public function initialize($controller) {
 		$this->Controller = $controller;
 	} 
 
@@ -42,7 +40,7 @@ class RefererComponent extends Component {
  *
  * @param object Controller object
  */
-	public function startup(&$controller) {
+	public function startup($controller) {
 		$this->setReferer();
 	}
 
@@ -53,7 +51,7 @@ class RefererComponent extends Component {
  */
 	public function setReferer($default = null) {
 		if (empty($this->Controller->request->data['Data']['referer'])) {
-			$referer = $this->Controller->request->referer();
+			$referer = $this->Controller->referer();
 
 			if ($referer == '/' && !empty($default)) {
 				$referer = $default;
@@ -80,7 +78,7 @@ class RefererComponent extends Component {
 		if (isset($this->Controller->data['Data']['referer'])) {
 			$referer = $this->Controller->request->data['Data']['referer'];
 		} else {
-			$referer = $this->Controller->request->referer();
+			$referer = $this->Controller->referer();
 		}
 
 		if (strlen($referer) == 0 || $referer == '/') {

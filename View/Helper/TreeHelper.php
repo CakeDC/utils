@@ -139,8 +139,9 @@ class TreeHelper extends AppHelper {
             $indent = true;
         }
         $view = $this->_View;
-        if ($model === null) {
-            $model = Inflector::classify($view->params['models'][0]);
+        if ($model === null && !empty($view->request->params['models'])) {
+            $model = current($view->request->params['models']);
+            $model = $model['className'];
         }
         if (!$model) {
             $model = '_NULL_';

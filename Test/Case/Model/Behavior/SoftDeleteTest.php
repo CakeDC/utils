@@ -97,8 +97,8 @@ class SoftDeleteTest extends CakeTestCase {
 		$this->Post->Behaviors->unload('SoftDelete');
 		$data = $this->Post->read(null, 1);
 		$this->assertEqual($data['Post']['deleted'], true);
-		$this->assertEqual(date_format(date_create($data['Post']['updated']), 'Y-m-d H:i'), date_format(date_create($data['Post']['deleted_date']), 'Y-m-d H:i'));
-}
+		$this->assertEqual($data['Post']['updated'], $data['Post']['deleted_date']);
+	}
 
 /**
  * testUnDelete

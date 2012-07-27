@@ -1,5 +1,8 @@
 <?php
-App::import(array('Security', 'Validation'));
+App::uses('Security', 'Utility');
+App::uses('Validation', 'Utility');
+App::uses('AppHelper', 'View/Helper');
+
 
 /**
  * CakePHP Gravatar Helper
@@ -74,6 +77,7 @@ class GravatarHelper extends AppHelper {
 
 		// Default the secure option to match the current URL.
 		$this->__default['secure'] = env('HTTPS');
+		
 		parent::__construct($View, $settings);
 	}
 
@@ -98,11 +102,15 @@ class GravatarHelper extends AppHelper {
  * @return string Gravatar Image URL
  */
 	public function url($email, $options = array()) {
-		$options = $this->__cleanOptions(array_merge($this->__default, $options));
-		$ext = $options['ext'];
-		$secure = $options['secure'];
-		unset($options['ext'], $options['secure']);
-		$protocol = $secure === true ? 'https' : 'http';
+        if (env('HTTPS') && !isset($options['secure'])) {
+            $options['secure'] = true;
+        }
+        $options = $this->__cleanOptions(array_merge($this->__default, $options));
+        $ext = $options['ext'];
+        $secure = $options['secure'];
+        unset($options['ext'], $options['secure']);
+        $protocol = $secure === true ? 'https' : 'http';
+
 
 		$imageUrl = $this->__url[$protocol] . $this->__emailHash($email, $this->__hashType);
 		if ($ext === true) {
