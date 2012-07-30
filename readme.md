@@ -1,6 +1,6 @@
 # Utils Plugin for CakePHP #
 
-Version 1.2
+Version 1.2 for cake 1.3
 
 The utils plugin contain a lot of reusable components, behaviors and helpers. Here we will list and detail 
 each component.
@@ -97,6 +97,18 @@ Allow to keep referer url inside the add/edit form to reuse it for redirect on s
 For support and feature request, please visit the [Utils Plugin Support Site](http://cakedc.lighthouseapp.com/projects/59607-utils-plugin/).
 
 For more information about our Professional CakePHP Services please visit the [Cake Development Corporation website](http://cakedc.com).
+
+## Branch strategy ##
+
+The master branch holds the STABLE latest version of the plugin. 
+Develop branch is UNSTABLE and used to test new features before releasing them. 
+
+Previous maintenance versions are named after the CakePHP compatible version, for example, branch 1.3 is the maintenance version compatible with CakePHP 1.3.
+All versions are updated with security patches.
+
+## Contributing to this Plugin ##
+
+Please feel free to contribute to the plugin with new issues, requests, unit tests and code fixes or new features. If you want to contribute some code, create a feature branch from develop, and send us your pull request. Unit tests for new features and issues detected are mandatory to keep quality high. 
 
 ## License ##
 
