@@ -94,7 +94,7 @@ Allow to keep referer url inside the add/edit form to reuse it for redirect on s
 
 ## Support ##
 
-For support and feature request, please visit the [Utils Plugin Support Site](http://cakedc.lighthouseapp.com/projects/59607-utils-plugin/).
+For support and feature request, please visit the [CakeDC Contact Form](http://cakedc.com/contact/).
 
 For more information about our Professional CakePHP Services please visit the [Cake Development Corporation website](http://cakedc.com).
 
