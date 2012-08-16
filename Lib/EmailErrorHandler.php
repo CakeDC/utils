@@ -43,9 +43,12 @@ class EmailErrorHandler extends ErrorHandler {
 				list($error, $log) = self::mapErrorCode($code);
 
 				if (in_array($log, $logLevels) || in_array($code, $codes)) {
+					$trace = Debugger::trace(array('start' => 1, 'format' => 'log'));
 					$session = CakeSession::read();
+					$server = $_SERVER;
+					$request = $_REQUEST;
 					$Email = self::getEmailInstance();
-					$Email->viewVars(compact('code', 'description', 'file', 'line', 'context', 'session'));
+					$Email->viewVars(compact('code', 'description', 'file', 'line', 'context', 'session', 'server', 'request', 'trace'));
 					$Email->send();
 				}
 
@@ -97,7 +100,7 @@ class EmailErrorHandler extends ErrorHandler {
 			->from(array('error@' . env('HTTP_HOST') => 'Error Handler'))
 			->to(Configure::read('ErrorHandler.receiver'))
 			->emailFormat('both')
-			->template('error_notification');
+			->template('Utils.error_notification');
 		return $Email;
 	}
 
