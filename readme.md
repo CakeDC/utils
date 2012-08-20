@@ -1,5 +1,6 @@
 # Utils Plugin for CakePHP #
 
+for cake 2.x
 
 The utils plugin contain a lot of reusable components, behaviors and helpers. Here we will list and detail 
 each component.
@@ -93,7 +94,7 @@ Allow to keep referer url inside the add/edit form to reuse it for redirect on s
 
 ## Support ##
 
-For support and feature request, please visit the [Utils Plugin Support Site](http://cakedc.lighthouseapp.com/projects/59607-utils-plugin/).
+To report bugs or request features, please visit the [CakeDC/Utils Issue Tracker](https://github.com/CakeDC/utils/issues).
 
 For more information about our Professional CakePHP Services please visit the [Cake Development Corporation website](http://cakedc.com).
 
