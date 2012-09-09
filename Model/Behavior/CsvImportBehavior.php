@@ -52,7 +52,9 @@ class CsvImportBehavior extends ModelBehavior {
 			$this->settings[$Model->alias] = array(
 				'delimiter' => ';',
 				'enclosure' => '"',
-				'hasHeader' => true
+				'hasHeader' => true,
+				'validateAssociated' => false,
+				'saveMethod' => 'saveAll'
 			);
 		}
 		$this->settings[$Model->alias] = array_merge($this->settings[$Model->alias], $settings);
@@ -130,18 +132,33 @@ class CsvImportBehavior extends ModelBehavior {
 			}
 
 			$error = false;
+
+			$validated = false;
+
 			$Model->set($data);
-			if (!$Model->validates()) {
+
+			if ($this->settings[$Model->alias]['validateAssociated']) {
+				$options = $this->settings[$Model->alias]['validateAssociated'];
+				$validated = $this->Model->validateAssociated($data, $options);
+			} else {
+				$validated = $Model->validates();
+			}
+
+			if (!$validated) {
 				$this->errors[$Model->alias][$i]['validation'] = $Model->validationErrors;
 				$error = true;
 				$this->_notify($Model, 'onImportError', $this->errors[$Model->alias][$i]);
 			}
 
 			// save the row
-			if (!$error && !$Model->saveAll($data, array('validate' => false,'atomic' => false))) {
-				$this->errors[$Model->alias][$i]['save'] = sprintf(__d('utils', '%s for Row %d failed to save.'), $Model->alias, $i);
-				$error = true;
-				$this->_notify($Model, 'onImportError', $this->errors[$Model->alias][$i]);
+			$saveMethod = $this->settings[$Model->alias]['saveMethod'];
+
+			if (!$error) {
+				if (!method_exists($Model, $saveMethod) || !$Model->{$saveMethod}($data, array('validate' => false,'atomic' => false))) {
+					$this->errors[$Model->alias][$i]['save'] = sprintf(__d('utils', '%s for Row %d failed to save.'), $Model->alias, $i);
+					$error = true;
+					$this->_notify($Model, 'onImportError', $this->errors[$Model->alias][$i]);
+				}
 			}
 
 			if (!$error) {
