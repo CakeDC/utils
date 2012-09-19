@@ -137,4 +137,16 @@ class SoftDeleteTest extends CakeTestCase {
 		$this->assertFalse($data);
 	}
 
+	public function testExistsAndNotDeleted() {
+		$data = $this->Post->read(null, 1);
+		$this->assertEqual($data[$this->Post->alias][$this->Post->primaryKey], 1);
+		$result = $this->Post->delete(1);
+		$this->assertFalse($result);
+		$data = $this->Post->read(null, 1);
+		$this->assertFalse($data);
+		$this->assertFalse($this->Post->existsAndNotDeleted(1));
+		$this->Post->undelete(1);
+		$this->assertTrue($this->Post->existsAndNotDeleted(1));
+	}
+
 }
