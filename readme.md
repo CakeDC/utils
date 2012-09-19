@@ -87,11 +87,6 @@ Since "exists" method in Model disable callbacks you may experience problems usi
 
 It will call SoftDelete::existsAndNotDeleted() for models that use SoftDelete Behavior and Model:exists for models that do not use it  
 
-* positionColumn - The column in the table used to store the positiot, default is 'position'.
-* scope          - Find condition like array to define a scope, default is empty string ''.
-* validate       - validate the data when the behavior is saving the changes, default is false.
-* callbacks      - use callbacks when the behavior saves the data, default is false.
-
 ## Languages Lib
 
 The languages lib is basically just a helper lib that extends I10n to get a three character language code => country name array.
