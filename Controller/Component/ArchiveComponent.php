@@ -88,7 +88,7 @@ class ArchiveComponent extends Component {
 		} else {
 			$paginate['conditions'] = $archiveConditions;
 		}
-		$controller->Paginator->paginate[$this->modelName] = $paginate;
+		$controller->Paginator->settings[$this->modelName] = $paginate;
 		return true;
 	}
 
