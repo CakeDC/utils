@@ -223,4 +223,22 @@ class SluggableTest extends CakeTestCase {
 		$result = $this->Model->read();
 		$this->assertEqual($result['SluggedArticle']['slug'], 'andersons_fairy_tales_ii');
 	}
+
+/**
+ * Test a successful save when the model does not contain the configured slug field.
+ *
+ * @return void
+ * @access public
+ */
+	public function testModelWithoutSlugColumn() {
+		$this->Model->Behaviors->unload('Sluggable');
+		$this->Model->Behaviors->load('Sluggable', array(
+			'slug' => 'nonexistantcolumn'
+		));
+
+		$this->Model->create(array('title' => 'Some Article 999'));
+		$this->Model->save();
+		$result = $this->Model->read();
+		$this->assertEqual($result['SluggedArticle']['title'], 'Some Article 999');
+	}
 }

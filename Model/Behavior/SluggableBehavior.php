@@ -84,6 +84,8 @@ class SluggableBehavior extends ModelBehavior {
 			return true;
 		} else if (!$this->settings[$Model->alias]['update'] && !empty($Model->id) && !is_string($this->settings[$Model->alias]['trigger'])) {
 			return true;
+		} else if (!$Model->hasField($this->settings[$Model->alias]['slug'])) {
+			return true;
 		}
 
 		$slug = $Model->data[$Model->alias][$settings['label']];
