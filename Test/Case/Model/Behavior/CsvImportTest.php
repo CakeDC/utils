@@ -37,7 +37,7 @@ class CsvImportTest extends CakeTestCase {
  * @var array
  * @access public
  */
-	public $fixtures = array('plugin.utils.content');
+	public $fixtures = array('plugin.utils.content', 'plugin.utils.comment');
 
 /**
  * Creates the model instance
@@ -91,6 +91,31 @@ class CsvImportTest extends CakeTestCase {
 		$records = $this->Content->find('all', array('order' => 'created DESC', 'limit' => 2));
 		$titles = Set::extract('/Content/title', $records);
 		$this->assertEqual($titles, array('Unearthed rare monster in london', 'Another Title'));
+		
+		$permalinks = Set::extract('/Content/permalink', $records);
+		$this->assertEqual($permalinks, array(13444555, 'A permalink'));
+	}
+
+/**
+ * testImportCSVWithHasMany
+ *
+ * @access public
+ * @return void
+ */
+	public function testImportCSVWithHasMany() {
+		$this->Content->bindModel(array(
+			'hasMany' => array(
+				'Comment'
+			)
+		), false);
+		$this->Content->Behaviors->load('Utils.CsvImport');
+		$path = App::pluginPath('Utils');
+		$result = $this->Content->importCSV($path . 'Test' . DS . 'tmp' . DS . 'test2.csv');
+		$this->assertTrue($result);
+
+		$records = $this->Content->find('all', array('order' => 'created DESC', 'limit' => 2));
+		$titles = Set::extract('/Comment/body', $records);
+		$this->assertEqual($titles, array('really? how strange?', 'very good read'));
 		
 		$permalinks = Set::extract('/Content/permalink', $records);
 		$this->assertEqual($permalinks, array(13444555, 'A permalink'));
