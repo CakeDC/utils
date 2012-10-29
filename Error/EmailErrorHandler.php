@@ -88,7 +88,7 @@ class EmailErrorHandler extends ErrorHandler {
 	}
 
 /**
- * Sets the cache config for the error handle rup
+ * Sets the cache config for the error handler up
  *
  * @return void
  */

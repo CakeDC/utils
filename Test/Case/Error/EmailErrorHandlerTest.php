@@ -1,5 +1,5 @@
 <?php
-App::uses('EmailErrorHandler', 'Utils.Lib');
+App::uses('EmailErrorHandler', 'Utils.Error');
 /**
  * EmailErrorHandler Test Case
  * 
@@ -50,8 +50,7 @@ class EmailErrorHandlerTest extends CakeTestCase {
 		Configure::write('Error', array(
 			'handler' => 'AppErrorHandler::handleError',
 			'level' => E_ALL & ~E_DEPRECATED,
-			'trace' => true
-		));
+			'trace' => true));
 
 		Configure::write('ErrorHandler', array(
 			'receiver' => 'error@localhost.loc',
@@ -60,9 +59,10 @@ class EmailErrorHandlerTest extends CakeTestCase {
 			'codes' => array(E_NOTICE),
 			'logLevels' => array(LOG_NOTICE)));
 
-		$Mock->expects($this->once())->method('getEmailInstance');
+		$Mock->expects($this->once())
+			->method('getEmailInstance');
 
-		$Mock::handleError(LOG_NOTICE, 'test');
+		$Mock->handleError(LOG_NOTICE, 'test');
 	}
 
 }
