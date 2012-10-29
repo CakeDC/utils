@@ -1,5 +1,6 @@
 <?php
 App::uses('EmailErrorHandler', 'Utils.Error');
+App::uses('CakeEmail', 'Network/Email');
 /**
  * EmailErrorHandler Test Case
  * 
@@ -45,7 +46,8 @@ class EmailErrorHandlerTest extends CakeTestCase {
  * @return void
  */
 	public function testHandleError() {
-		$Mock = $this->getMock('EmailErrorHandler', array('getEmailInstance'));
+		$ErrorHandler = $this->getMock('EmailErrorHandler', array('getEmailInstance'));
+		$Email = $this->getMock('CakeEmail', array('send'));
 
 		Configure::write('Error', array(
 			'handler' => 'AppErrorHandler::handleError',
@@ -59,10 +61,15 @@ class EmailErrorHandlerTest extends CakeTestCase {
 			'codes' => array(E_NOTICE),
 			'logLevels' => array(LOG_NOTICE)));
 
-		$Mock->expects($this->once())
-			->method('getEmailInstance');
+		$Email->expects($this->once())
+			->method('send')
+			->will($this->returnValue(true));
 
-		$Mock->handleError(LOG_NOTICE, 'test');
+		$ErrorHandler->expects($this->once())
+			->method('getEmailInstance')
+			->will($this->returnValue($Email));
+
+		$ErrorHandler->handleError(E_NOTICE, 'test');
 	}
 
 }

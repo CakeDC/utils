@@ -50,7 +50,6 @@ class EmailErrorHandler extends ErrorHandler {
 
 			if (Cache::read($cacheHash, 'error_handler') === false) {
 				list($error, $log) = self::mapErrorCode($code);
-
 				if (in_array($log, $logLevels) || in_array($code, $codes)) {
 					$trace = Debugger::trace(array('start' => 1, 'format' => 'log'));
 					$session = CakeSession::read();
