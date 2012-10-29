@@ -97,6 +97,22 @@ class SoftDeleteBehavior extends ModelBehavior {
     }
 
 /**
+ * Check if a record exists for the given id
+ * @param object $model
+ * @param id
+ */
+    public function existsAndNotDeleted($model, $id) {
+    	if ($id === null) {
+            $id = $model->getID();
+        }
+        if ($id === false) {
+            return false;
+        } 
+    	$exists = $model->find('count', array('conditions' => array($model->alias . '.' . $model->primaryKey => $id)));
+    	return ($exists ? true : false);
+    }
+
+/**
  * Before delete callback
  *
  * @param object $model

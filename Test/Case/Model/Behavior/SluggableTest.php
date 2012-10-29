@@ -120,6 +120,24 @@ class SluggableTest extends CakeTestCase {
 	}
 
 /**
+ * Test save unique2
+ *
+ * @return void
+ */
+    public function testSaveUnique2() {
+        $this->Model->create(array('title' => 'Puertas para muebles'));
+        $this->Model->save();
+		
+		$this->Model->create(array('title' => 'Puertas'));
+        $this->Model->save();
+        
+		$results = $this->Model->find('all', array('conditions' => array('title LIKE' => 'Puertas%')));
+        $this->assertEqual(count($results), 2);
+        $this->assertEqual($results[0]['SluggedArticle']['slug'], 'puertas_para_muebles');
+        $this->assertEqual($results[1]['SluggedArticle']['slug'], 'puertas');
+    }
+
+/**
  * Test slug generation/update based on trigger
  *
  * @access public

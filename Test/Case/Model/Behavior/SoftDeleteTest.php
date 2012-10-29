@@ -49,12 +49,6 @@ class SoftDeletedPost extends CakeTestModel {
  * @var string
  */
 	public $alias = 'Post';
-
-
-	public $beforeDeleteReturnValue = true;
-	public function beforeDelete($cascade = true) {
-		return $this->beforeDeleteReturnValue;
-	}
 }
 
 /**
@@ -135,7 +129,7 @@ class SoftDeleteTest extends CakeTestCase {
 		$count = $this->Post->purgeDeletedCount();
 		$this->assertEqual($count, 1);
 		$this->Post->purgeDeleted();
-
+		
 		$data = $this->Post->read(null, 3);
 		$this->assertFalse($data);
 		$this->Post->Behaviors->disable('SoftDelete');
@@ -143,16 +137,16 @@ class SoftDeleteTest extends CakeTestCase {
 		$this->assertFalse($data);
 	}
 
-	public function testBeforeDelete() {
-		$this->Post->beforeDeleteReturnValue = false;
-
+	public function testExistsAndNotDeleted() {
 		$data = $this->Post->read(null, 1);
 		$this->assertEqual($data[$this->Post->alias][$this->Post->primaryKey], 1);
 		$result = $this->Post->delete(1);
-
-		// delete should have failed
+		$this->assertFalse($result);
 		$data = $this->Post->read(null, 1);
-		$this->assertEqual($data[$this->Post->alias][$this->Post->primaryKey], 1);
+		$this->assertFalse($data);
+		$this->assertFalse($this->Post->existsAndNotDeleted(1));
+		$this->Post->undelete(1);
+		$this->assertTrue($this->Post->existsAndNotDeleted(1));
 	}
 
 }
