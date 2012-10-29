@@ -46,30 +46,27 @@ class EmailErrorHandlerTest extends CakeTestCase {
  * @return void
  */
 	public function testHandleError() {
-		$ErrorHandler = $this->getMock('EmailErrorHandler', array('getEmailInstance'));
-		$Email = $this->getMock('CakeEmail', array('send'));
+		$ErrorHandler = $this->getMockClass('EmailErrorHandler', array('getEmailInstance'));
+		$ErrorHandler::$Email = $this->getMock('CakeEmail', array('send'));
 
 		Configure::write('Error', array(
-			'handler' => 'AppErrorHandler::handleError',
+			'handler' => array($ErrorHandler, 'handleError'),
 			'level' => E_ALL & ~E_DEPRECATED,
 			'trace' => true));
 
 		Configure::write('ErrorHandler', array(
+			'caching' => false,
 			'receiver' => 'error@localhost.loc',
 			'emailNotifications' => true,
 			'duration' => 60,
 			'codes' => array(E_NOTICE),
 			'logLevels' => array(LOG_NOTICE)));
 
-		$Email->expects($this->once())
+		$ErrorHandler::$Email->expects($this->once())
 			->method('send')
 			->will($this->returnValue(true));
 
-		$ErrorHandler->expects($this->once())
-			->method('getEmailInstance')
-			->will($this->returnValue($Email));
-
-		$ErrorHandler->handleError(E_NOTICE, 'test');
+		$ErrorHandler::handleError(E_NOTICE, 'Test error');
 	}
 
 }

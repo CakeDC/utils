@@ -30,6 +30,13 @@ App::uses('Event', 'CakeEvent');
  */
 class EmailErrorHandler extends ErrorHandler {
 /**
+ * CakeEmail instance
+ *
+ * @var CakeEmail
+ */
+	public static $Email = null;
+
+/**
  * HandleError
  *
  * @param integer $code Code of error
@@ -48,7 +55,7 @@ class EmailErrorHandler extends ErrorHandler {
 			$cacheHash = 'error-' . md5(serialize(compact($args)));
 			self::setCacheConfig($duration);
 
-			if (Cache::read($cacheHash, 'error_handler') === false) {
+			if (Cache::read($cacheHash, 'error_handler') === false || $caching === false) {
 				list($error, $log) = self::mapErrorCode($code);
 				if (in_array($log, $logLevels) || in_array($code, $codes)) {
 					$trace = Debugger::trace(array('start' => 1, 'format' => 'log'));
@@ -72,8 +79,9 @@ class EmailErrorHandler extends ErrorHandler {
  *
  * @return array
  */
-	public function handlerSettings() {
+	public static function handlerSettings() {
 		$defaults = array(
+			'caching' => true,
 			'receiver' => null,
 			'emailNotifications' => false,
 			'duration' => ini_get('max_execution_time'),
@@ -89,9 +97,10 @@ class EmailErrorHandler extends ErrorHandler {
 /**
  * Sets the cache config for the error handler up
  *
+ * @param integer $duration in seconds
  * @return void
  */
-	public function setCacheConfig($duration) {
+	public static function setCacheConfig($duration) {
 		Cache::config('error_handler', array(
 			'engine' => 'File',
 			'duration' => '+' . $duration . ' seconds'));
@@ -102,14 +111,17 @@ class EmailErrorHandler extends ErrorHandler {
  *
  * @return CakeEmail
  */
-	public function getEmailInstance() {
-		$Email = new CakeEmail();
-		$Email->subject(__('Error notification from CakePHP Certification'))
-			->from(array('error@' . env('HTTP_HOST') => 'Error Handler'))
-			->to(Configure::read('ErrorHandler.receiver'))
-			->emailFormat('both')
-			->template('Utils.error_notification');
-		return $Email;
+	public static function getEmailInstance() {
+		if (empty(self::$Email)) {
+			$Email = new CakeEmail();
+			$Email->subject(__('Error notification from CakePHP Certification'))
+				->from(array('error@' . env('HTTP_HOST') => 'Error Handler'))
+				->to(Configure::read('ErrorHandler.receiver'))
+				->emailFormat('both')
+				->template('Utils.error_notification');
+			self::$Email = $Email;
+		}
+		return self::$Email;
 	}
 
 }
