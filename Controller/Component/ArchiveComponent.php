@@ -17,7 +17,7 @@
  * @package utils
  * @subpackage utils.controllers.components
  */
-class ArchiveComponent extends Object {
+class ArchiveComponent extends Component {
 
 /**
  * Date parameters to find
@@ -80,15 +80,15 @@ class ArchiveComponent extends Object {
 		}
 
 		$paginate = array();
-		if (!empty($controller->paginate[$this->modelName])) {
-			$paginate = $controller->paginate[$this->modelName];
+		if (!empty($controller->Paginator->paginate[$this->modelName])) {
+			$paginate = $controller->Paginator->paginate[$this->modelName];
 		}
 		if (isset($paginate['conditions'])) {
 			$paginate['conditions'] = array_merge($paginate['conditions'], $archiveConditions);
 		} else {
 			$paginate['conditions'] = $archiveConditions;
 		}
-		$controller->paginate[$this->modelName] = $paginate;
+		$controller->Paginator->paginate[$this->modelName] = $paginate;
 		return true;
 	}
 

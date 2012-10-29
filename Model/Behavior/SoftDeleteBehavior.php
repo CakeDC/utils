@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
  *
@@ -103,10 +103,12 @@ class SoftDeleteBehavior extends ModelBehavior {
  * @param array $query
  * @return boolean
  */
-    public function beforeDelete($model) {
+    public function beforeDelete($model, $cascade = true) {
         $runtime = $this->runtime[$model->alias];
         if ($runtime) {
-        	$res = $this->delete($model, $model->id);
+        	if ($model->beforeDelete($cascade)) {
+        	  $res = $this->delete($model, $model->id);
+        	}
             return false;
         } else {
 			return true;
@@ -209,7 +211,7 @@ class SoftDeleteBehavior extends ModelBehavior {
     public function purgeDeletedCount($model, $expiration = '-90 days') {
         $this->softDelete($model, false);
         return $model->find('count', array(
-			'conditions' => $this->_purgeDeletedConditions($model, $expiration), 
+			'conditions' => $this->_purgeDeletedConditions($model, $expiration),
 			'recursive' => -1));
     }
 
@@ -223,8 +225,8 @@ class SoftDeleteBehavior extends ModelBehavior {
     public function purgeDeleted($model, $expiration = '-90 days') {
         $this->softDelete($model, false);
         $records = $model->find('all', array(
-			'conditions' => $this->_purgeDeletedConditions($model, $expiration), 
-			'fields' => array($model->primaryKey), 
+			'conditions' => $this->_purgeDeletedConditions($model, $expiration),
+			'fields' => array($model->primaryKey),
 			'recursive' => -1));
         if ($records) {
             foreach ($records as $record) {
