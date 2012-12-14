@@ -31,20 +31,12 @@
 class TreeHelper extends AppHelper {
 
 /**
- * name property
- *
- * @var string 'Tree'
- * @access public
- */
-	public $name = 'Tree';
-
-/**
  * settings property
  *
  * @var array
  * @access private
  */
-	private $__settings = array();
+	protected $_settings = array();
 
 /**
  * typeAttributes property
@@ -53,7 +45,7 @@ class TreeHelper extends AppHelper {
  * @access private
  */
 	
-	private $__typeAttributes = array();
+	protected $_typeAttributes = array();
 
 /**
  * typeAttributesNext property
@@ -61,7 +53,7 @@ class TreeHelper extends AppHelper {
  * @var array
  * @access private
  */
-	private $__typeAttributesNext = array();
+	protected $_typeAttributesNext = array();
 
 /**
  * itemAttributes property
@@ -69,7 +61,7 @@ class TreeHelper extends AppHelper {
  * @var array
  * @access private
  */
-	private $__itemAttributes = array();
+	protected $_itemAttributes = array();
 
 /**
  * helpers variable
@@ -113,7 +105,7 @@ class TreeHelper extends AppHelper {
  * @access public
  */
 	public function generate($data, $settings = array ()) {
-		$this->__settings = array_merge(array(
+		$this->_settings = array_merge(array(
 				'model' => null,
 				'alias' => 'name',
 				'type' => 'ul',
@@ -131,10 +123,10 @@ class TreeHelper extends AppHelper {
 				'splitDepth' => false,
 				'splitCount' => 3,
 			), (array)$settings);
-		if ($this->__settings['autoPath'] && !isset($this->__settings['autoPath'][2])) {
-			$this->__settings['autoPath'][2] = 'active';
+		if ($this->_settings['autoPath'] && !isset($this->_settings['autoPath'][2])) {
+			$this->_settings['autoPath'][2] = 'active';
 		}
-		extract($this->__settings);
+		extract($this->_settings);
 		if ($indent === null && Configure::read('debug')) {
 			$indent = true;
 		}
@@ -184,6 +176,7 @@ class TreeHelper extends AppHelper {
 					$return .= '</' . $itemType . '>';
 				}
 			}
+
 			/* Some useful vars */
 			$hasChildren = $firstChild = $lastChild = $hasVisibleChildren = false;
 			$numberOfDirectChildren = $numberOfTotalChildren = null;
@@ -217,6 +210,7 @@ class TreeHelper extends AppHelper {
 					$lastChild = true;
 				}
 			}
+
 			$elementData = array(
 				'data' => $result,
 				'depth' => $depth ? $depth : count($stack),
@@ -225,10 +219,9 @@ class TreeHelper extends AppHelper {
 				'numberOfTotalChildren' => $numberOfTotalChildren,
 				'firstChild' => $firstChild,
 				'lastChild' => $lastChild,
-				'hasVisibleChildren' => $hasVisibleChildren
-			);
+				'hasVisibleChildren' => $hasVisibleChildren);
 
-			$this->__settings = array_merge($this->__settings, $elementData);
+			$this->_settings = array_merge($this->_settings, $elementData);
 			/* Main Content */
 			if ($element) {
 				$content = $view->element($element, $elementData);
@@ -250,7 +243,7 @@ class TreeHelper extends AppHelper {
 					$return .= "\r\n" . $whiteSpace;
 				}
 				if ($type) {
-					$typeAttributes = $this->__attributes($type, array('data' => $elementData));
+					$typeAttributes = $this->_attributes($type, array('data' => $elementData));
 					$return .= '<' . $type .  $typeAttributes . '>';
 				}
 			}
@@ -258,7 +251,7 @@ class TreeHelper extends AppHelper {
 				$return .= "\r\n" . $whiteSpace . "\t";
 			}
 			if ($itemType) {
-				$itemAttributes = $this->__attributes($itemType, $elementData);
+				$itemAttributes = $this->_attributes($itemType, $elementData);
 				$return .= '<' . $itemType . $itemAttributes . '>';
 			}
 			$return .= $content;
@@ -267,7 +260,7 @@ class TreeHelper extends AppHelper {
 			if ($hasVisibleChildren) {
 				if ($numberOfDirectChildren) {
 					$settings['depth'] = $depth + 1;
-					$return .= $this->__suffix();
+					$return .= $this->_suffix();
 					$return .= $this->generate($result['children'], $settings);
 					if ($itemType) {
 						$return .= '</' . $itemType . '>';
@@ -280,7 +273,7 @@ class TreeHelper extends AppHelper {
 				if ($itemType) {
 					$return .= '</' . $itemType . '>';
 				}
-				$return .= $this->__suffix();
+				$return .= $this->_suffix();
 			}
 		}
 		/* Cleanup */
@@ -323,9 +316,9 @@ class TreeHelper extends AppHelper {
  */
 	public function addItemAttribute($id = '', $key = '', $value = null) {
 		if (!is_null($value)) {
-			$this->__itemAttributes[$id][$key] = $value;
-		} elseif (!(isset($this->__itemAttributes[$id]) && in_array($key, $this->__itemAttributes[$id]))) {
-			$this->__itemAttributes[$id][] = $key;
+			$this->_itemAttributes[$id][$key] = $value;
+		} elseif (!(isset($this->_itemAttributes[$id]) && in_array($key, $this->_itemAttributes[$id]))) {
+			$this->_itemAttributes[$id][] = $key;
 		}
 	}
 
@@ -336,12 +329,12 @@ class TreeHelper extends AppHelper {
  * Note that the content of a 'node' is processed before generating its wrapping <type> tag (if appropriate)
  * An 'interesting' case is that of a first child with children. To generate the output
  * <ul> (1)
- *	  <li>XYZ (3)
- *			  <ul> (2)
- *					  <li>ABC...
- *					  ...
- *			  </ul>
- *			  ...
+ *      <li>XYZ (3)
+ *              <ul> (2)
+ *                      <li>ABC...
+ *                      ...
+ *              </ul>
+ *              ...
  * The processing order is indicated by the numbers in brackets.
  * attributes are allways applied to the next type (2) to be generated
  * to set properties of the holding type - pass 'previous' for the 4th param
@@ -354,14 +347,15 @@ class TreeHelper extends AppHelper {
  * @param string $id
  * @param string $key
  * @param mixed $value
+ * @param string $previousOrNext
  * @access public
  * @return void
  */
 	public function addTypeAttribute($id = '', $key = '', $value = null, $previousOrNext = 'next') {
-		$var = '__typeAttributes';
-		$firstChild = isset($this->__settings['firstChild'])?$this->__settings['firstChild']:true;
+		$var = '_typeAttributes';
+		$firstChild = isset($this->_settings['firstChild'])?$this->_settings['firstChild']:true;
 		if ($previousOrNext == 'next' && $firstChild) {
-			$var = '__typeAttributesNext';
+			$var = '_typeAttributesNext';
 		}
 		if (!is_null($value)) {
 			$this->{$var}[$id][$key] = $value;
@@ -387,10 +381,10 @@ class TreeHelper extends AppHelper {
  * @access private
  * @return void
  */
-	private function __suffix() {
+	protected function _suffix() {
 		static $__splitCount = 0;
 		static $__splitCounter = 0;
-		extract($this->__settings);
+		extract($this->_settings);
 		if ($splitDepth) {
 			if ($depth == $splitDepth -1) {
 				$total = $numberOfDirectChildren?$numberOfDirectChildren:$numberOfTotalChildren;
@@ -423,25 +417,25 @@ class TreeHelper extends AppHelper {
  * @access private
  * @return void
  */
-	private function __attributes($rType, $elementData = array(), $clear = true) {
-		extract($this->__settings);
+	protected function _attributes($rType, $elementData = array(), $clear = true) {
+		extract($this->_settings);
 		if ($rType == $type) {
-			$attributes = $this->__typeAttributes;
+			$attributes = $this->_typeAttributes;
 			if ($clear) {
-				$this->__typeAttributes = $this->__typeAttributesNext;
-				$this->__typeAttributesNext = array();
+				$this->_typeAttributes = $this->_typeAttributesNext;
+				$this->_typeAttributesNext = array();
 			}
 		} else {
-			$attributes = $this->__itemAttributes;
-			$this->__itemAttributes = array();
+			$attributes = $this->_itemAttributes;
+			$this->_itemAttributes = array();
 			if ($clear) {
-				$this->__itemAttributes = array();
+				$this->_itemAttributes = array();
 			}
 		}
 		if ($autoPath && $depth) {
-			if ($this->__settings['data'][$model][$left] < $autoPath[0] && $this->__settings['data'][$model][$right] > $autoPath[1]) {
+			if ($this->_settings['data'][$model][$left] < $autoPath[0] && $this->_settings['data'][$model][$right] > $autoPath[1]) {
 				$attributes['class'][] = $autoPath[2];
-			} elseif (isset($autoPath[3]) && $this->__settings['data'][$model][$left] == $autoPath[0]) {
+			} elseif (isset($autoPath[3]) && $this->_settings['data'][$model][$left] == $autoPath[0]) {
 				$attributes['class'][] = $autoPath[3];
 			}
 		}
@@ -467,4 +461,3 @@ class TreeHelper extends AppHelper {
 	}
 
 }
-?>
