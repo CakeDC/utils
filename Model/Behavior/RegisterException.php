@@ -57,7 +57,7 @@ class PingbackableBehavior extends ModelBehavior {
 		if (!isset($this->settings[$model->alias])) {
 			$this->settings[$model->alias] = $this->defaults;
 		}
-		$this->settings[$model->alias] = am($this->settings[$model->alias], !empty(is_array($settings)) ? $settings : array());
+		$this->settings[$Model->alias] = array_merge($this->settings[$Model->alias], (array)$settings);
 	}
 
 /**
