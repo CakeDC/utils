@@ -145,7 +145,7 @@ class SluggableBehavior extends ModelBehavior {
 			if (!in_array($slug, $duplicates)) {
 				return $slug;
 			}
-			
+
 			$startSlug = $slug;
 			$index = 1;
 
