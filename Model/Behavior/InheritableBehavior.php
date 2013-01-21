@@ -38,15 +38,16 @@ class InheritableBehavior extends ModelBehavior {
  * Set up the behavior.
  * Finds parent model and determines type field settings
  *
- * @param Model $model
+ * @param Model $Model
  * @param array $config Behavior configuration
+ * @internal param \Model $model
  * @return void
  */
 	public function setup(Model $Model, $config = array()) {
 		$_defaults = array(
-            'inheritanceField' => 'type',
-            'method' => 'STI',
-            'fieldAlias' => $Model->alias);
+			'inheritanceField' => 'type',
+			'method' => 'STI',
+			'fieldAlias' => $Model->alias);
 		$this->settings[$Model->alias] = array_merge($_defaults, $config);
 
 		$Model->parent = ClassRegistry::init(get_parent_class($Model));
@@ -139,22 +140,11 @@ class InheritableBehavior extends ModelBehavior {
 	public function beforeSave(Model $Model) {
 		if ($this->settings[$Model->alias]['method'] == 'STI') {
 			$this->_singleTableBeforeSave($Model);
+		} elseif ($this->settings[$Model->alias]['method'] == 'CTI') {
+			$this->_saveParentModel($Model);
+			$Model->id = $Model->parent->id;
 		}
 		return true;
-	}
-
-/**
- * After save callback
- * Saves data in the parent model if possible (CTI model only)
- *
- * @param Model $Model
- * @param boolean $created
- * @return void
- */
-	public function afterSave(Model $Model, $created = false) {
-		if ($this->settings[$Model->alias]['method'] == 'CTI') {
-			$this->_saveParentModel($Model);
-		}
 	}
 
 /**
