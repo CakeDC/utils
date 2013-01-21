@@ -39,7 +39,7 @@ class SoftDeleteBehavior extends ModelBehavior {
  * @param object $model
  * @param array $settings
  */
-	public function setup($model, $settings = array()) {
+	public function setup(Model $model, $settings = array()) {
 		if (empty($settings)) {
 			$settings = $this->default;
 		} elseif (!is_array($settings)) {
@@ -71,7 +71,7 @@ class SoftDeleteBehavior extends ModelBehavior {
  * @param array $query
  * @return array
  */
-	public function beforeFind($model, $query) {
+	public function beforeFind(Model $model, $query) {
 		$runtime = $this->runtime[$model->alias];
 		if ($runtime) {
 			if (!is_array($query['conditions'])) {
@@ -119,7 +119,7 @@ class SoftDeleteBehavior extends ModelBehavior {
  * @param array $query
  * @return boolean
  */
-	public function beforeDelete($model, $cascade = true) {
+	public function beforeDelete(Model $model, $cascade = true) {
 		$runtime = $this->runtime[$model->alias];
 		if ($runtime) {
 			if ($model->beforeDelete($cascade)) {
