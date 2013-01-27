@@ -2,15 +2,7 @@
 App::uses('Controller', 'Controller');
 App::uses('ArchiveComponent', 'Utils.Controller/Component');
 
-
-class Article extends CakeTestModel {
-/**
- * 
- */
-	public $name = 'Article';
-}
-
-class ArticlesTestController extends Controller {
+class RefererArticlesTestController extends Controller {
 
 /**
  * @var string
@@ -39,8 +31,18 @@ class ArticlesTestController extends Controller {
 
 }
 
+class RefererTestArticle extends Model {
+
+/**
+ * Name
+ *
+ * @var string
+ */
+	public $name = 'Article';
+}
 
 class PrgComponentTest extends CakeTestCase {
+
 /**
  * Fixtures
  *
@@ -49,6 +51,7 @@ class PrgComponentTest extends CakeTestCase {
  */
 	public $fixtures = array(
 		'plugin.utils.article');
+
 /**
  * setUp method
  *
@@ -56,7 +59,9 @@ class PrgComponentTest extends CakeTestCase {
  * @return void
  */
 	function startTest() {
-		$this->Controller = new ArticlesTestController();
+		$request = new CakeRequest(null, false);
+		$this->Controller = new RefererArticlesTestController($request, $this->getMock('CakeResponse'));
+		$this->Controller->Article = $this->getMockForModel('Article');
 		$this->Controller->constructClasses();
 		$this->Controller->params = array(
 			'named' => array(),
@@ -93,4 +98,3 @@ class PrgComponentTest extends CakeTestCase {
 	}
 
 }
-?>

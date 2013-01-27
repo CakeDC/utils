@@ -4,9 +4,8 @@ App::import('Behavior', 'Utils.Toggleable');
 /**
  * Post Test Model
  */
-class Post extends CakeTestModel {
+class ToggleableTestPost extends CakeTestModel {
 	public $useTable = 'posts';
-	//public $actsAs = array('Toggleable');
 	public $alias = 'Post';
 }
 
@@ -14,6 +13,7 @@ class Post extends CakeTestModel {
  * Toggleable Test case
  */
 class ToggleableTest extends CakeTestCase {
+
 /**
  * fixtures property
  *
@@ -28,7 +28,7 @@ class ToggleableTest extends CakeTestCase {
  * @return void
  */
 	public function setUp() {
-		$this->Post = new Post();
+		$this->Post = new ToggleableTestPost();
 	}
 
 /**

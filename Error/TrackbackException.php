@@ -9,8 +9,22 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class RegisterException extends CakeException {
+
+/**
+ * Message string
+ *
+ * @var string
+ */
 	public $messageString;
-	function __construct($message) {
+
+/*/
+ * Constructor
+ *
+ * @param string
+ * @return \RegisterException
+ */
+	public function __construct($message) {
 		$this->messageString = $message;
 	}
+
 }

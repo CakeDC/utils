@@ -369,6 +369,25 @@ class InheritableTest extends CakeTestCase {
 	}
 
 /**
+ * testClassTableCreateSpecialCase
+ *
+ * @link https://github.com/CakeDC/utils/issues/57
+ * @return void
+ */
+	public function testClassTableCreateSpecialCase() {
+		$initial_count = $this->Asset->find('count');
+
+		$this->Image->create(array(
+			'title' => 'BSD logo'));
+
+		$result = $this->Image->save();
+
+		$final_count = $this->Asset->find('count');
+		$this->assertTrue(!empty($result));
+		$this->assertEqual($final_count-$initial_count, 1);
+	}
+
+/**
  * Convenience function to assert Matches using Set::matches
  *
  * @param string $pattern
