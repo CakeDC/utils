@@ -142,6 +142,10 @@ class SluggableBehavior extends ModelBehavior {
 
 		if (!empty($duplicates)) {
 			$duplicates = Set::extract($duplicates, '{n}.' . $Model->alias . '.' . $settings['slug']);
+			if (!in_array($slug, $duplicates)) {
+				return $slug;
+			}
+
 			$startSlug = $slug;
 			$index = 1;
 

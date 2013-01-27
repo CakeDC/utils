@@ -108,6 +108,22 @@ The list behavior allows you to have records act like a list, for example a trac
 To trigger transition behavior provide two ways. First is calling Model::fire with event name. Second call magic method Model::setState{$CamelizedEventName}. Both methods change event state only if this transition is allowed.
 
 	
+### SoftDelete Behavior 
+
+The SoftDelete behavior allows you to keep records on database and do not show them to users having a "deleted" flag. By default you should have "deleted" and "deleted_date" fields on your database table. 
+
+Since "exists" method in Model disable callbacks you may experience problems using it. To avoid these problems you can use the "existsAndNotDeleted" method from the behavior and we provide the following code to be put into AppModel to make this transparent:
+
+	public function exists($id) {
+		if ($this->Behaviors->attached('SoftDelete')) {
+			return $this->existsAndNotDeleted($id);
+		} else {
+			return parent::exists($id);
+		}
+	}
+
+It will call SoftDelete::existsAndNotDeleted() for models that use SoftDelete Behavior and Model:exists for models that do not use it  
+
 ## Languages Lib
 
 The languages lib is basically just a helper lib that extends I10n to get a three character language code => country name array.
@@ -131,7 +147,7 @@ Allow to keep referer url inside the add/edit form to reuse it for redirect on s
 
 ## Support ##
 
-For support and feature request, please visit the [Utils Plugin Support Site](http://cakedc.lighthouseapp.com/projects/59607-utils-plugin/).
+To report bugs or request features, please visit the [CakeDC/Utils Issue Tracker](https://github.com/CakeDC/utils/issues).
 
 For more information about our Professional CakePHP Services please visit the [Cake Development Corporation website](http://cakedc.com).
 
