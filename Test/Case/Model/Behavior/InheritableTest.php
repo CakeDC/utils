@@ -281,8 +281,8 @@ class InheritableTest extends CakeTestCase {
  */
 	public function testClassInheritanceDelete() {
 		$this->Link->delete(11);
-		$this->assertFalse($this->Link->findById(11));
-		$this->assertFalse($this->Asset->findById(11));
+		$this->assertEqual($this->Link->findById(11), array());
+		$this->assertEqual($this->Asset->findById(11), array());
 
 		$result = $this->Image->deleteAll(true, true, true);
 		$this->assertTrue($result);

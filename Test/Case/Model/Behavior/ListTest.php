@@ -43,7 +43,7 @@ class ListTest extends CakeTestCase {
 /**
  * Holds the instance of the model
  *
- * @var mixed $UsersAddon
+ * @var UsersAddon $UsersAddon
  * @access public
  */
 	public $UsersAddon = null;
@@ -201,6 +201,52 @@ class ListTest extends CakeTestCase {
 		$this->UsersAddon->beforeSaveFalse = false;
 		$result = $this->UsersAddon->moveDown('useraddon-1');
 		$this->assertTrue(!empty($result));
+	}
+
+/**
+ * Tests that insert into list set position to end of list.
+ *
+ * @return void
+ * @access public
+ */
+	public function testAutoInsertAtEndOfList() {
+		$data = array(
+			'UsersAddon' => array(
+				'addon_id' => 'addon-4',
+				'user_id' => 'user-1',
+				'active' => 1));
+		$this->UsersAddon->beforeSaveFalse = true;
+		$this->UsersAddon->create($data);
+		$result = $this->UsersAddon->save($data);
+		$this->assertTrue(!empty($result));
+		$this->assertEqual($result['UsersAddon']['position'], 4);
+	}
+
+/**
+ * Tests that insert into list set position to end of list.
+ *
+ * @return void
+ * @access public
+ */
+	public function testAutoInsertAtTopOfList() {
+		$this->UsersAddon->Behaviors->unload('Utils.List');
+		$this->UsersAddon->Behaviors->load('Utils.List', array(
+			'positionColumn' => 'position',
+			'addToTop' => true,
+			'scope' => 'user_id'));
+		$data = array(
+			'UsersAddon' => array(
+				'addon_id' => 'addon-5',
+				'user_id' => 'user-1',
+				'active' => 1));
+		$this->UsersAddon->beforeSaveFalse = true;
+		$this->UsersAddon->create($data);
+		$result = $this->UsersAddon->save($data);
+		$this->assertTrue(!empty($result));
+		$this->assertEqual($result['UsersAddon']['position'], 1);
+		$userAddons = $this->UsersAddon->find('all', array('order' => 'position'));
+		$userAddons = Set::combine($userAddons, '/UsersAddon/id', '/UsersAddon/position');
+		$this->assertEqual(array_values($userAddons), range(1,4));
 	}
 
 }
