@@ -1,4 +1,5 @@
 <?php
+
 class UsersAddon extends CakeTestModel {
 /**
  * Name
