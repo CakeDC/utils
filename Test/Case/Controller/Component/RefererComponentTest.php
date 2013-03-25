@@ -41,6 +41,13 @@ class ArticlesTestController extends Controller {
 
 class RefererComponentTest extends CakeTestCase {
 /**
+ * Controller object instance
+ *
+ * @var Controller
+ */
+	public $Controller;
+
+/**
  * Fixtures
  *
  * @var array
@@ -58,9 +65,10 @@ class RefererComponentTest extends CakeTestCase {
 		$response = new CakeResponse(); 
 		$this->Controller = new ArticlesTestController($request, $response);
 		$this->Controller->modelClass = 'Article';
-		$this->Controller->Referer = new RefererComponent;
+		$this->Controller->Referer = new RefererComponent($this->Controller->Components);
 		$this->Controller->Referer->initialize($this->Controller, array());
-		
+
+
 		ClassRegistry::addObject('view', new View($this->Controller));  		
 	}
 

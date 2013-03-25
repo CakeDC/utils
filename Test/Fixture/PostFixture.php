@@ -2,8 +2,8 @@
 /**
  * Short description for class.
  *
- * @package       cake
- * @subpackage    cake.tests.fixtures
+ * @package	   cake
+ * @subpackage	cake.tests.fixtures
  */
 class PostFixture extends CakeTestFixture {
 

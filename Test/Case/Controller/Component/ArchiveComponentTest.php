@@ -40,7 +40,14 @@ class ArticlesTestController extends Controller {
 }
 
 
-class PrgComponentTest extends CakeTestCase {
+class ArchiveComponentTest extends CakeTestCase {
+/**
+ * Controller object instance
+ *
+ * @var Controller
+ */
+	public $Controller;
+
 /**
  * Fixtures
  *
@@ -49,6 +56,7 @@ class PrgComponentTest extends CakeTestCase {
  */
 	public $fixtures = array(
 		'plugin.utils.article');
+
 /**
  * setUp method
  *
@@ -63,7 +71,7 @@ class PrgComponentTest extends CakeTestCase {
 			'pass' => array(),
 			'url' => array());
 		$this->Controller->modelClass = 'Article';
-		$this->Controller->Archive = new ArchiveComponent;
+		$this->Controller->Archive = new ArchiveComponent($this->Controller->Components);
 		$this->Controller->Archive->startup($this->Controller);
 	}
 
@@ -93,4 +101,3 @@ class PrgComponentTest extends CakeTestCase {
 	}
 
 }
-?>
