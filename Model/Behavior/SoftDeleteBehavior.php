@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
  *
@@ -36,10 +36,10 @@ class SoftDeleteBehavior extends ModelBehavior {
 /**
  * Setup callback
  *
- * @param object $model
+ * @param Model $model
  * @param array $settings
  */
-    public function setup($model, $settings = array()) {
+    public function setup(Model $model, $settings = array()) {
         if (empty($settings)) {
             $settings = $this->default;
         } elseif (!is_array($settings)) {
@@ -67,11 +67,11 @@ class SoftDeleteBehavior extends ModelBehavior {
 /**
  * Before find callback
  *
- * @param object $model
+ * @param Model $model
  * @param array $query
  * @return array
  */
-    public function beforeFind($model, $query) {
+    public function beforeFind(Model $model, $query) {
         $runtime = $this->runtime[$model->alias];
         if ($runtime) {
 			if (!is_array($query['conditions'])) {
@@ -99,11 +99,11 @@ class SoftDeleteBehavior extends ModelBehavior {
 /**
  * Before delete callback
  *
- * @param object $model
+ * @param Model $model
  * @param array $query
  * @return boolean
  */
-    public function beforeDelete($model) {
+    public function beforeDelete(Model $model, $cascade = true) {
         $runtime = $this->runtime[$model->alias];
         if ($runtime) {
         	$res = $this->delete($model, $model->id);
@@ -209,7 +209,7 @@ class SoftDeleteBehavior extends ModelBehavior {
     public function purgeDeletedCount($model, $expiration = '-90 days') {
         $this->softDelete($model, false);
         return $model->find('count', array(
-			'conditions' => $this->_purgeDeletedConditions($model, $expiration), 
+			'conditions' => $this->_purgeDeletedConditions($model, $expiration),
 			'recursive' => -1));
     }
 
@@ -223,8 +223,8 @@ class SoftDeleteBehavior extends ModelBehavior {
     public function purgeDeleted($model, $expiration = '-90 days') {
         $this->softDelete($model, false);
         $records = $model->find('all', array(
-			'conditions' => $this->_purgeDeletedConditions($model, $expiration), 
-			'fields' => array($model->primaryKey), 
+			'conditions' => $this->_purgeDeletedConditions($model, $expiration),
+			'fields' => array($model->primaryKey),
 			'recursive' => -1));
         if ($records) {
             foreach ($records as $record) {
