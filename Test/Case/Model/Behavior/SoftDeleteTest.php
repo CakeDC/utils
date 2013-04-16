@@ -93,11 +93,27 @@ class SoftDeleteTest extends CakeTestCase {
 		$result = $this->Post->delete(1);
 		$this->assertFalse($result);
 		$data = $this->Post->read(null, 1);
-		$this->assertEqual($data, array());
+		$this->assertTrue(empty($data));
 		$this->Post->Behaviors->unload('SoftDelete');
 		$data = $this->Post->read(null, 1);
 		$this->assertEqual($data['Post']['deleted'], true);
 		$this->assertEqual($data['Post']['updated'], $data['Post']['deleted_date']);
+	}
+
+/**
+ * testSoftDeleteUsingIdThatDoesNotExist
+ *
+ * @return void
+ */
+	public function testSoftDeleteUsingIdThatDoesNotExist() {
+		$data = $this->Post->read(null, 222);
+		$this->assertTrue(empty($data));
+		$result = $this->Post->delete(222);
+		$this->assertFalse($result); // consistent with Model->delete()
+		// previous implementation would try to create a new record
+		$this->Post->Behaviors->unload('SoftDelete');
+		$data = $this->Post->read(null, 222);
+		$this->assertTrue(empty($data));
 	}
 
 /**
@@ -125,16 +141,16 @@ class SoftDeleteTest extends CakeTestCase {
 		$this->assertTrue(!empty($data));
 		$this->Post->Behaviors->enable('SoftDelete');
 		$data = $this->Post->read(null, 3);
-		$this->assertEqual($data, array());
+		$this->assertTrue(empty($data));
 		$count = $this->Post->purgeDeletedCount();
 		$this->assertEqual($count, 1);
 		$this->Post->purgeDeleted();
-		
+
 		$data = $this->Post->read(null, 3);
-		$this->assertEqual($data, array());
+		$this->assertTrue(empty($data));
 		$this->Post->Behaviors->disable('SoftDelete');
 		$data = $this->Post->read(null, 3);
-		$this->assertEqual($data, array());
+		$this->assertTrue(empty($data));
 	}
 
 	public function testExistsAndNotDeleted() {
@@ -143,7 +159,7 @@ class SoftDeleteTest extends CakeTestCase {
 		$result = $this->Post->delete(1);
 		$this->assertFalse($result);
 		$data = $this->Post->read(null, 1);
-		$this->assertEqual($data, array());
+		$this->assertTrue(empty($data));
 		$this->assertFalse($this->Post->existsAndNotDeleted(1));
 		$this->Post->undelete(1);
 		$this->assertTrue($this->Post->existsAndNotDeleted(1));

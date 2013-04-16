@@ -155,9 +155,8 @@ class SoftDeleteBehavior extends ModelBehavior {
 			}
 		}
 
-		$model->create();
-		$model->set($model->primaryKey, $id);
-		return $model->save(array($model->alias => $data), false, array_keys($data));
+		$record = $model->read($model->primaryKey, $id);
+		return empty($record) || $model->save(array($model->alias => $data), false, array_keys($data));
 	}
 
 /**
