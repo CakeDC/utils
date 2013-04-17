@@ -101,6 +101,25 @@ class SoftDeleteTest extends CakeTestCase {
 	}
 
 /**
+ * testSoftDeleteWhenModelDataIsEmpty
+ *
+ * @return void
+ */
+	public function testSoftDeleteWhenModelDataIsEmpty() {
+		$data = $this->Post->find('first', array('conditions' => array($this->Post->primaryKey => 1)));
+		$this->assertEqual($data[$this->Post->alias][$this->Post->primaryKey], 1);
+		$this->assertTrue(empty($this->Post->data));
+		$result = $this->Post->delete(1);
+		$this->assertFalse($result);
+		$data = $this->Post->read(null, 1);
+		$this->assertTrue(empty($data));
+		$this->Post->Behaviors->unload('SoftDelete');
+		$data = $this->Post->read(null, 1);
+		$this->assertEqual($data['Post']['deleted'], true);
+		$this->assertEqual($data['Post']['updated'], $data['Post']['deleted_date']);
+	}
+
+/**
  * testSoftDeleteUsingIdThatDoesNotExist
  *
  * @return void
