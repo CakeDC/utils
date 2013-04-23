@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
+ * Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
+ * @copyright Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
@@ -36,7 +36,7 @@ class SoftDeleteBehavior extends ModelBehavior {
 /**
  * Setup callback
  *
- * @param object $model
+ * @param Model $model
  * @param array $settings
  */
 	public function setup(Model $model, $settings = array()) {
@@ -67,7 +67,7 @@ class SoftDeleteBehavior extends ModelBehavior {
 /**
  * Before find callback
  *
- * @param object $model
+ * @param Model $model
  * @param array $query
  * @return array
  */
@@ -107,7 +107,7 @@ class SoftDeleteBehavior extends ModelBehavior {
 		}
 		if ($id === false) {
 			return false;
-		} 
+		}
 		$exists = $model->find('count', array('conditions' => array($model->alias . '.' . $model->primaryKey => $id)));
 		return ($exists ? true : false);
 	}
@@ -115,7 +115,7 @@ class SoftDeleteBehavior extends ModelBehavior {
 /**
  * Before delete callback
  *
- * @param object $model
+ * @param Model $model
  * @param array $query
  * @return boolean
  */

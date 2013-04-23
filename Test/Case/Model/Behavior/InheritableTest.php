@@ -281,8 +281,8 @@ class InheritableTest extends CakeTestCase {
  */
 	public function testClassInheritanceDelete() {
 		$this->Link->delete(11);
-		$this->assertFalse($this->Link->findById(11));
-		$this->assertFalse($this->Asset->findById(11));
+		$this->assertEqual($this->Link->findById(11), array());
+		$this->assertEqual($this->Asset->findById(11), array());
 
 		$result = $this->Image->deleteAll(true, true, true);
 		$this->assertTrue($result);
@@ -366,6 +366,22 @@ class InheritableTest extends CakeTestCase {
 
 		$final_count = $this->Asset->find('count');
 		$this->assertEqual($final_count-$initial_count, 10);
+	}
+
+/**
+ * testClassTableCreateSpecialCase
+ *
+ * @link https://github.com/CakeDC/utils/issues/57
+ * @return void
+ */
+	public function testClassTableCreateSpecialCase() {
+		$initial_count = $this->Asset->find('count');
+		$this->Image->create(array(
+			'title' => 'BSD logo'));
+		$result = $this->Image->save();
+		$final_count = $this->Asset->find('count');
+		$this->assertTrue(!empty($result));
+		$this->assertEqual($final_count-$initial_count, 1);
 	}
 
 /**
