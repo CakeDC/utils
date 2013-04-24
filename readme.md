@@ -37,7 +37,8 @@ each component.
 
 * Cleaner        - Allow to strip tags from input markup
 * Gravatar       - Gravatar Helper
-* Tree           - 
+* Tree           - Generates nested representations of hierarchial data
+* Place          - Allows to display image and text placeholders
 
 ### CsvImport Behavior
 
