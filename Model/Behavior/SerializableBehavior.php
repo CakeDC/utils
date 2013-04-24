@@ -43,7 +43,7 @@ class SerializableBehavior extends ModelBehavior {
  * @param object AppModel
  * @param array $config
  */
-	public function setup($Model, $config = array()) {
+	public function setup(Model $Model, $config = array()) {
 		$settings = array_merge($this->_defaults, $config);
 		if(!empty($settings['field']) && empty($settings['fields'])) {
 			$settings['fields'] = $settings['field'];
@@ -57,11 +57,12 @@ class SerializableBehavior extends ModelBehavior {
 /**
  * After find callback
  *
+ * @param Model $Model
  * @param mixed $results The results of the find operation
  * @param boolean $primary Whether this model is being queried directly (vs. being queried as an association)
  * @return mixed Result of the find operation
  */
-	public function afterFind($Model, $results, $primary = false) {
+	public function afterFind(Model $Model, $results, $primary = false) {
 		if (!empty($results)) {
 			foreach ($results as $key => $result) {
 				$results[$key] = $this->deserialize($Model, $result);
@@ -73,9 +74,11 @@ class SerializableBehavior extends ModelBehavior {
 /**
  * Called before each save operation
  *
+ * @param Model $Model
+ * @param array $options
  * @return boolean True if the operation should continue, false if it should abort
  */
-	public function beforeSave($Model, $options = array()) {
+	public function beforeSave(Model $Model, $options = array()) {
 		$Model->data = $this->serialize($Model, $Model->data);
 		return true;
 	}
@@ -83,20 +86,24 @@ class SerializableBehavior extends ModelBehavior {
 /**
  * Called after each save operation
  *
+ * @param Model $Model
+ * @param bool $created
+ * @param array $options
  * @return void
  */
-	public function afterSave($Model, $created, $options = array()) {
+	public function afterSave(Model$Model, $created, $options = array()) {
 		if(!empty($options['deserialize'])) $Model->data = $Model->deserialize($Model->data);
 	}
 
 /**
+ * Serializes data
  *
- *
- * @param string $matchId
+ * @param Model $Model
  * @param array $data
+ * @internal param string $matchId
  * @return boolean
  */
-	public function serialize($Model, &$data) {
+	public function serialize(Model $Model, &$data) {
 		if (empty($data[$Model->alias])) {
 			return $data;
 		}
