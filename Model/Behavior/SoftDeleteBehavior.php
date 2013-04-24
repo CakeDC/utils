@@ -155,9 +155,20 @@ class SoftDeleteBehavior extends ModelBehavior {
 			}
 		}
 
-		$model->create();
-		$model->set($model->primaryKey, $id);
-		return $model->save(array($model->alias => $data), false, array_keys($data));
+		$record = $model->find('first', array(
+			'fields' => $model->primaryKey,
+			'conditions' => array($model->primaryKey => $id),
+			'recursive' => -1
+		));
+
+		if (!empty($record)) {
+			$model->set($model->primaryKey, $id);
+			unset($model->data[$model->alias]['modified']);
+			unset($model->data[$model->alias]['updated']);
+			return $model->save(array($model->alias => $data), false, array_keys($data));
+		}
+
+		return true;
 	}
 
 /**
