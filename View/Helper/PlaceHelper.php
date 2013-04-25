@@ -122,7 +122,7 @@ class PlaceHelper extends AppHelper {
 				return $this->Html->nestedList($content, $options, $itemOptions, ($what == 'ol') ? 'ol' : 'ul');
 			case 'p':
 				foreach ($content as $key => $line) {
-					$content[$key]= $this->Html->para(null, $line, $options);
+					$content[$key] = $this->Html->para(null, $line, $options);
 				}
 				return implode(PHP_EOL, $content);
 		}
