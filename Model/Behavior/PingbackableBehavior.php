@@ -1,20 +1,18 @@
 <?php
 /**
- * Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
+ * Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
+ * @copyright Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('TrackbackException', 'Utils.Error');
 App::uses('HttpSocket', 'Network/Http');
 App::uses('Xml', 'Utility');
-
 App::uses('ModelBehavior', 'Model');
-
-
 App::import('Lib', 'Xmlrpc.Xmlrpc');
 
 /**
@@ -25,13 +23,6 @@ App::import('Lib', 'Xmlrpc.Xmlrpc');
  * @package utils
  * @subpackage utils.models.behaviors
  */
-class RegisterException extends Exception {
-	public $messageString;
-	function __construct($message) {
-		$this->messageString = $message;
-	}
-}
-
 class PingbackableBehavior extends ModelBehavior {
 
 /**
@@ -61,7 +52,7 @@ class PingbackableBehavior extends ModelBehavior {
 		if (!isset($this->settings[$model->alias])) {
 			$this->settings[$model->alias] = $this->defaults;
 		}
-		$this->settings[$model->alias] = am($this->settings[$model->alias], empty(is_array($settings)) ? $settings : array());
+		$this->settings[$model->alias] = array_merge($this->settings[$model->alias], is_array($settings) ? $settings : array());
 	}
 
 /**
@@ -248,7 +239,7 @@ class PingbackableBehavior extends ModelBehavior {
 	public function trackbackRegisterComment(&$model, $modelId, $data = array()) {
 		extract($this->settings[$model->alias]);
 		if ($model->{$commentAlias}->hasAny(array($commentAlias . '.foreign_key' => $modelId, 'author_url' => $data['author_url']))) {
-			throw new RegisterException('Trackback already registried in system.');
+			throw new TrackbackException('Trackback already registried in system.');
 		}
 		$isSpam = 'clean';
 		$_default = array(

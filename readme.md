@@ -37,7 +37,8 @@ each component.
 
 * Cleaner        - Allow to strip tags from input markup
 * Gravatar       - Gravatar Helper
-* Tree           - 
+* Tree           - Generates nested representations of hierarchial data
+* Place          - Allows to display image and text placeholders
 
 ### CsvImport Behavior
 
@@ -70,6 +71,22 @@ The list behavior allows you to have records act like a list, for example a trac
 * scope          - Find condition like array to define a scope, default is empty string ''.
 * validate       - validate the data when the behavior is saving the changes, default is false.
 * callbacks      - use callbacks when the behavior saves the data, default is false.
+
+### SoftDelete Behavior 
+
+The SoftDelete behavior allows you to keep records on database and do not show them to users having a "deleted" flag. By default you should have "deleted" and "deleted_date" fields on your database table. 
+
+Since "exists" method in Model disable callbacks you may experience problems using it. To avoid these problems you can use the "existsAndNotDeleted" method from the behavior and we provide the following code to be put into AppModel to make this transparent:
+
+	public function exists($id) {
+		if ($this->Behaviors->attached('SoftDelete')) {
+			return $this->existsAndNotDeleted($id);
+		} else {
+			return parent::exists($id);
+		}
+	}
+
+It will call SoftDelete::existsAndNotDeleted() for models that use SoftDelete Behavior and Model:exists for models that do not use it  
 
 ## Languages Lib
 

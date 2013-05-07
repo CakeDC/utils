@@ -42,8 +42,8 @@ class Image extends Asset {
 /**
  * InheritableTest class
  *
- * @package              cake
- * @subpackage           cake.tests.cases.libs.model.behaviors
+ * @package			  cake
+ * @subpackage		   cake.tests.cases.libs.model.behaviors
  */
 class InheritableTest extends CakeTestCase {
 
@@ -281,8 +281,8 @@ class InheritableTest extends CakeTestCase {
  */
 	public function testClassInheritanceDelete() {
 		$this->Link->delete(11);
-		$this->assertFalse($this->Link->findById(11));
-		$this->assertFalse($this->Asset->findById(11));
+		$this->assertEqual($this->Link->findById(11), array());
+		$this->assertEqual($this->Asset->findById(11), array());
 
 		$result = $this->Image->deleteAll(true, true, true);
 		$this->assertTrue($result);
@@ -326,7 +326,6 @@ class InheritableTest extends CakeTestCase {
  * results formatting
  *
  * @return void
- * @access public
  */
 	public function testAfterFindRelatedModel() {
 		$linkData = array('id' => 11, 'url'=> 'http://cakephp.org');
@@ -347,13 +346,51 @@ class InheritableTest extends CakeTestCase {
 	}
 
 /**
+ * testClassTableCreateCount
+ *
+ * @link https://github.com/CakeDC/utils/issues/59
+ * @return void
+ */
+	public function testClassTableCreateCount() {
+		$initial_count = $this->Asset->find('count');
+
+		for ($i = 0; $i < 10; $i++) {
+			$this->Image->create(array(
+				'title' => 'BSD logo',
+				'description' => 'Daemon powers',
+				'file_name' => 'bsd.bmp',
+				'file_size' => '653445',
+				'content_type' => 'image/bitmap'));
+			$this->Image->save();
+		}
+
+		$final_count = $this->Asset->find('count');
+		$this->assertEqual($final_count-$initial_count, 10);
+	}
+
+/**
+ * testClassTableCreateSpecialCase
+ *
+ * @link https://github.com/CakeDC/utils/issues/57
+ * @return void
+ */
+	public function testClassTableCreateSpecialCase() {
+		$initial_count = $this->Asset->find('count');
+		$this->Image->create(array(
+			'title' => 'BSD logo'));
+		$result = $this->Image->save();
+		$final_count = $this->Asset->find('count');
+		$this->assertTrue(!empty($result));
+		$this->assertEqual($final_count-$initial_count, 1);
+	}
+
+/**
  * Convenience function to assert Matches using Set::matches
  *
- * @param unknown_type $pattern
- * @param unknown_type $object
- * @param unknown_type $message
+ * @param string $pattern
+ * @param string $object
+ * @param string $message
  * @return void
- * @access private
  */
 	private function __assertMatches($pattern, $object, $message = '') {
 		return $this->assertTrue(Set::matches($pattern, $object), $message);
@@ -362,4 +399,3 @@ class InheritableTest extends CakeTestCase {
 	}
 
 }
-?>

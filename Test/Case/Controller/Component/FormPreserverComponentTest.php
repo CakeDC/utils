@@ -65,7 +65,7 @@ class FormPreserverComponentTest extends CakeTestCase {
 			'pass' => array(),
 			'url' => array());
 		$this->Controller->modelClass = 'Article';
-		$this->Controller->FormPreserver = new FormPreserverComponent;
+		$this->Controller->FormPreserver = new FormPreserverComponent($this->Controller->Components);
 		$this->Controller->FormPreserver->initialize($this->Controller);
 	}
 

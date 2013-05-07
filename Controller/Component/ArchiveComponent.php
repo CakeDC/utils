@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
+ * Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
+ * @copyright Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
@@ -17,7 +17,7 @@
  * @package utils
  * @subpackage utils.controllers.components
  */
-class ArchiveComponent extends Object {
+class ArchiveComponent extends Component {
 
 /**
  * Date parameters to find
@@ -80,15 +80,15 @@ class ArchiveComponent extends Object {
 		}
 
 		$paginate = array();
-		if (!empty($controller->paginate[$this->modelName])) {
-			$paginate = $controller->paginate[$this->modelName];
+		if (!empty($controller->Paginator->paginate[$this->modelName])) {
+			$paginate = $controller->Paginator->paginate[$this->modelName];
 		}
 		if (isset($paginate['conditions'])) {
 			$paginate['conditions'] = array_merge($paginate['conditions'], $archiveConditions);
 		} else {
 			$paginate['conditions'] = $archiveConditions;
 		}
-		$controller->paginate[$this->modelName] = $paginate;
+		$controller->Paginator->settings[$this->modelName] = $paginate;
 		return true;
 	}
 

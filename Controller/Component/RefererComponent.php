@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
+ * Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright 2007-2010, Cake Development Corporation (http://cakedc.com)
+ * @copyright Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
@@ -22,14 +22,14 @@ class RefererComponent extends Component {
 /**
  * Controller object instance
  *
- * @var array actions
+ * @var Controller
  */
 	public $Controller;
 
 /**
- * Intialize Callback
+ * Initialize Callback
  *
- * @param object Controller object
+ * @param Controller object
  */
 	public function initialize($controller) {
 		$this->Controller = $controller;
@@ -38,9 +38,10 @@ class RefererComponent extends Component {
 /**
  * Startup Callback
  *
- * @param object Controller object
+ * @param Controller object
  */
 	public function startup($controller) {
+		$this->Controller = $controller;
 		$this->setReferer();
 	}
 
@@ -51,7 +52,7 @@ class RefererComponent extends Component {
  */
 	public function setReferer($default = null) {
 		if (empty($this->Controller->request->data['Data']['referer'])) {
-			$referer = $this->Controller->referer();
+			$referer = $this->Controller->request->referer();
 
 			if ($referer == '/' && !empty($default)) {
 				$referer = $default;
@@ -78,7 +79,7 @@ class RefererComponent extends Component {
 		if (isset($this->Controller->data['Data']['referer'])) {
 			$referer = $this->Controller->request->data['Data']['referer'];
 		} else {
-			$referer = $this->Controller->referer();
+			$referer = $this->Controller->request->referer();
 		}
 
 		if (strlen($referer) == 0 || $referer == '/') {

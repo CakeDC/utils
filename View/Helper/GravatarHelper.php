@@ -9,7 +9,7 @@ App::uses('AppHelper', 'View/Helper');
  *
  * A CakePHP View Helper for the display of Gravatar images (http://www.gravatar.com)
  *
- * @copyright Copyright 2009-2010, Graham Weldon (http://grahamweldon.com)
+ * @copyright Copyright 2009 - 2013, Graham Weldon (http://grahamweldon.com)
  * @license http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package goodies
  * @subpackage goodies.views.helpers
@@ -89,7 +89,7 @@ class GravatarHelper extends AppHelper {
  * @return string Gravatar image string
  */
 	public function image($email, $options = array()) {
-		$imageUrl = $this->url($email, $options);
+		$imageUrl = $this->imageUrl($email, $options);
 		unset($options['default'], $options['size'], $options['rating'], $options['ext']);
 		return $this->Html->image($imageUrl, $options);
 	}
@@ -101,7 +101,7 @@ class GravatarHelper extends AppHelper {
  * @param string $options Array of options, keyed from default settings
  * @return string Gravatar Image URL
  */
-	public function url($email, $options = array()) {
+	public function imageUrl($email, $options = array()) {
         if (env('HTTPS') && !isset($options['secure'])) {
             $options['secure'] = true;
         }
