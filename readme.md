@@ -77,7 +77,7 @@ The SoftDelete behavior allows you to keep records on database and do not show t
 
 Since "exists" method in Model disable callbacks you may experience problems using it. To avoid these problems you can use the "existsAndNotDeleted" method from the behavior and we provide the following code to be put into AppModel to make this transparent:
 
-	public function exists($id) {
+	public function exists($id = null) {
 		if ($this->Behaviors->attached('SoftDelete')) {
 			return $this->existsAndNotDeleted($id);
 		} else {
