@@ -48,12 +48,16 @@ You can configure the Importable behavior using these options:
 * hasHeader      - Parse the header of the CSV file if it has one, default is true
 
 The main method of this behavior is
-
-	$this->Model->importCSV('myFile.csv');
+```php
+<?php
+$this->Model->importCSV('myFile.csv');
+```
 
 It will read the csv file and try to save the records to the model. In the case of errors you'll get them by calling
-
-	$this->Model->getImportErrors();
+```php
+<?php
+$this->Model->getImportErrors();
+```
 
 ### Keyvalue Behavior
 
@@ -77,23 +81,42 @@ The SoftDelete behavior allows you to keep records on database and do not show t
 
 Since "exists" method in Model disable callbacks you may experience problems using it. To avoid these problems you can use the "existsAndNotDeleted" method from the behavior and we provide the following code to be put into AppModel to make this transparent:
 
-	public function exists($id = null) {
-		if ($this->Behaviors->attached('SoftDelete')) {
-			return $this->existsAndNotDeleted($id);
-		} else {
-			return parent::exists($id);
-		}
+```php
+<?php
+public function exists($id = null) {
+	if ($this->Behaviors->attached('SoftDelete')) {
+		return $this->existsAndNotDeleted($id);
+	} else {
+		return parent::exists($id);
 	}
+}
+```
 
-It will call SoftDelete::existsAndNotDeleted() for models that use SoftDelete Behavior and Model:exists for models that do not use it  
+It will call SoftDelete::existsAndNotDeleted() for models that use SoftDelete Behavior and Model:exists for models that do not use it
+
+When deleting an item the SoftDelete behavior will override the `delete()` and update the record instead. This means that the response to the `delete()` will be false. In order to override this and return true, you will need to include the following in your `AppController.php` file.
+
+```php
+<?php
+public function delete($id = null, $cascade = true) {
+    $result = parent::delete($id, $cascade);
+    if ($result === false && $this->Behaviors->enabled('SoftDelete')) {
+       return (bool)$this->field('deleted', array('deleted' => 1));
+    }
+    return $result;
+}
+```
 
 ## Languages Lib
 
 The languages lib is basically just a helper lib that extends I10n to get a three character language code => country name array.
 
-	App::import('Lib', 'Utils.Languages');
-	$Languages = new Languages();
-	$languageList = $Languages->lists();
+```php
+<?php
+App::import('Lib', 'Utils.Languages');
+$Languages = new Languages();
+$languageList = $Languages->lists();
+```
 
 `$languageList` will contain the three character code mapped to a country. This list can be used in language selects for example.
 
