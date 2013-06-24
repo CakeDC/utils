@@ -44,7 +44,7 @@ class TinySluggableBehavior extends ModelBehavior {
  * 	- tinySlug: name of the tiny slug field in the table [default: tiny_slug]
  *  - codeset: valid characters for tiny slug [default: 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ]
  */
-	public function setup(&$Model, $settings = array()) {
+	public function setup(Model $Model, $settings = array()) {
 		$this->settings[$Model->alias] = array_merge($this->_defaults, $settings);
 		$Model->tinySlug = $this->settings[$Model->alias]['tinySlug'];
 		$this->settings[$Model->alias]['base'] = strlen($this->settings[$Model->alias]['codeset']);
@@ -55,7 +55,7 @@ class TinySluggableBehavior extends ModelBehavior {
  *
  * @param object $Model
  */
-	public function beforeSave(&$Model) {
+	public function beforeSave(Model $Model) {
 		if (empty($Model->data[$Model->alias])) {
 			return;
 		}
