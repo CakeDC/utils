@@ -114,7 +114,7 @@ class EmailErrorHandler extends ErrorHandler {
 	public static function getEmailInstance() {
 		if (empty(self::$Email)) {
 			$Email = new CakeEmail();
-			$Email->subject(__('Error notification from CakePHP Certification'))
+			$Email->subject(__('utils', 'Error notification from CakePHP Certification'))
 				->from(array('error@' . env('HTTP_HOST') => 'Error Handler'))
 				->to(Configure::read('ErrorHandler.receiver'))
 				->emailFormat('both')

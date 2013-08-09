@@ -52,7 +52,7 @@ class I18nCountry extends Object {
 		$this->settings = array_merge($this->_defaults, $options);
 
 		if (!in_array($this->settings['key'], array('iso', 'iso3', 'numcode', 'name', 'printableName'))) {
-			throw new InvalidArgumentException(__('Invalid setting for key: Use iso, name, iso3, numcode or printableName.'));
+			throw new InvalidArgumentException(__('utils', 'Invalid setting for key: Use iso, name, iso3, numcode or printableName.'));
 		}
 
 		$this->_translated = array(
@@ -125,7 +125,7 @@ class I18nCountry extends Object {
 			array('iso' => 'EE', 'name' => 'ESTONIA', 'printableName' => __d('utils', 'Estonia'), 'iso3' => 'EST', 'numcode' => '233'),
 			array('iso' => 'ET', 'name' => 'ETHIOPIA', 'printableName' => __d('utils', 'Ethiopia'), 'iso3' => 'ETH', 'numcode' => '231'),
 			array('iso' => 'FK', 'name' => 'FALKLAND ISLANDS (MALVINAS)', 'printableName' => __d('utils', 'Falkland Islands (Malvinas)'), 'iso3' => 'FLK', 'numcode' => '238'),
-			array('iso' => 'FO', 'name' => 'FAROE ISLANDS', 'printableName' => __d('utils', 'Faroe Islands'), 'iso3' => 'FRO', 'numcode' => '234'),
+			array('iso' => 'FO', 'name' => 'FAROE ISLANDS', 'printableName' => __d('utils', 'Faroe Islands'), 'iso3' => 'FRO', 'numcode' => '234'),_
 			array('iso' => 'FJ', 'name' => 'FIJI', 'printableName' => __d('utils', 'Fiji'), 'iso3' => 'FJI', 'numcode' => '242'),
 			array('iso' => 'FI', 'name' => 'FINLAND', 'printableName' => __d('utils', 'Finland'), 'iso3' => 'FIN', 'numcode' => '246'),
 			array('iso' => 'FR', 'name' => 'FRANCE', 'printableName' => __d('utils', 'France'), 'iso3' => 'FRA', 'numcode' => '250'),
@@ -339,7 +339,7 @@ class I18nCountry extends Object {
 				return $country[$this->settings['returnKey']];
 			}
 		}
-		throw new InvalidArgumentException(sprintf(__('Invalid argument #1: %s is not a valid %s identifyer.'), $string, $this->settings['key']));
+		throw new InvalidArgumentException(sprintf(__d('utils', 'Invalid argument #1: %s is not a valid %s identifyer.'), $string, $this->settings['key']));
 	}
 
 }
