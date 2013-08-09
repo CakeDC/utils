@@ -125,7 +125,7 @@ class I18nCountry extends Object {
 			array('iso' => 'EE', 'name' => 'ESTONIA', 'printableName' => __d('utils', 'Estonia'), 'iso3' => 'EST', 'numcode' => '233'),
 			array('iso' => 'ET', 'name' => 'ETHIOPIA', 'printableName' => __d('utils', 'Ethiopia'), 'iso3' => 'ETH', 'numcode' => '231'),
 			array('iso' => 'FK', 'name' => 'FALKLAND ISLANDS (MALVINAS)', 'printableName' => __d('utils', 'Falkland Islands (Malvinas)'), 'iso3' => 'FLK', 'numcode' => '238'),
-			array('iso' => 'FO', 'name' => 'FAROE ISLANDS', 'printableName' => __d('utils', 'Faroe Islands'), 'iso3' => 'FRO', 'numcode' => '234'),_
+			array('iso' => 'FO', 'name' => 'FAROE ISLANDS', 'printableName' => __d('utils', 'Faroe Islands'), 'iso3' => 'FRO', 'numcode' => '234'),
 			array('iso' => 'FJ', 'name' => 'FIJI', 'printableName' => __d('utils', 'Fiji'), 'iso3' => 'FJI', 'numcode' => '242'),
 			array('iso' => 'FI', 'name' => 'FINLAND', 'printableName' => __d('utils', 'Finland'), 'iso3' => 'FIN', 'numcode' => '246'),
 			array('iso' => 'FR', 'name' => 'FRANCE', 'printableName' => __d('utils', 'France'), 'iso3' => 'FRA', 'numcode' => '250'),
