@@ -98,6 +98,30 @@ class FlashMessageComponentTest extends CakeTestCase {
 	}
 
 /**
+ * RunTimeExceptionMissingFlashMessageProperty
+ *
+ * @expectedException \RuntimeException
+ * @return void
+ */
+	public function testRunTimeExceptionMissingFlashMessageProperty() {
+		unset($this->Controller->flashMessages);
+		$this->Controller->action = 'testAction';
+		$this->Controller->FlashMessage->show('test1');
+	}
+
+/**
+ * RunTimeExceptionMissingFlashMessageProperty
+ *
+ * @expectedException \RuntimeException
+ * @return void
+ */
+	public function testRunTimeExceptionMissingFlashMessageActionKey() {
+		unset($this->Controller->flashMessages['testAction']['test1']);
+		$this->Controller->action = 'testAction';
+		$this->Controller->FlashMessage->show('test1');
+	}
+
+/**
  * testShowWithExceptionArgument
  *
  * @return void
@@ -111,6 +135,37 @@ class FlashMessageComponentTest extends CakeTestCase {
 
 		$this->Controller->action = 'testAction2';
 		$this->Controller->FlashMessage->show($Exception, array('key' => 'error'));
+	}
+
+/**
+ * testFlashAjax
+ *
+ * @return void
+ */
+	public function testFlashAjax() {
+		$this->Controller->request->expects(
+			$this->at(0))->
+			method('is')->
+			with('ajax')->
+			will($this->returnvalue(true));
+		$this->Controller->action = 'testAction2';
+		$this->Controller->FlashMessage->show('test1');
+		$this->assertEqual($this->Controller->viewVars, array(
+			'json' => array(
+				'flash' => array(
+					'element' => 'testElement',
+					'params' => array(),
+					'key' => 'flash',
+					'redirect' => array(
+						'url' => false,
+						'status' => null,
+						'exit' => true
+					),
+					'message' => 'Second message'
+				),
+				'redirect' => false
+			)
+		));
 	}
 
 }
