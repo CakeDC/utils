@@ -32,7 +32,7 @@ class UtilsComponent extends Object {
  * @param object Controller object
  */
 	public function startup(Controller $controller) {
-		$this->controller = &$controller;
+		$this->controller = $controller;
 	}
 
 /**
