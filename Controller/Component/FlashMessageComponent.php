@@ -40,6 +40,13 @@ class FlashMessageComponent extends Component {
 	);
 
 /**
+ * Default settings for exception flash messages
+ *
+ * @var array
+ */
+	public $exceptionDefaults = array();
+
+/**
  * Controller instance reference
  *
  * @var object
@@ -64,6 +71,10 @@ class FlashMessageComponent extends Component {
 	public function initialize(Controller $controller) {
 		$this->settings = array_merge($this->defaults, $this->settings);
 		$this->controller = $controller;
+
+		if (!isset($this->controller->flashMessages)) {
+			throw new \RuntimeException(__d('utils', 'Controller %s is missing the flashMessages property!', $this->controller->name));
+		}
 	}
 
 /**
@@ -75,6 +86,10 @@ class FlashMessageComponent extends Component {
  */
 	public function exception(Exception $Exception, array $options = array()) {
 		$options['message'] = $Exception->getMessage();
+		$exceptionClass = get_class($Exception);
+		if (isset($this->exceptionDefaults[$exceptionClass])) {
+			$options = Hash::merge($this->exceptionDefaults, $options);
+		}
 		$this->flash($options);
 		$this->redirect($options);
 	}
@@ -91,17 +106,18 @@ class FlashMessageComponent extends Component {
 		if ($key instanceof \Exception) {
 			$this->exception($key, $options);
 			return;
-		} else {
-			if (!isset($this->controller->flashMessages)) {
-				throw new \RuntimeException(__d('utils', 'Controller %s is missing the flashMessages property!', $this->controller->name));
-			}
+		}
 
+		if (isset($this->controller->flashMessages[$key])) {
+			$flash = $this->controller->flashMessages[$key];
+		} else {
 			if (!isset($this->controller->flashMessages[$this->controller->action][$key])) {
 				throw new \RuntimeException(__d('utils', 'Invalid Flash Message key %s', $key));
 			}
+			$flash = $this->controller->flashMessages[$this->controller->action][$key];
 		}
 
-		$flash = Set::merge($this->controller->flashMessages[$this->controller->action][$key], $options);
+		$flash = Hash::merge($flash, $options);
 
 		$this->flash($flash);
 		$this->redirect($flash);
@@ -115,7 +131,7 @@ class FlashMessageComponent extends Component {
  * @return void
  */
 	public function flash(array $flash = array()) {
-		$flash = $this->_beforeFlash(Set::merge($this->settings['flashDefaults'], $flash));
+		$flash = $this->_beforeFlash(Hash::merge($this->settings['flashDefaults'], $flash));
 
 		if (isset($flash[0]) && is_string($flash[0])) {
 			$flash['message'] = $flash[0];
@@ -129,7 +145,7 @@ class FlashMessageComponent extends Component {
 		if (!$this->controller->request->is('ajax')) {
 			$this->Session->setFlash($flash['message'], $flash['element'], $flash['params'], $flash['key']);
 		} else {
-			$this->_setData($flash);
+			$this->setData($flash);
 		}
 	}
 
@@ -145,18 +161,30 @@ class FlashMessageComponent extends Component {
 			return false;
 		}
 
-		if ($returnUrl === true) {
-			return $this->_url($flash['url']);
+		$redirect = $flash['redirect'];
+		if (is_string($redirect)) {
+			$redirect = array(
+				'url' => $redirect,
+				'status' => null,
+				'exit' => true
+			);
 		}
 
-		$this->controller->redirect($flash['url'], $flash['status'], $flash['exit']);
+		if ($returnUrl === true) {
+			return $this->_url($redirect['url']);
+		}
+
+		$this->controller->redirect($redirect['url'], $redirect['status'], $redirect['exit']);
 	}
 
 /**
+ * Sets the flash data to the view in the case of json or xml responses
  *
+ * @param array $flash
+ * @return void
  */
-	protected function _setData($flash) {
-		$this->controller->set('json', array(
+	public function setData($flash) {
+		$this->controller->set('flashData', array(
 			'flash' => $flash,
 			'redirect' => $this->redirect($flash, true)
 		));

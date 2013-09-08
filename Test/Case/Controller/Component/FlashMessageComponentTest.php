@@ -151,7 +151,7 @@ class FlashMessageComponentTest extends CakeTestCase {
 		$this->Controller->action = 'testAction2';
 		$this->Controller->FlashMessage->show('test1');
 		$this->assertEqual($this->Controller->viewVars, array(
-			'json' => array(
+			'flashData' => array(
 				'flash' => array(
 					'element' => 'testElement',
 					'params' => array(),
