@@ -4,14 +4,14 @@ App::uses('AuthComponent', 'Controller/Component');
 App::uses('SessionComponent', 'Controller/Component');
 App::uses('FormPreserverComponent', 'Utils.Controller/Component');
 
-class Article extends CakeTestModel {
+class FormPreserverArticle extends CakeTestModel {
 /**
  * 
  */
 	public $name = 'Article';
 }
 
-class ArticlesTestController extends Controller {
+class FormPreserverArticlesTestController extends Controller {
 
 /**
  * @var string
@@ -23,7 +23,7 @@ class ArticlesTestController extends Controller {
  * @var array
  * @access public
  */
-	public $uses = array('Article');
+	public $uses = array('FormPreserverArticle');
 
 /**
  * @var array
@@ -55,9 +55,9 @@ class FormPreserverComponentTest extends CakeTestCase {
  * @access public
  * @return void
  */
-	function startTest() {
+	function setUp() {
 		$request = new CakeRequest(null, false);
-		$this->Controller = new ArticlesTestController($request, $this->getMock('CakeResponse'));
+		$this->Controller = new FormPreserverArticlesTestController($request, $this->getMock('CakeResponse'));
 		$this->Controller->constructClasses();
 		$this->Controller->action = 'edit';
 		$this->Controller->request->params = array(
@@ -75,7 +75,7 @@ class FormPreserverComponentTest extends CakeTestCase {
  * @access public
  * @return void
  */
-	function endTest() {
+	function tearDown() {
 		unset($this->Controller);
 		ClassRegistry::flush();
 	}
