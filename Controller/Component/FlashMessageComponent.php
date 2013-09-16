@@ -1,5 +1,6 @@
 <?php
 App::uses('Component', 'Controller');
+App::uses('CakeSession', 'Model\Datasource');
 
 /**
  * Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
@@ -49,23 +50,15 @@ class FlashMessageComponent extends Component {
 /**
  * Controller instance reference
  *
- * @var object
+ * @var Controller
  */
 	public $controller;
-
-/**
- * Components
- *
- * @var array
- */
-	public $components = array(
-		'Session',
-	);
 
 /**
  * Initialize
  *
  * @param Controller $controller
+ * @throws RuntimeException
  * @return void
  */
 	public function initialize(Controller $controller) {
@@ -143,7 +136,7 @@ class FlashMessageComponent extends Component {
 		}
 
 		if (!$this->controller->request->is('ajax')) {
-			$this->Session->setFlash($flash['message'], $flash['element'], $flash['params'], $flash['key']);
+			$this->setFlash($flash['message'], $flash['element'], $flash['params'], $flash['key']);
 		} else {
 			$this->setData($flash);
 		}
@@ -188,6 +181,19 @@ class FlashMessageComponent extends Component {
 			'flash' => $flash,
 			'redirect' => $this->redirect($flash, true)
 		));
+	}
+
+/**
+ * Writes the flash mesage to the session
+ *
+ * @param string $message
+ * @param string $element
+ * @param array $params
+ * @param string $key
+ * @return void
+ */
+	public function setFlash($message, $element = 'default', $params = array(), $key = 'flash') {
+		CakeSession::write('Message.' . $key, compact('message', 'element', 'params'));
 	}
 
 /**
