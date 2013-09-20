@@ -45,7 +45,7 @@ class ToggleableBehavior extends ModelBehavior {
 		$this->settings[$Model->alias] = $settings;
 
 		if (empty($this->settings[$Model->alias]['fields'])) {
-			throw InvalidArgumentException(__d('utils', 'You need to define at least one field to be toggleable.'), E_USER_ERROR);
+			throw new InvalidArgumentException(__d('utils', 'You need to define at least one field to be toggleable.'), E_USER_ERROR);
 		}
 	}
 
