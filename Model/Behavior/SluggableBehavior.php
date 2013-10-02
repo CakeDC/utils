@@ -70,7 +70,7 @@ class SluggableBehavior extends ModelBehavior {
  *
  * @param object $Model
  */
-	public function beforeSave(Model $Model) {
+	public function beforeSave(Model $Model, $options = array()) {
 		$settings = $this->settings[$Model->alias];
 		if (is_string($this->settings[$Model->alias]['trigger'])) {
 			if ($Model->{$this->settings[$Model->alias]['trigger']} != true) {
