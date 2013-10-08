@@ -110,7 +110,7 @@ class SluggableBehavior extends ModelBehavior {
 	}
 
 /**
- * Searche if the slug already exists and if yes increments it
+ * Search if the slug already exists and if yes increments it
  *
  * @param object $Model
  * @param string the raw slug
