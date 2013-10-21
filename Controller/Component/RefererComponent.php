@@ -31,7 +31,7 @@ class RefererComponent extends Component {
  *
  * @param Controller object
  */
-	public function initialize($controller) {
+	public function initialize(Controller $controller) {
 		$this->Controller = $controller;
 	} 
 
@@ -40,7 +40,7 @@ class RefererComponent extends Component {
  *
  * @param Controller object
  */
-	public function startup($controller) {
+	public function startup(Controller $controller) {
 		$this->Controller = $controller;
 		$this->setReferer();
 	}

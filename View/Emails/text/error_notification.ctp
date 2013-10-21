@@ -1,8 +1,8 @@
 An Error happened:
 
-<?php echo __('Code: %s', $code); ?>
-<?php echo __('File: %s', $file); ?>
-<?php echo __('Line: %d', $line); ?>
+<?php echo __('utils', 'Code: %s', $code); ?>
+<?php echo __('utils', 'File: %s', $file); ?>
+<?php echo __('utils', 'Line: %d', $line); ?>
 
 <?php echo $description; ?>
 

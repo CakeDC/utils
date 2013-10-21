@@ -58,7 +58,7 @@ class ArchiveComponent extends Component {
  * @param object
  */
 	public function startup(Controller $controller) {
-		$this->controller =& $controller;
+		$this->controller = $controller;
 		if (empty($this->modelName)) {
 			$this->modelName = $controller->modelClass;
 		}

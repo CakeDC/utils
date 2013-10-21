@@ -2,14 +2,14 @@
 App::uses('Controller', 'Controller');
 App::uses('RefererComponent', 'Utils.Controller/Component');
 
-class Article extends CakeTestModel {
+class RefererComponentArticle extends CakeTestModel {
 /**
  * 
  */
 	public $name = 'Article';
 }
 
-class ArticlesTestController extends Controller {
+class RefererComponentArticlesTestController extends Controller {
 
 /**
  * @var string
@@ -21,7 +21,7 @@ class ArticlesTestController extends Controller {
  * @var array
  * @access public
  */
-	public $uses = array('Article');
+	public $uses = array('RefererComponentArticle');
 
 /**
  * @var array
@@ -63,7 +63,7 @@ class RefererComponentTest extends CakeTestCase {
 	function setUp() {
 		$request = new CakeRequest('controller_posts/index');
 		$response = new CakeResponse(); 
-		$this->Controller = new ArticlesTestController($request, $response);
+		$this->Controller = new RefererComponentArticlesTestController($request, $response);
 		$this->Controller->modelClass = 'Article';
 		$this->Controller->Referer = new RefererComponent($this->Controller->Components);
 		$this->Controller->Referer->initialize($this->Controller, array());

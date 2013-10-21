@@ -35,8 +35,8 @@ class CleanerHelperTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function startTest($method) {
-        parent::startTest($method);
+	public function setUp() {
+        parent::setUp();
         $request = new CakeRequest('contacts/add', false);
         $Controller = new Controller($request);
 		$this->View = new View($Controller);
@@ -50,8 +50,8 @@ class CleanerHelperTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function endTest($method) {
-        parent::endTest($method);
+	public function tearDown() {
+        parent::tearDown();
 		unset($this->Cleaner);
 	}
 
