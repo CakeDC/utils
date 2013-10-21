@@ -47,7 +47,7 @@ class PingbacksComponent extends Object {
  *
  * @param object Controller object
  */
-	public function initialize(&$controller) {
+	public function initialize(Controller $controller) {
 		$this->Socket = new HttpSocket();
 		$this->controller = $controller;
 	}

@@ -93,8 +93,8 @@ class PlaceHelperTest extends CakeTestCase {
  * @param string $method
  * @return void
  */
-	public function startTest($method) {
-		parent::startTest($method);
+	public function setUp() {
+		parent::setUp();
 		$View = new View();
 		$this->Place = new TestPlaceHelper($View);
 		$this->Place->settings['cache'] = false;
@@ -106,9 +106,9 @@ class PlaceHelperTest extends CakeTestCase {
  * @param string $method
  * @return void
  */
-	public function endTest($method) {
+	public function tearDown() {
 		unset($this->Place);
-		parent::endTest($method);
+		parent::tearDown();
 	}
 
 /**

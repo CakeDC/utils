@@ -34,7 +34,7 @@ class GravatarHelperTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function startTest() {
+	public function setUp() {
 		$null = null;
 		$this->View = new View($null);
 		$this->Gravatar = new GravatarHelper($this->View);
@@ -47,7 +47,7 @@ class GravatarHelperTest extends CakeTestCase {
  * @return void
  * @access public
  */
-	public function endTest() {
+	public function tearDown() {
 		unset($this->Gravatar);
 	}
 

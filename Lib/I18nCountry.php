@@ -52,7 +52,7 @@ class I18nCountry extends Object {
 		$this->settings = array_merge($this->_defaults, $options);
 
 		if (!in_array($this->settings['key'], array('iso', 'iso3', 'numcode', 'name', 'printableName'))) {
-			throw new InvalidArgumentException(__('Invalid setting for key: Use iso, name, iso3, numcode or printableName.'));
+			throw new InvalidArgumentException(__('utils', 'Invalid setting for key: Use iso, name, iso3, numcode or printableName.'));
 		}
 
 		$this->_translated = array(
@@ -339,7 +339,7 @@ class I18nCountry extends Object {
 				return $country[$this->settings['returnKey']];
 			}
 		}
-		throw new InvalidArgumentException(sprintf(__('Invalid argument #1: %s is not a valid %s identifyer.'), $string, $this->settings['key']));
+		throw new InvalidArgumentException(sprintf(__d('utils', 'Invalid argument #1: %s is not a valid %s identifyer.'), $string, $this->settings['key']));
 	}
 
 }
