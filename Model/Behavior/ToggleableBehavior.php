@@ -45,7 +45,7 @@ class ToggleableBehavior extends ModelBehavior {
 		$this->settings[$Model->alias] = $settings;
 
 		if (empty($this->settings[$Model->alias]['fields'])) {
-			throw InvalidArgumentException(__d('utils', 'You need to define at least one field to be toggleable.'), E_USER_ERROR);
+			throw new InvalidArgumentException(__d('utils', 'You need to define at least one field to be toggleable.'), E_USER_ERROR);
 		}
 	}
 
@@ -89,7 +89,7 @@ class ToggleableBehavior extends ModelBehavior {
 			$newState = $fields[$field][0];
 		}
 
-		if ($checkRecord != false && !$Model->exists(true)) {
+		if ($checkRecord != false && !$Model->exists($id)) {
 			$message = __d('utils', 'Invalid record');
 			if (is_string($checkRecord)) {
 				$message = $checkRecord;

@@ -63,7 +63,7 @@ class ArchiveComponentTest extends CakeTestCase {
  * @access public
  * @return void
  */
-	function startTest() {
+	function setUp() {
 		$this->Controller = new ArticlesTestController();
 		$this->Controller->constructClasses();
 		$this->Controller->params = array(
@@ -81,7 +81,7 @@ class ArchiveComponentTest extends CakeTestCase {
  * @access public
  * @return void
  */
-	function endTest() {
+	function tearDown() {
 		unset($this->Controller);
 		ClassRegistry::flush();
 	}
