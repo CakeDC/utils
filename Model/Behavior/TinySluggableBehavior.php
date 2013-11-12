@@ -34,15 +34,17 @@ class TinySluggableBehavior extends ModelBehavior {
 	protected $_defaults = array(
 		'tinySlug' => 'tiny_slug',
 		'codeset' => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-		'orderField' => 'created');
+		'orderField' => 'created'
+	);
 
 /**
  * Initiate behavior - The Model must have a field for the tiny_slug along with a "created" field
  *
- * @param object $Model
+ * @param Model $Model
  * @param array $settings Settings for the behavior. Keys: 
  * 	- tinySlug: name of the tiny slug field in the table [default: tiny_slug]
  *  - codeset: valid characters for tiny slug [default: 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ]
+ * @return void
  */
 	public function setup(Model $Model, $settings = array()) {
 		$this->settings[$Model->alias] = array_merge($this->_defaults, $settings);
@@ -53,9 +55,11 @@ class TinySluggableBehavior extends ModelBehavior {
 /**
  * beforeSave callback
  *
- * @param object $Model
+ * @param Model $Model
+ * @param array $options
+ * @return boolean
  */
-	public function beforeSave(Model $Model) {
+	public function beforeSave(Model $Model, $options = array()) {
 		if (empty($Model->data[$Model->alias])) {
 			return;
 		}
@@ -69,9 +73,10 @@ class TinySluggableBehavior extends ModelBehavior {
 /**
  * Calculates the next available slug and returns it
  *
+ * @param Model $Model
  * @return string next avalible tiny slug
  */
-	private function __getNextSlug(&$Model) {
+	private function __getNextSlug(Model $Model) {
 		$new = '';
 		$prev = $Model->find('first', array(
 			'contain' => array(),
@@ -106,10 +111,11 @@ class TinySluggableBehavior extends ModelBehavior {
 /**
  * Calculates the
  *
+ * @param Model $Model
  * @param int $decimal the decimal to convert
  * @return string
  */
-	private function __toShort(&$Model, $decimal) {
+	private function __toShort(Model $Model, $decimal) {
 		$codeSet = $this->settings[$Model->alias]['codeset'];
 		$base = $this->settings[$Model->alias]['base'];
 		$short = '';
@@ -123,10 +129,11 @@ class TinySluggableBehavior extends ModelBehavior {
 /**
  * Converts a tiny slug into an integer
  *
+ * @param Model
  * @param string $short
  * @return integer
  */
-	private function __toDecimal(&$Model, $short) {
+	private function __toDecimal(Model $Model, $short) {
 		$codeSet = $this->settings[$Model->alias]['codeset'];
 		$base = $this->settings[$Model->alias]['base'];
 		$decimal = 0;
@@ -135,4 +142,5 @@ class TinySluggableBehavior extends ModelBehavior {
 		}
 		return $decimal;
 	}
+
 }
