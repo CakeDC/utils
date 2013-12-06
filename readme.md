@@ -30,6 +30,7 @@ each component.
 * Archive        - Creates the data for "archive" date ranges that can be used to generated links like "May 2010", "March 2010",...
 * FormPreserver  - Allow to keep form data between login redirect and returning back after login.
 * Pingbacks      - 
+* PriorityArray  - Search and set the priority elements to the start of the array without losing the key value index. 
 * Referer        - Allow to keep referer url inside the add/edit form to reuse it for redirect on success POST or submit.
 * Utils          - 
 
@@ -123,6 +124,13 @@ $languageList = $Languages->lists();
 
 ## Archive Component
 
+## Priority Array Component
+` set the priority array e.g 'Pakistan' and United States at the start of the array
+```php
+
+	public $components = array('Paginator','Utils.PriorityArray');
+	$this->PriorityArray->setPriorityElementsFirst(array('Pakistan','United States'),$countries);
+```
 ## Referer Component
 
 Allow to keep referer url inside the add/edit form to reuse it for redirect on success POST or submit.
