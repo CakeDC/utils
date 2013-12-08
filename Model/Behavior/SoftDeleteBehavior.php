@@ -24,7 +24,9 @@ class SoftDeleteBehavior extends ModelBehavior {
  *
  * @var array $default
  */
-	public $default = array('deleted' => 'deleted_date');
+	public $default = array(
+		'deleted' => 'deleted_date'
+	);
 
 /**
  * Holds activity flags for models
@@ -98,10 +100,12 @@ class SoftDeleteBehavior extends ModelBehavior {
 
 /**
  * Check if a record exists for the given id
- * @param object $model
+ *
+ * @param Model $model
  * @param id
+ * @return mixed
  */
-	public function existsAndNotDeleted($model, $id) {
+	public function existsAndNotDeleted(Model $model, $id) {
 		if ($id === null) {
 			$id = $model->getID();
 		}
