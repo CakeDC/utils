@@ -240,8 +240,11 @@ class SoftDeleteBehavior extends ModelBehavior {
 	public function purgeDeletedCount($model, $expiration = '-90 days') {
 		$this->softDelete($model, false);
 		return $model->find('count', array(
-			'conditions' => $this->_purgeDeletedConditions($model, $expiration),
-			'recursive' => -1));
+				'conditions' => $this->_purgeDeletedConditions($model, $expiration),
+				'recursive' => -1,
+				'contain' => array()
+			)
+		);
 	}
 
 /**
@@ -279,7 +282,7 @@ class SoftDeleteBehavior extends ModelBehavior {
 		foreach ($this->settings[$model->alias] as $flag => $date) {
 			$conditions[$model->alias . '.' . $flag] = true;
 			if ($date) {
-				$conditions[$model->alias . '.' . $date . ' <'] =  $purgeDate;
+				$conditions[$model->alias . '.' . $date . ' <'] = $purgeDate;
 			}
 		}
 		return $conditions;
@@ -320,6 +323,7 @@ class SoftDeleteBehavior extends ModelBehavior {
 		if (empty($model->belongsTo)) {
 			return;
 		}
+
 		$fields = array_keys($this->_normalizeFields($model));
 		$parentModels = array_keys($model->belongsTo);
 
@@ -331,7 +335,7 @@ class SoftDeleteBehavior extends ModelBehavior {
 
 				foreach ($model->{$parentModel}->{$assocType} as $assoc => $assocConfig) {
 					$modelName = empty($assocConfig['className']) ? $assoc : @$assocConfig['className'];
-					if ($model->alias != $modelName) {
+					if ((!empty($model->plugin) && strstr($model->plugin . '.', $model->alias) === false ? $model->plugin . '.' : '') . $model->alias !== $modelName) {
 						continue;
 					}
 
@@ -347,12 +351,10 @@ class SoftDeleteBehavior extends ModelBehavior {
 								if (is_string($active)) {
 									if ($field == $active) {
 										$conditions[$assoc . '.' . $field] = false;
-									}
-									elseif (isset($conditions[$assoc . '.' . $field])) {
+									} elseif (isset($conditions[$assoc . '.' . $field])) {
 										unset($conditions[$assoc . '.' . $field]);
 									}
-								}
-								elseif (!$multiFields) {
+								} elseif (!$multiFields) {
 									$conditions[$assoc . '.' . $field] = false;
 								}
 							}
