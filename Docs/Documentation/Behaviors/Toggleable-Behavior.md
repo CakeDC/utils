@@ -1,6 +1,8 @@
 Toggleable Behavior
 ===================
 
+The **Toggleable** behavior allows you to make it easy to toggle the state of a field in your model.
+
 Behavior Options
 ----------------
 

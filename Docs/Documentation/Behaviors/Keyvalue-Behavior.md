@@ -1,6 +1,8 @@
-### Keyvalue Behavior
+Keyvalue Behavior
+=================
 
-You can configure the Importable behavior using these options:
+Behavior Options
+----------------
 
-* foreignKey     - The foreign key field, default is user_id
-* scope          - Find condition like array to define a scope
+* **foreignKey:** The foreign key field, default is ```user_id```.
+* **scope:** Find condition like array to define a scope, default is ```array()```

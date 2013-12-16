@@ -17,7 +17,7 @@
  * @package utils
  * @subpackage utils.models.behaviors
  */
- App::uses('ModelBehavior', 'Model');
+App::uses('ModelBehavior', 'Model');
 
 class LookupableBehavior extends ModelBehavior {
 
@@ -25,7 +25,7 @@ class LookupableBehavior extends ModelBehavior {
  * Lookupable behavior settings
  *
  * @var array
- */ 
+ */
 	public $settings = array();
 
 /**
@@ -34,16 +34,17 @@ class LookupableBehavior extends ModelBehavior {
  * @var array
  */
 	protected $_defaults = array(
-		'types' => array());
+		'types' => array()
+	);
 
 /**
  * Setup
  *
- * @param AppModel $Model
+ * @param Model $Model
  * @param array $settings
  * @return void
  */
-	function setup(Model $Model, $settings = array()) {
+	public function setup(Model $Model, $settings = array()) {
 		$settings = array_merge($this->_defaults, $settings);
 		$this->settings[$Model->alias] = $settings;
 	}
@@ -60,9 +61,11 @@ class LookupableBehavior extends ModelBehavior {
 		return $Model->{$modelClass}->find('first', array(
 			'contain' => array(),
 			'conditions' => array(
-				$modelClass . '.' . $Model->{$modelClass}->displayField => $name)));
+				$modelClass . '.' . $Model->{$modelClass}->displayField => $name)
+			)
+		);
 	}
-	
+
 /**
  * This method will used by lookup method to save new record.
  *
@@ -74,10 +77,11 @@ class LookupableBehavior extends ModelBehavior {
 	public function saveLookupRecord(Model $Model, $modelClass, $data) {
 		$Model->{$modelClass}->create();
 		return $Model->{$modelClass}->save(array($modelClass => $data), array(
-				'validate' => false,
-				'callbacks' => true));
+			'validate' => false,
+			'callbacks' => true)
+		);
 	}
-	
+
 /**
  * This method will lookup the publisher, narrator and author based on the name
  *
@@ -104,16 +108,12 @@ class LookupableBehavior extends ModelBehavior {
 			$fieldName = $Model->{$modelClass}->displayField;
 			$data = array($fieldName => $name);
 
-			// if (isset($Model->data[$modelClass])) {
-				// if (isset($Model->data[$modelClass][$fieldName]) && $Model->data[$modelClass][$fieldName] != $name) {
-					// unset($Model->data[$modelClass]['id']);
-				// }
 			if (isset($Model->data[$modelClass])) {
 				$data = Set::merge($Model->data[$modelClass], $data);
 			}
-			
+
 			$result = $Model->saveLookupRecord($modelClass, $data);
-			
+
 			$Model->data[$modelClass]['id'] = $Model->{$modelClass}->id;
 			$Model->data[$modelClass]['name'] = $name;
 			$Model->data[$Model->alias][$type . '_id'] = $Model->{$modelClass}->id;
@@ -151,9 +151,11 @@ class LookupableBehavior extends ModelBehavior {
  * afterSave callback
  *
  * Checks for authors, publishers and narrators and creates them on the fly if 
- * they dont exist, if they exist by the entered name the id will be looked up
+ * they don't exist, if they exist by the entered name the id will be looked up
  * and stored in the record.
  *
+ * @param Model $Model
+ * @param boolean $created
  * @return boolean True on success
  */
 	public function afterSave(Model $Model, $created) {
