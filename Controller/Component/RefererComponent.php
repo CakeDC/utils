@@ -33,7 +33,7 @@ class RefererComponent extends Component {
  */
 	public function initialize(Controller $controller) {
 		$this->Controller = $controller;
-	} 
+	}
 
 /**
  * Startup Callback
