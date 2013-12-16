@@ -33,7 +33,7 @@ Documentation
 * [SoftDelete](Documentation/Behaviors/Soft-Delete-Behavior.md) - Soft deleting for model.
 * [Sluggable](Documentation/Behaviors/Sluggable-Behavior.md) - Implement slugs for model.
 * [TinySluggable](Documentation/Behaviors/Tiny-Sluggable-Behavior.md) - Creates tiny slugs similar to known url shorteners like bit.ly.
-* [Toggable](Documentation/Behaviors/Toggable-Behavior.md) - Toggle field values.
+* [Toggable](Documentation/Behaviors/Toggleable-Behavior.md) - Toggle field values.
 
 **Helpers**
 

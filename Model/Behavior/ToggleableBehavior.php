@@ -33,12 +33,16 @@ class ToggleableBehavior extends ModelBehavior {
  */
 	protected $_defaults = array(
 		'fields' => array(),
-		'checkRecord' => true);
+		'checkRecord' => true
+	);
+
 /**
  * Setup
  *
- * @param object AppModel
+ * @throws InvalidArgumentException
+ * @param Model $Model
  * @param array $config
+ * @return void
  */
 	public function setup(Model $Model, $config = array()) {
 		$settings = array_merge($this->_defaults, $config);
@@ -52,9 +56,11 @@ class ToggleableBehavior extends ModelBehavior {
 /**
  * Toggles the status of the right answer or sets another answer to be the right one
  *
- * @param object $Model
+ * @param Model $Model
  * @param mixed $id Integer or UUID string type record id
  * @param string $field Name of the field to toggle
+ * @throws InvalidArgumentException
+ * @throws Exception
  * @return mixed The new state or false if setting the new state failed
  */
 	public function toggle(Model $Model, $id = null, $field = null) {
@@ -107,4 +113,5 @@ class ToggleableBehavior extends ModelBehavior {
 
 		return $newState;
 	}
+
 }

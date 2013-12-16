@@ -1,4 +1,5 @@
-### SoftDelete Behavior
+SoftDelete Behavior
+===================
 
 The SoftDelete behavior allows you to keep records on database and do not show them to users having a "deleted" flag. By default you should have "deleted" and "deleted_date" fields on your database table.
 
@@ -15,9 +16,9 @@ public function exists($id = null) {
 }
 ```
 
-It will call SoftDelete::existsAndNotDeleted() for models that use SoftDelete Behavior and Model:exists for models that do not use it
+It will call ```existsAndNotDeleted()``` for models that use SoftDelete Behavior and Model:exists for models that do not use it
 
-When deleting an item the SoftDelete behavior will override the `delete()` and update the record instead. This means that the response to the `delete()` will be false. In order to override this and return true, you will need to include the following in your `AppController.php` file.
+When deleting an item the SoftDelete behavior will override the ```delete()``` and update the record instead. This means that the response to the ```delete()``` will be false. In order to override this and return true, you will need to include the following in your ```AppModel.php``` file.
 
 ```php
 <?php
