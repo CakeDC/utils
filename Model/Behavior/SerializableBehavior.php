@@ -91,7 +91,7 @@ class SerializableBehavior extends ModelBehavior {
  * @param array $options
  * @return void
  */
-	public function afterSave(Model$Model, $created, $options = array()) {
+	public function afterSave(Model $Model, $created, $options = array()) {
 		if(!empty($options['deserialize'])) $Model->data = $Model->deserialize($Model->data);
 	}
 
@@ -119,6 +119,8 @@ class SerializableBehavior extends ModelBehavior {
 				if (isset($data[$Model->alias][$field]) && is_array($data[$Model->alias][$field])) {
 					if ($engine == 'json') {
 						$data[$Model->alias][$field] = @json_encode($data[$Model->alias][$field]);
+					} elseif ($engine == 'csv') {
+						$data[$Model->alias][$field] = implode(',', $data[$Model->alias][$field]);
 					} else {
 						$data[$Model->alias][$field] = @serialize($data[$Model->alias][$field]);
 					}
@@ -148,6 +150,9 @@ class SerializableBehavior extends ModelBehavior {
 				if (is_string($data[$Model->alias][$field])) {
 					if ($engine == 'json') {
 						$data[$Model->alias][$field] = @json_decode($data[$Model->alias][$field], true);
+					} elseif ($engine == 'csv') {
+						$data[$Model->alias][$field] = explode(',', $data[$Model->alias][$field]);
+						array_walk($data[$Model->alias][$field], create_function('&$val', '$val = trim($val);'));
 					} else {
 						$data[$Model->alias][$field] = @unserialize($data[$Model->alias][$field]);
 					}
@@ -155,7 +160,6 @@ class SerializableBehavior extends ModelBehavior {
 						$data[$Model->alias][$field] = array();
 					}
 				}
-
 			} elseif (!empty($data[$Model->alias]) && array_key_exists($field, $data[$Model->alias])) {
 				$data[$Model->alias][$field] = array();
 			}
