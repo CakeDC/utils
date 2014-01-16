@@ -104,8 +104,8 @@ class CsvImportBehavior extends ModelBehavior {
 	public function importCSV(Model &$Model, $file, $fixed = array(), $returnSaved = false) {
 		$handle = new SplFileObject($file, 'rb');
 		$header = $this->_getHeader($Model, $handle);
-		$db = $Model->getDataSource();
-		$db->begin($Model);
+		$dataSource = $Model->getDataSource();
+		$dataSource->begin($Model);
 		$saved = array();
 		$i = 0;
 		while (($row = $this->_getCSVLine($Model, $handle)) !== false) {
@@ -114,9 +114,9 @@ class CsvImportBehavior extends ModelBehavior {
 				// get the data field from Model.field
 				if (strpos($col, '.') !== false) {
 					list($model,$field) = explode('.',$col);
-					$data[$model][$field]= (isset($row[$k])) ? $row[$k] : '';
+					$data[$model][$field] = (isset($row[$k])) ? $row[$k] : '';
 				} else {
-					$data[$Model->alias][$col]= (isset($row[$k])) ? $row[$k] : '';
+					$data[$Model->alias][$col] = (isset($row[$k])) ? $row[$k] : '';
 				}
 			}
 
@@ -125,6 +125,10 @@ class CsvImportBehavior extends ModelBehavior {
 			$Model->id = isset($data[$Model->alias][$Model->primaryKey]) ? $data[$Model->alias][$Model->primaryKey] : false;
 
 			//beforeImport callback
+			$Model->getEventManager()->dispatch(new CakeEvent(
+				'CsvImportBehavior.beforeImport',
+				$Model
+			));
 			if (method_exists($Model, 'beforeImport')) {
 				$data = $Model->beforeImport($data);
 			}
@@ -141,10 +145,24 @@ class CsvImportBehavior extends ModelBehavior {
 			if (!$error && !$Model->saveAll($data, array('validate' => false,'atomic' => false))) {
 				$this->errors[$Model->alias][$i]['save'] = sprintf(__d('utils', '%s for Row %d failed to save.'), $Model->alias, $i);
 				$error = true;
+				$Model->getEventManager()->dispatch(new CakeEvent(
+					'CsvImportBehavior.importError',
+					$Model,
+					array(
+						'error' => $this->errors[$Model->alias][$i]['save']
+					)
+				));
 				$this->_notify($Model, 'onImportError', $this->errors[$Model->alias][$i]);
 			}
 
 			if (!$error) {
+				$Model->getEventManager()->dispatch(new CakeEvent(
+					'CsvImportBehavior.rowImported',
+					$Model,
+					array(
+						'data' => $data
+					)
+				));
 				$this->_notify($Model, 'onImportRow', $data);
 				if ($returnSaved) {
 					$saved[] = $i;
@@ -156,11 +174,11 @@ class CsvImportBehavior extends ModelBehavior {
 
 		$success = empty($this->errors);
 		if (!$returnSaved && !$success) {
-			$db->rollback($Model);
+			$dataSource->rollback($Model);
 			return false;
 		}
 
-		$db->commit($Model);
+		$dataSource->commit($Model);
 
 		if ($returnSaved) {
 			return $saved;
