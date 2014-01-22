@@ -36,7 +36,8 @@ class ListBehavior extends ModelBehavior {
 		'scope' => '',
 		'validate' => false,
 		'addToTop' => false,
-		'callbacks' => false);
+		'callbacks' => false
+	);
 
 /**
  * Setup
@@ -55,9 +56,10 @@ class ListBehavior extends ModelBehavior {
  * Overriden to transparently manage setting the item position to the end of the list
  *
  * @param Model $model
+ * @param array $options
  * @return boolean True to continue, false to abort the save
  */
-	public function beforeSave(Model $model) {
+	public function beforeSave(Model $model, $options = array()) {
 		extract($this->settings[$model->alias]);
 		if (empty($model->data[$model->alias][$model->primaryKey])) {
 			if ($addToTop) {
