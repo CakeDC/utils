@@ -56,6 +56,9 @@ class InheritableBehavior extends ModelBehavior {
 
 		if ($this->settings[$Model->alias]['method'] == 'CTI') {
 			$this->classTableBindParent($Model);
+			if (!empty($Model->parent->validate)) {
+				$Model->validate = Hash::merge($Model->parent->validate, $Model->validate);
+			}
 		}
 	}
 
@@ -157,20 +160,6 @@ class InheritableBehavior extends ModelBehavior {
 	public function afterDelete(Model $Model) {
 		if ($this->settings[$Model->alias]['method'] == 'CTI') {
 			$Model->parent->delete($Model->id);
-		}
-		return true;
-	}
-
-/**
- * Before validate callback
- * Merge validation rules from the parent class in case of CTI
- *
- * @param Model $model
- * @return true
- */
-	public function beforeValidate(Model $Model) {
-		if ($this->settings[$Model->alias]['method'] == 'CTI' && !empty($Model->parent->validate)) {
-			$Model->validate = Set::merge($Model->parent->validate, $Model->validate);
 		}
 		return true;
 	}
