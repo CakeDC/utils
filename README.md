@@ -2,7 +2,6 @@ CakeDC Utils Plugin
 ===================
 
 [![Bake Status](https://secure.travis-ci.org/CakeDC/utils.png?branch=master)](http://travis-ci.org/CakeDC/utils)
-[![Test Coverage](https://coveralls.io/repos/CakeDC/utils/badge.png?branch=master)](https://coveralls.io/r/CakeDC/utils?branch=master)
 [![Downloads](https://poser.pugx.org/CakeDC/utils/d/total.png)](https://packagist.org/packages/CakeDC/utils)
 [![Latest Version](https://poser.pugx.org/CakeDC/utils/v/stable.png)](https://packagist.org/packages/CakeDC/utils)
 

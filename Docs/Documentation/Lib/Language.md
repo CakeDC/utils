@@ -4,7 +4,7 @@ Languages Lib
 The languages lib is basically just a helper lib that extends I10n to get a three character language code => country name array.
 
 ```php
-App::import('Lib', 'Utils.Languages');
+App::uses('Languages', 'Utils.Lib');
 $Languages = new Languages();
 $languageList = $Languages->lists();
 ```
