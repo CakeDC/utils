@@ -4,6 +4,7 @@ App::uses('ArchiveComponent', 'Utils.Controller/Component');
 
 
 class Article extends CakeTestModel {
+
 /**
  * 
  */
@@ -41,6 +42,7 @@ class ArticlesTestController extends Controller {
 
 
 class ArchiveComponentTest extends CakeTestCase {
+
 /**
  * Controller object instance
  *
@@ -55,7 +57,8 @@ class ArchiveComponentTest extends CakeTestCase {
  * @access public
  */
 	public $fixtures = array(
-		'plugin.utils.article');
+		'plugin.utils.article'
+	);
 
 /**
  * setUp method
@@ -63,7 +66,8 @@ class ArchiveComponentTest extends CakeTestCase {
  * @access public
  * @return void
  */
-	function setUp() {
+	public function setUp() {
+		parent::setUp();
 		$this->Controller = new ArticlesTestController();
 		$this->Controller->constructClasses();
 		$this->Controller->params = array(
@@ -81,7 +85,7 @@ class ArchiveComponentTest extends CakeTestCase {
  * @access public
  * @return void
  */
-	function tearDown() {
+	public function tearDown() {
 		unset($this->Controller);
 		ClassRegistry::flush();
 	}
@@ -94,7 +98,7 @@ class ArchiveComponentTest extends CakeTestCase {
  */
 	public function testArchiveLinks() {
 		$result = $this->Controller->Archive->archiveLinks();
-		$this->assertEqual($result[0], array(
+		$this->assertEquals($result[0], array(
 			'year' => 2007,
 			'month' => 03,
 			'count' => 3));

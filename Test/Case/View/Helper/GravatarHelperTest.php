@@ -61,7 +61,7 @@ class GravatarHelperTest extends CakeTestCase {
 		$expected = 'http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
 		$result = $this->Gravatar->imageUrl('example@gravatar.com', array('ext' => false, 'default' => 'wavatar'));
 		list($url, $params) = explode('?', $result);
-		$this->assertEqual($expected, $url);
+		$this->assertEquals($expected, $url);
 	}
 
 /**
@@ -130,11 +130,11 @@ class GravatarHelperTest extends CakeTestCase {
 	public function testImageTag() {
 		$expected = '<img src="http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5') . '" alt="" />';
 		$result = $this->Gravatar->image('example@gravatar.com', array('ext' => false));
-		$this->assertEqual($expected, $result);
+		$this->assertEquals($expected, $result);
 
 		$expected = '<img src="http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5') . '" alt="Gravatar" />';
 		$result = $this->Gravatar->image('example@gravatar.com', array('ext' => false, 'alt' => 'Gravatar'));
-		$this->assertEqual($expected, $result);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -146,7 +146,7 @@ class GravatarHelperTest extends CakeTestCase {
 	public function testDefaulting() {
 		$result = $this->Gravatar->imageUrl('example@gravatar.com', array('default' => 'wavatar', 'size' => 'default'));
 		list($url, $params) = explode('?', $result);
-		$this->assertEqual($params, 'default=wavatar');
+		$this->assertEquals($params, 'default=wavatar');
 	}
 
 /**
@@ -160,16 +160,16 @@ class GravatarHelperTest extends CakeTestCase {
 		
 		$expected = 'http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
 		$result = $this->Gravatar->imageUrl('example@gravatar.com', array('ext' => false));
-		$this->assertEqual($expected, $result);
+		$this->assertEquals($expected, $result);
 
 		$expected = 'http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
 		$result = $this->Gravatar->imageUrl('example@gravatar.com', array('ext' => false, 'secure' => false));
-		$this->assertEqual($expected, $result);
+		$this->assertEquals($expected, $result);
 
 		$_SERVER['HTTPS'] = true;
 		$expected = 'http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
 		$result = $this->Gravatar->imageUrl('example@gravatar.com', array('ext' => false, 'secure' => false));
-		$this->assertEqual($expected, $result);
+		$this->assertEquals($expected, $result);
 	}
 
 /**
@@ -181,16 +181,16 @@ class GravatarHelperTest extends CakeTestCase {
 	public function testSecureUrl() {
 		$expected = 'https://secure.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
 		$result = $this->Gravatar->imageUrl('example@gravatar.com', array('ext' => false, 'secure' => true));
-		$this->assertEqual($expected, $result);
+		$this->assertEquals($expected, $result);
 
 		$_SERVER['HTTPS'] = true;
 		
 		$expected = 'https://secure.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
 		$result = $this->Gravatar->imageUrl('example@gravatar.com', array('ext' => false));
-		$this->assertEqual($expected, $result);
+		$this->assertEquals($expected, $result);
 
 		$expected = 'https://secure.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5');
 		$result = $this->Gravatar->imageUrl('example@gravatar.com', array('ext' => false, 'secure' => true));
-		$this->assertEqual($expected, $result);
+		$this->assertEquals($expected, $result);
 	}
 }

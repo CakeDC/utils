@@ -67,23 +67,23 @@ class SluggableTest extends CakeTestCase {
 		$this->Model->save();	
 
 		$result = $this->Model->read();
-		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article');
+		$this->assertEquals($result['SluggedArticle']['slug'], 'fourth_article');
 
 		// Should not update
 		$this->Model->saveField('title', 'Fourth Article (Part 1)');
 		$result = $this->Model->read();
-		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article');
+		$this->assertEquals($result['SluggedArticle']['slug'], 'fourth_article');
 
 		// Should update
 		$this->Model->Behaviors->load('Utils.Sluggable', array('update' => true));
 		$this->Model->saveField('title', 'Fourth Article (Part 2)');
 		$result = $this->Model->read();
-		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article_part_2');
+		$this->assertEquals($result['SluggedArticle']['slug'], 'fourth_article_part_2');
 
 		// Updating the item should not update the slug
 		$this->Model->saveField('body', 'Here goes the content.');
 		$result = $this->Model->read();
-		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article_part_2');
+		$this->assertEquals($result['SluggedArticle']['slug'], 'fourth_article_part_2');
 	}
 
 /**
@@ -96,7 +96,7 @@ class SluggableTest extends CakeTestCase {
 		$this->ModelTwo->save();
 
 		$result = $this->ModelTwo->read();
-		$this->assertEqual($result['SluggedCustomArticle']['slug'], 'slug');
+		$this->assertEquals($result['SluggedCustomArticle']['slug'], 'slug');
 	}
 
 /**
@@ -117,12 +117,12 @@ class SluggableTest extends CakeTestCase {
 		$this->Model->save();
 
 		$results = $this->Model->find('all', array('conditions' => array('title LIKE' => 'Fourth%')));
-		$this->assertEqual(count($results), 5);
-		$this->assertEqual($results[0]['SluggedArticle']['slug'], 'fourth_article');
-		$this->assertEqual($results[1]['SluggedArticle']['slug'], 'fourth_article_1');
-		$this->assertEqual($results[2]['SluggedArticle']['slug'], 'fourth_article_2');
-		$this->assertEqual($results[3]['SluggedArticle']['slug'], 'fourth');
-		$this->assertEqual($results[4]['SluggedArticle']['slug'], 'fourth_1');
+		$this->assertEquals(count($results), 5);
+		$this->assertEquals($results[0]['SluggedArticle']['slug'], 'fourth_article');
+		$this->assertEquals($results[1]['SluggedArticle']['slug'], 'fourth_article_1');
+		$this->assertEquals($results[2]['SluggedArticle']['slug'], 'fourth_article_2');
+		$this->assertEquals($results[3]['SluggedArticle']['slug'], 'fourth');
+		$this->assertEquals($results[4]['SluggedArticle']['slug'], 'fourth_1');
 	}
 
 /**
@@ -138,9 +138,9 @@ class SluggableTest extends CakeTestCase {
         $this->Model->save();
         
 		$results = $this->Model->find('all', array('conditions' => array('title LIKE' => 'Puertas%')));
-        $this->assertEqual(count($results), 2);
-        $this->assertEqual($results[0]['SluggedArticle']['slug'], 'puertas_para_muebles');
-        $this->assertEqual($results[1]['SluggedArticle']['slug'], 'puertas');
+        $this->assertEquals(count($results), 2);
+        $this->assertEquals($results[0]['SluggedArticle']['slug'], 'puertas_para_muebles');
+        $this->assertEquals($results[1]['SluggedArticle']['slug'], 'puertas');
     }
 
 /**
@@ -161,7 +161,7 @@ class SluggableTest extends CakeTestCase {
 		$this->assertTrue(empty($result['SluggedArticle']['slug']));
 		$this->Model->generateSlug = true;
 		$result = $this->Model->save($result);
-		$this->assertEqual($result['SluggedArticle']['slug'], 'some_article_25271');
+		$this->assertEquals($result['SluggedArticle']['slug'], 'some_article_25271');
 	}
 
 /**
@@ -179,9 +179,9 @@ class SluggableTest extends CakeTestCase {
 		$this->Model->save();
 
 		$results = $this->Model->find('all', array('conditions' => array('title LIKE' => 'Fourth Article')));
-		$this->assertEqual(count($results), 2);
-		$this->assertEqual($results[0]['SluggedArticle']['slug'], 'fourth_article');
-		$this->assertEqual($results[1]['SluggedArticle']['slug'], 'fourth_article');
+		$this->assertEquals(count($results), 2);
+		$this->assertEquals($results[0]['SluggedArticle']['slug'], 'fourth_article');
+		$this->assertEquals($results[1]['SluggedArticle']['slug'], 'fourth_article');
 	}
 
 /**
@@ -191,22 +191,22 @@ class SluggableTest extends CakeTestCase {
  */
 	public function testMultibyteSlug() {
 		$result = $this->Model->multibyteSlug('⽅⽆⽇⽈⽉⽊~!@#$%^&*()=+[]{}\\/,.:;"\'<>');
-		$this->assertEqual('⽅⽆⽇⽈⽉⽊', $result);
+		$this->assertEquals('⽅⽆⽇⽈⽉⽊', $result);
 
 		$result = $this->Model->multibyteSlug('눡눢눣눤눥눦눧~!@#$%^&*()=+[]{}\\/,.:;"\'<>');
-		$this->assertEqual('눡눢눣눤눥눦눧', $result);
+		$this->assertEquals('눡눢눣눤눥눦눧', $result);
 
 		$result = $this->Model->multibyteSlug('눡~!@#$%^&*()=+[]{}\\/,.:;"\'<>눢눣눤눥눦눧');
-		$this->assertEqual('눡_눢눣눤눥눦눧', $result);
+		$this->assertEquals('눡_눢눣눤눥눦눧', $result);
 
 		$result = $this->Model->multibyteSlug('krämer ~!@ # $% ^& *() =+[]{}\\/,.:;"\'<>');
-		$this->assertEqual('krämer', $result);
+		$this->assertEquals('krämer', $result);
 
 		$result = $this->Model->multibyteSlug('Ärgerlich Öl Überzogen Straße ~!@ # $% ^& *() =+[]{}\\/,.:;"\'<>');
-		$this->assertEqual('ärgerlich_öl_überzogen_straße', $result);
+		$this->assertEquals('ärgerlich_öl_überzogen_straße', $result);
 
 		$result = $this->Model->multibyteSlug('Foo\'s book');
-		$this->assertEqual('foos_book', $result);
+		$this->assertEquals('foos_book', $result);
 	}
 
 /**
@@ -223,10 +223,10 @@ class SluggableTest extends CakeTestCase {
 		$this->Model->create(array('title' => "Andersons Fairy Tales"));
 		$this->Model->save();
 		$result = $this->Model->read();
-		$this->assertEqual($result['SluggedArticle']['slug'], 'andersons_fairy_tales');
+		$this->assertEquals($result['SluggedArticle']['slug'], 'andersons_fairy_tales');
 
 		$this->Model->save(array('title' => "Andersons Fairy Tales II"));
 		$result = $this->Model->read();
-		$this->assertEqual($result['SluggedArticle']['slug'], 'andersons_fairy_tales_ii');
+		$this->assertEquals($result['SluggedArticle']['slug'], 'andersons_fairy_tales_ii');
 	}
 }

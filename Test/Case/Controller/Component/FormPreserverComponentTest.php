@@ -99,7 +99,7 @@ class FormPreserverComponentTest extends CakeTestCase {
 		$this->Controller->FormPreserver->actions = array('edit');
 		$this->Controller->FormPreserver->startup($this->Controller);
 
-		$this->assertEqual($this->Controller->redirectUrl, array(
+		$this->assertEquals($this->Controller->redirectUrl, array(
 			'controller' => 'users',
 			'action' => 'login',
 			'plugin' => null));
@@ -122,7 +122,7 @@ class FormPreserverComponentTest extends CakeTestCase {
 		$this->Controller->request->data = array();
 		$this->Controller->FormPreserver->restore();
 		$this->assertFalse($this->Controller->Session->check('PreservedForms'));
-		$this->assertEqual($this->Controller->request->data, $data);
+		$this->assertEquals($this->Controller->request->data, $data);
 		session_destroy();
 	}
 

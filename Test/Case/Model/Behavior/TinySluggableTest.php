@@ -71,7 +71,7 @@ class TinySluggableBehaviorTest extends CakeTestCase {
 			'TinySluggableArticle' => array(
 				'title' => 'another title'));
 		$this->assertTrue($this->Model->Behaviors->TinySluggable->beforeSave($this->Model));
-		$this->assertEqual($this->Model->data['TinySluggableArticle']['tiny_slug'], '3');
+		$this->assertEquals($this->Model->data['TinySluggableArticle']['tiny_slug'], '3');
 	}
 
 /**
@@ -92,7 +92,7 @@ class TinySluggableBehaviorTest extends CakeTestCase {
 
 		$this->assertTrue($this->Model->Behaviors->TinySluggable->beforeSave($this->Model));
 		$this->assertTrue(!empty($this->Model->data['TinySluggableArticle']['tiny_slug']));
-		$this->assertEqual($this->Model->data['TinySluggableArticle']['tiny_slug'], 'a');
+		$this->assertEquals($this->Model->data['TinySluggableArticle']['tiny_slug'], 'a');
 	}
 
 /**
@@ -108,7 +108,7 @@ class TinySluggableBehaviorTest extends CakeTestCase {
 			'TinySluggableArticle' => array(
 				'title' => 'and another title')));
 
-		$this->assertEqual($result['TinySluggableArticle']['tiny_slug'], '0');
+		$this->assertEquals($result['TinySluggableArticle']['tiny_slug'], '0');
 	}
 
 /**
@@ -130,7 +130,7 @@ class TinySluggableBehaviorTest extends CakeTestCase {
 		}
 
 		$results = Set::extract($this->Model->find('all'), '{n}.TinySluggableArticle.tiny_slug');
-		$this->assertEqual($results, $expect);
+		$this->assertEquals($results, $expect);
 	}
 
 }
