@@ -1,8 +1,13 @@
 <?php
 App::uses('BtreeBehavior', 'Utils.Model/Behavior');
+
 class BArticle extends CakeTestModel {
+
 	public $useTable = 'b_articles';
-	public $actsAs = array('Utils.Btree');
+
+	public $actsAs = array(
+		'Utils.Btree'
+	);
 }
 
 /**
@@ -10,7 +15,7 @@ class BArticle extends CakeTestModel {
  *
  */
 class BtreeTest extends CakeTestCase {
-	
+
 /**
  * Model acting like the tested behavior
  * 
@@ -18,7 +23,7 @@ class BtreeTest extends CakeTestCase {
  * @access public
  */
 	public $Model = null;
-	
+
 /**
  * Behavior being tested
  * 
@@ -26,14 +31,16 @@ class BtreeTest extends CakeTestCase {
  * @access public
  */
 	public $Behavior = null;
-	
+
 /**
  * Fixtures
  *
  * @var array
  * @access public
  */
-	public $fixtures = array('plugin.utils.b_article');
+	public $fixtures = array(
+		'plugin.utils.b_article'
+	);
 
 /**
  * Start test method
@@ -43,7 +50,7 @@ class BtreeTest extends CakeTestCase {
  */
 	public function setUp() {
 		parent::setUp();
-		$this->Model = new BArticle();
+		$this->Model = ClassRegistry::init('BArticle');
 		$this->Behavior = $this->Model->Behaviors->Btree;
 	}
 
@@ -143,4 +150,3 @@ class BtreeTest extends CakeTestCase {
 	}
 
 }
-?>

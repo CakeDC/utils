@@ -112,7 +112,7 @@ class LookupableBehavior extends ModelBehavior {
 				$data = Set::merge($Model->data[$modelClass], $data);
 			}
 
-			$result = $Model->saveLookupRecord($modelClass, $data);
+			$Model->saveLookupRecord($modelClass, $data);
 
 			$Model->data[$modelClass]['id'] = $Model->{$modelClass}->id;
 			$Model->data[$modelClass]['name'] = $name;
@@ -158,7 +158,7 @@ class LookupableBehavior extends ModelBehavior {
  * @param boolean $created
  * @return boolean True on success
  */
-	public function afterSave(Model $Model, $created) {
+	public function afterSave(Model $Model, $created, $options = array()) {
 		extract($this->settings[$Model->alias]);
 		$resave = false;
 		foreach ($types as $submodel) {
