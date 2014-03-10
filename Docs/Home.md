@@ -18,7 +18,6 @@ Documentation
 * **[FormPreserver](Documentation/Components/Form-Preserver-Component.md)**: Allow to keep form data between login redirect and returning back after login.
 * **[Pingbacks](Documentation/Components/Pingbacks-Component.md)**: A pingback is one of three types of linkback methods. The component helps building that.
 * **[Referer](Documentation/Components/Referer-Component.md)**: Allow to keep referrer url inside the add/edit form to reuse it for redirect on success POST or submit.
-* **[Utils](Documentation/Components/Utils-Component.md)**: -
 
 **Behaviours**
 
@@ -38,11 +37,11 @@ Documentation
 **Helpers**
 
 * **[AutoJavascript](Documentation/Helpers/Auto-Javascript-Helper.md)**:
-* **[Cleaner](Documentation/Helpers/Cleaner-Helper.md)**: Allow to strip HTML tags from input
 * **[Gravatar](Documentation/Helpers/Gravatar-Helper.md)**: Gravatar Helper
 * **[HtmlPlus](Documentation/Helpers/Html-Plus-Helper.md)**: -
 * **[Place](Documentation/Helpers/Place-Helper.md)**: Allows to display image and text placeholders
 * **[Tree](Documentation/Helpers/Tree-Helper.md)**: Generates nested representations of hierarchial data
+* **Cleaner**: Removed, use [HtmlPurifier](https://github.com/burzum/cakephp-html-purifier) instead.
 
 **Libs**
 
@@ -51,4 +50,4 @@ Documentation
 Tutorials
 ---------
 
-* **[Quick Start](Tutorials/Quick-Start.md)
+* **[Quick Start](Tutorials/Quick-Start.md)**
