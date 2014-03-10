@@ -3,7 +3,6 @@ App::uses('Security', 'Utility');
 App::uses('Validation', 'Utility');
 App::uses('AppHelper', 'View/Helper');
 
-
 /**
  * CakePHP Gravatar Helper
  *
@@ -68,6 +67,9 @@ class GravatarHelper extends AppHelper {
 /**
  * Constructor
  *
+ * @param View $View
+ * @param array $settings
+ * @return GravatarHelper
  */
 	public function __construct(View $View, $settings = array()) {
 		if (!is_array($settings)) {
@@ -77,7 +79,7 @@ class GravatarHelper extends AppHelper {
 
 		// Default the secure option to match the current URL.
 		$this->__default['secure'] = env('HTTPS');
-		
+
 		parent::__construct($View, $settings);
 	}
 
@@ -98,7 +100,7 @@ class GravatarHelper extends AppHelper {
  * Generate image URL
  *
  * @param string $email Email address
- * @param string $options Array of options, keyed from default settings
+ * @param array $options Array of options, keyed from default settings
  * @return string Gravatar Image URL
  */
 	public function imageUrl($email, $options = array()) {
@@ -127,8 +129,9 @@ class GravatarHelper extends AppHelper {
  *
  * @param array $options Array of options, keyed from default settings
  * @return array Clean options array
+ * @return array
  */
-	private function __cleanOptions($options) {
+	protected function _cleanOptions($options) {
 		if (!isset($options['size']) || empty($options['size']) || !is_numeric($options['size'])) {
 			unset($options['size']);
 		} else {
@@ -156,7 +159,7 @@ class GravatarHelper extends AppHelper {
  * @param string $type Hash type to employ
  * @return string Email address hash
  */
-	private function __emailHash($email, $type) {
+	protected function _emailHash($email, $type) {
 		return Security::hash(mb_strtolower($email), $type);
 	}
 
@@ -166,7 +169,7 @@ class GravatarHelper extends AppHelper {
  * @param array $options Array of options, keyed from default settings
  * @return string URL string of options
  */
-	private function __buildOptions($options = array()) {
+	protected function _buildOptions($options = array()) {
 		$gravatarOptions = array_intersect(array_keys($options), array_keys($this->__default));
 		if (!empty($gravatarOptions)) {
 			$optionArray = array();

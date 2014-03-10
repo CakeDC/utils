@@ -22,6 +22,12 @@
 class InheritableBehavior extends ModelBehavior {
 
 /**
+ * InheritableBehavior constants
+ */
+	const STI = 'STI';
+	const CTI = 'CTI';
+
+/**
  * Settings of the behavior.
  * Each settings are keyed by Model alias.
  *
@@ -46,7 +52,7 @@ class InheritableBehavior extends ModelBehavior {
 	public function setup(Model $Model, $config = array()) {
 		$_defaults = array(
 			'inheritanceField' => 'type',
-			'method' => 'STI',
+			'method' => InheritableBehavior::STI,
 			'fieldAlias' => $Model->alias);
 		$this->settings[$Model->alias] = array_merge($_defaults, $config);
 
@@ -54,11 +60,8 @@ class InheritableBehavior extends ModelBehavior {
 		$Model->inheritanceField = $this->settings[$Model->alias]['inheritanceField'];
 		$Model->fieldAlias = $this->settings[$Model->alias]['fieldAlias'];
 
-		if ($this->settings[$Model->alias]['method'] == 'CTI') {
+		if ($this->settings[$Model->alias]['method'] == InheritableBehavior::CTI) {
 			$this->classTableBindParent($Model);
-			if (!empty($Model->parent->validate)) {
-				$Model->validate = Hash::merge($Model->parent->validate, $Model->validate);
-			}
 		}
 	}
 
@@ -71,7 +74,7 @@ class InheritableBehavior extends ModelBehavior {
  * @return array Updated query
  */
 	public function beforeFind(Model $Model, $query) {
-		if ($this->settings[$Model->alias]['method'] == 'STI') {
+		if ($this->settings[$Model->alias]['method'] === InheritableBehavior::STI) {
 			$query = $this->_singleTableBeforeFind($Model, $query);
 		} else {
 			if (!empty($query['recursive']) && $query['recursive'] < 0) {
@@ -141,9 +144,9 @@ class InheritableBehavior extends ModelBehavior {
  * @return true
  */
 	public function beforeSave(Model $Model) {
-		if ($this->settings[$Model->alias]['method'] == 'STI') {
+		if ($this->settings[$Model->alias]['method'] === InheritableBehavior::STI) {
 			$this->_singleTableBeforeSave($Model);
-		} elseif ($this->settings[$Model->alias]['method'] == 'CTI') {
+		} elseif ($this->settings[$Model->alias]['method'] === InheritableBehavior::CTI) {
 			$this->_saveParentModel($Model);
 			$Model->id = $Model->parent->id;
 		}
@@ -158,8 +161,22 @@ class InheritableBehavior extends ModelBehavior {
  * @return true
  */
 	public function afterDelete(Model $Model) {
-		if ($this->settings[$Model->alias]['method'] == 'CTI') {
+		if ($this->settings[$Model->alias]['method'] === InheritableBehavior::CTI) {
 			$Model->parent->delete($Model->id);
+		}
+		return true;
+	}
+
+/**
+ * Before validate callback
+ * Merge validation rules from the parent class in case of CTI
+ *
+ * @param Model $model
+ * @return true
+ */
+	public function beforeValidate(Model $Model) {
+		if ($this->settings[$Model->alias]['method'] === InheritableBehavior::CTI && !empty($Model->parent->validate)) {
+			$Model->validate = Set::merge($Model->parent->validate, $Model->validate);
 		}
 		return true;
 	}

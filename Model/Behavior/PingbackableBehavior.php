@@ -40,7 +40,8 @@ class PingbackableBehavior extends ModelBehavior {
 	public $defaults = array(
 		'commentAlias' => 'Comment',
 		'requireApproveModelField' => 'moderate',
-		'requireApproveCommentField' => 'approved');
+		'requireApproveCommentField' => 'approved'
+	);
 
 /**
  * Setup
@@ -70,7 +71,7 @@ class PingbackableBehavior extends ModelBehavior {
 		if ($model->{$commentAlias}->hasAny(array($commentAlias . '.foreign_key' => $modelId, 'author_url' => $sourceUri))) {
 			throw new XmlRpcResponseException(0, 'Pingback already registries in system.');
 		}
-		$sourceBody = $this->loadPageContent($sourceUri);
+		$sourceBody = $this->_loadPageContent($sourceUri);
 		if (strpos($sourceBody, $targetUri) === false) {
 			throw new XmlRpcResponseException(0, 'Source link is not detected in target blog.');
 		}
@@ -104,7 +105,7 @@ class PingbackableBehavior extends ModelBehavior {
  * @param string $uri
  * @return string
  */
-	protected function loadPageContent($uri) {
+	protected function _loadPageContent($uri) {
 		$Http = new HttpSocket();
 		return $Http->get($uri);
 	}
@@ -115,7 +116,7 @@ class PingbackableBehavior extends ModelBehavior {
  * @param string $text
  * @return string
  */
-	protected function cleanupPage($text) {
+	public function cleanupPage($text) {
 		return preg_replace("/ <(h[1-6]|p|t[hd]]|li|d[td]|pre|caption|body)[^>]*>/", "\n\n", preg_replace( '/[\s\r\n\t]+/', ' ', str_replace('<!DOC', '<DOC', $text)));
 	}
 
@@ -125,7 +126,7 @@ class PingbackableBehavior extends ModelBehavior {
  * @param string $text
  * @return string
  */
-	protected function fetchTitle($text) {
+	public function fetchTitle($text) {
 		preg_match('|<title>([^<]*?)</title>|is', $text, $matchedTitle);
 		$title = $matchedTitle[1];
 		if (empty($title)) {
@@ -144,7 +145,7 @@ class PingbackableBehavior extends ModelBehavior {
  * @param string $targetUri, target ping url
  * @return string
  */
-	protected function fetchPingbackCite($text, $sourceUri, $targetUri) {
+	public function fetchPingbackCite($text, $sourceUri, $targetUri) {
 	    if(!strstr($text, preg_replace('/&(amp;)?/i', '&amp;', $targetUri))) {
 	        if(!strstr($text, str_replace('&amp;', '&', $targetUri))) {
 				throw new XmlRpcResponseException(0x11, 'Source URI (' . $sourceUri . ') does not contain a link to the target URI (' . $targetUri . ')');
@@ -195,7 +196,7 @@ class PingbackableBehavior extends ModelBehavior {
  * @param string $sourceUri, source url permalink
  * @param string $targetUri, target ping url
  */
-	protected function pingbackUrl($sourceUri, $targetUri) {
+	public function pingbackUrl($sourceUri, $targetUri) {
 		$Socket = new HttpSocket();
 	    $urlData = $Socket->get($targetUri);
 	    $pingbackServerUri = $this->determinePingbackUri($Socket->response);
@@ -370,7 +371,7 @@ class PingbackableBehavior extends ModelBehavior {
  * @param boolean $allowLocalLinks
  * @return array of hyperlink in data
  */
-	 protected function extractLinks($text, $allowLocalLinks = false) {
+	public function extractLinks($text, $allowLocalLinks = false) {
 		$matches = array();
 		$result = preg_match_all('/href="([^"]+)"/i', $text, $matches);
 		if (isset($matches[1])) {
@@ -437,7 +438,7 @@ class PingbackableBehavior extends ModelBehavior {
  * @param Xml $xml
  * @return mixed
  */
-	protected function scanRdf(Xml $xml) {
+	public function scanRdf(Xml $xml) {
 		if (count($xml->children) > 0) {
 			$rootNode = $xml->children[0];
 			if ($rootNode->namespace . ':' . $rootNode->name != 'rdf:RDF' || !isset($rootNode->namespaces['trackback'])) {

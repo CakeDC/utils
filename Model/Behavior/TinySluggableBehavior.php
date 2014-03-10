@@ -86,7 +86,7 @@ class TinySluggableBehavior extends ModelBehavior {
 		if (empty($prev)) {
 			$new = $this->settings[$Model->alias]['codeset'][0];
 		} else {
-			$new = $this->__toShort($Model, (string) $this->__toDecimal($Model, $prev[$Model->alias][$Model->tinySlug]) + 1);
+			$new = $this->_toShort($Model, (string) $this->_toDecimal($Model, $prev[$Model->alias][$Model->tinySlug]) + 1);
 			$attempts = 0;
 			$maxAttempts = 5; // Overriden after the first attempt
 			$new = $prev[$Model->alias][$Model->tinySlug];
@@ -98,7 +98,7 @@ class TinySluggableBehavior extends ModelBehavior {
 						'conditions' => array(
 							$Model->alias . '.created' => $prev[$Model->alias]['created'])));
 				}
-				$new = $this->__toShort($Model, $this->__toDecimal($Model, $new) + 1);
+				$new = $this->_toShort($Model, $this->_toDecimal($Model, $new) + 1);
 				$existing = $Model->find('count', array(
 					'conditions' => array(
 						$Model->alias . '.' . $Model->tinySlug => $new)));
@@ -115,7 +115,7 @@ class TinySluggableBehavior extends ModelBehavior {
  * @param int $decimal the decimal to convert
  * @return string
  */
-	private function __toShort(Model $Model, $decimal) {
+	protected function _toShort(Model $Model, $decimal) {
 		$codeSet = $this->settings[$Model->alias]['codeset'];
 		$base = $this->settings[$Model->alias]['base'];
 		$short = '';
@@ -133,7 +133,7 @@ class TinySluggableBehavior extends ModelBehavior {
  * @param string $short
  * @return integer
  */
-	private function __toDecimal(Model $Model, $short) {
+	protected function _toDecimal(Model $Model, $short) {
 		$codeSet = $this->settings[$Model->alias]['codeset'];
 		$base = $this->settings[$Model->alias]['base'];
 		$decimal = 0;

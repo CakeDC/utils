@@ -35,8 +35,8 @@ class ListBehavior extends ModelBehavior {
 		'positionColumn' => 'position',
 		'scope' => '',
 		'validate' => false,
-		'addToTop' => false,
-		'callbacks' => false
+		'callbacks' => false,
+		'addToTop' => false
 	);
 
 /**
@@ -56,10 +56,9 @@ class ListBehavior extends ModelBehavior {
  * Overriden to transparently manage setting the item position to the end of the list
  *
  * @param Model $model
- * @param array $options
  * @return boolean True to continue, false to abort the save
  */
-	public function beforeSave(Model $model, $options = array()) {
+	public function beforeSave(Model $model) {
 		extract($this->settings[$model->alias]);
 		if (empty($model->data[$model->alias][$model->primaryKey])) {
 			if ($addToTop) {
@@ -110,11 +109,11 @@ class ListBehavior extends ModelBehavior {
  *
  * @param Model $model
  * @param ID $id  - value of model primary key to read
- * @return bool
+ * @return boolean
  */
 	public function moveLower(Model $model, $id = null) {
 		if (!$this->__setById($model, $id)) {
-	 		return false;
+			return false;
 		}
 		$lowerItem = $this->lowerItem($model);
 		if ($lowerItem == null) {
@@ -129,6 +128,14 @@ class ListBehavior extends ModelBehavior {
 		return $this->_incrementPosition($model);
 		/* @todo: add transaction */
 	}
+
+/**
+ * Convinience method for moveLower
+ *
+ * @param Model $model
+ * @param integer $id
+ * @return boolean
+ */
 	public function moveDown(Model $model, $id = null) {
 		return $this->moveLower($model, $id);
 	}
@@ -177,7 +184,7 @@ class ListBehavior extends ModelBehavior {
  * @param string $id UUID value of model primary key
  * @return bool
  */
-	public function moveToBottom( Model$model, $id = null) {
+	public function moveToBottom(Model $model, $id = null) {
 		if (!$this->__setById($model, $id)) {
 			return false;
 		}
@@ -316,10 +323,10 @@ class ListBehavior extends ModelBehavior {
 /**
  * Repair list method
  *
- * @param object AppModel
+ * @param Model $model
  * @return boolean
  */
-	public function fixListOrder($model) {
+	public function fixListOrder(Model $model) {
 		extract($this->settings[$model->alias]);
 		$data = $model->find('all', array(
 			'conditions' => $this->__scopeCondition($model),
@@ -341,7 +348,7 @@ class ListBehavior extends ModelBehavior {
  * @param Model $model
  * @return mixed
  */
-	protected function _incrementPosition($model) {
+	protected function _incrementPosition(Model $model) {
 		if (!$this->isInList($model)) {
 			return;
 		}
@@ -358,7 +365,7 @@ class ListBehavior extends ModelBehavior {
  * @param Model $model
  * @return mixed
  */
-	protected function _decrementPosition($model) {
+	protected function _decrementPosition(Model $model) {
 		if (!$this->isInList($model)) {
 			return;
 		}
@@ -375,7 +382,7 @@ class ListBehavior extends ModelBehavior {
  * @param Model $model
  * @return array
  */
-   private function __scopeCondition($model) {
+   private function __scopeCondition(Model $model) {
 		extract($this->settings[$model->alias]);
 		$scopes = array();
 		if (is_string($scope)) {
@@ -403,7 +410,7 @@ class ListBehavior extends ModelBehavior {
  * @param Model $model 
  * @return mixed
  */
-	private function __addToListTop($model) {
+	private function __addToListTop(Model $model) {
 		return $this->__incrementPositionsOnAllItems($model);
 	}
 
@@ -413,7 +420,7 @@ class ListBehavior extends ModelBehavior {
  * @param Model $model 
  * @return mixed
  */
-	private function __addToListBottom($model) {
+	private function __addToListBottom(Model $model) {
 		extract($this->settings[$model->alias]);
 		$positionColumn = $this->settings[$model->alias]['positionColumn'];
 		$model->data[$model->alias][$positionColumn] = $this->__bottomPositionInList($model) + 1;
@@ -466,7 +473,7 @@ class ListBehavior extends ModelBehavior {
  * @param Model $model 
  * @return boolean
  */
-	private function __assumeBottomPosition($model) {
+	private function __assumeBottomPosition(Model $model) {
 		extract($this->settings[$model->alias]);
 		$positionColumn = $this->settings[$model->alias]['positionColumn'];
 		$model->data[$model->alias][$positionColumn] = $this->__bottomPositionInList($model, $model->data)+1;
@@ -481,7 +488,7 @@ class ListBehavior extends ModelBehavior {
  * @param Model $model 
  * @return boolean
  */
-	private function __assumeTopPosition($model) {
+	private function __assumeTopPosition(Model $model) {
 		extract($this->settings[$model->alias]);
 		$positionColumn = $this->settings[$model->alias]['positionColumn'];
 		$model->data[$model->alias][$positionColumn] = 1;
@@ -508,10 +515,10 @@ class ListBehavior extends ModelBehavior {
 /**
  * This has the effect of moving all the lower items up one
  *
- * @param object AppModel
+ * @param Model $model
  * @return boolean
  */
-	private function __decrementPositionsOnLowerItems($model) {
+	private function __decrementPositionsOnLowerItems(Model $model) {
 		if (!$this->isInList($model)) return;
 		extract($this->settings[$model->alias]);
 		$positionColumn = $this->settings[$model->alias]['positionColumn'];
@@ -524,10 +531,10 @@ class ListBehavior extends ModelBehavior {
 /**
  * This has the effect of moving all the higher items down one.
  *
- * @param object AppModel
+ * @param Model $model
  * @return boolean
  */
-	private function __incrementPositionsOnHigherItems($model) {
+	private function __incrementPositionsOnHigherItems(Model $model) {
 		if (!$this->isInList($model)) return;
 		extract($this->settings[$model->alias]);
 		$positionColumn = $this->settings[$model->alias]['positionColumn'];
@@ -556,10 +563,10 @@ class ListBehavior extends ModelBehavior {
 /**
  * Increments the position on all items
  *
- * @param object AppModel
+ * @param Model $model
  * @return boolean
  */
-	private function __incrementPositionsOnAllItems($model) {
+	private function __incrementPositionsOnAllItems(Model $model) {
 		extract($this->settings[$model->alias]);
 		return $model->updateAll(
 			array($model->alias . '.' . $positionColumn => $model->alias . '.' . $positionColumn . '+1'),

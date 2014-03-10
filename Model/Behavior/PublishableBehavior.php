@@ -18,12 +18,24 @@
  * @subpackage utils.models.behaviors
  */
 class PublishableBehavior extends ModelBehavior {
+
 /**
  * Contain settings indexed by model name.
  *
  * @var array
  */
-	var $__settings = array();
+	protected $_settings = array();
+
+/**
+ * Default settings
+ *
+ * @var array
+ */
+	protected $_defaults = array(
+		'field' => 'published',
+		'field_date' => 'published_date',
+		'find' => true
+	);
 
 /**
  * Initiate behaviour for the model using settings.
@@ -31,16 +43,13 @@ class PublishableBehavior extends ModelBehavior {
  * @param object $Model Model using the behaviour
  * @param array $settings Settings to override for model.
  */
-	function setup(&$Model, $settings = array()) {
-		$default = array('field' => 'published', 'field_date' => 'published_date', 'find' => true);
-
-		if (!isset($this->__settings[$Model->alias])) {
-			$this->__settings[$Model->alias] = $default;
+	public function setup(&$Model, $settings = array()) {
+		if (!isset($this->_settings[$Model->alias])) {
+			$this->_settings[$Model->alias] = $this->_defaults;
 		}
 
-		$this->__settings[$Model->alias] = array_merge($this->__settings[$Model->alias], is_array($settings) ? $settings : array());
+		$this->_settings[$Model->alias] = array_merge($this->_settings[$Model->alias], is_array($settings) ? $settings : array());
 	}
-
 
 /**
  * Marks a record as published and optionally change other fields.
@@ -50,24 +59,24 @@ class PublishableBehavior extends ModelBehavior {
  * @param $attributes Other fields to change (in the form of field => value)
  * @return boolean Result of the operation.
  */
-	function publish(&$Model, $id = null, $attributes = array()) {
-		if ($Model->hasField($this->__settings[$Model->alias]['field'])) {
+	public function publish(&$Model, $id = null, $attributes = array()) {
+		if ($Model->hasField($this->_settings[$Model->alias]['field'])) {
 			if (empty($id)) {
 				$id = $Model->id;
 			}
 
-			$onFind = $this->__settings[$Model->alias]['find'];
+			$onFind = $this->_settings[$Model->alias]['find'];
 			$this->enablePublishable($Model, false);
 
 			$data = array($Model->alias => array(
 				$Model->primaryKey => $id,
-				$this->__settings[$Model->alias]['field'] => true
+				$this->_settings[$Model->alias]['field'] => true
 			));
 
 			$Model->id = $id;
-			if (isset($this->__settings[$Model->alias]['field_date']) && $Model->hasField($this->__settings[$Model->alias]['field_date'])) {
-				if (!$Model->field($this->__settings[$Model->alias]['field_date'])) {
-					$data[$Model->alias][$this->__settings[$Model->alias]['field_date']] = date('Y-m-d H:i:s');
+			if (isset($this->_settings[$Model->alias]['field_date']) && $Model->hasField($this->_settings[$Model->alias]['field_date'])) {
+				if (!$Model->field($this->_settings[$Model->alias]['field_date'])) {
+					$data[$Model->alias][$this->_settings[$Model->alias]['field_date']] = date('Y-m-d H:i:s');
 				}
 			}
 
@@ -92,22 +101,22 @@ class PublishableBehavior extends ModelBehavior {
  * @param $attributes Other fields to change (in the form of field => value)
  * @return boolean Result of the operation.
  */
-	function unPublish(&$Model, $id = null, $attributes = array()) {
-		if ($Model->hasField($this->__settings[$Model->alias]['field'])) {
+	public function unPublish(&$Model, $id = null, $attributes = array()) {
+		if ($Model->hasField($this->_settings[$Model->alias]['field'])) {
 			if (empty($id)) {
 				$id = $Model->id;
 			}
 
 			$data = array($Model->alias => array(
 				$Model->primaryKey => $id,
-				$this->__settings[$Model->alias]['field'] => false
+				$this->_settings[$Model->alias]['field'] => false
 			));
 
 			if (!empty($attributes)) {
 				$data[$Model->alias] = array_merge($data[$Model->alias], $attributes);
 			}
 
-			$onFind = $this->__settings[$Model->alias]['find'];
+			$onFind = $this->_settings[$Model->alias]['find'];
 			$this->enablePublishable($Model, false);
 
 			$Model->id = $id;
@@ -128,7 +137,7 @@ class PublishableBehavior extends ModelBehavior {
  * @param mixed $methods If string, method to enable on, if array array of method names, if boolean, enable it for find method
  * @param boolean $enable If specified method should be overriden.
  */
-	function enablePublishable(&$Model, $methods, $enable = true) {
+	public function enablePublishable(&$Model, $methods, $enable = true) {
 		if (is_bool($methods)) {
 			$enable = $methods;
 			$methods = array('find');
@@ -138,8 +147,8 @@ class PublishableBehavior extends ModelBehavior {
 			$methods = array($methods);
 		}
 
-		foreach($methods as $method) {
-			$this->__settings[$Model->alias][$method] = $enable;
+		foreach ($methods as $method) {
+			$this->_settings[$Model->alias][$method] = $enable;
 		}
 	}
 
@@ -150,13 +159,13 @@ class PublishableBehavior extends ModelBehavior {
  * @param array $queryData Data used to execute this query, i.e. conditions, order, etc.
  * @return mixed Set to false to abort find operation, or return an array with data used to execute query
  */
-	function beforeFind(&$Model, $queryData, $recursive = null) {
+	public function beforeFind(Model $Model, $queryData, $recursive = null) {
 
 		if (Configure::read('Publishable.disable') === true) {
 			return $queryData;
 		}
 
-		if ($this->__settings[$Model->alias]['find'] && $Model->hasField($this->__settings[$Model->alias]['field'])) {
+		if ($this->_settings[$Model->alias]['find'] && $Model->hasField($this->_settings[$Model->alias]['field'])) {
 			$Db =& ConnectionManager::getDataSource($Model->useDbConfig);
 			$include = false;
 
@@ -164,30 +173,28 @@ class PublishableBehavior extends ModelBehavior {
 				$include = true;
 
 				$fields = array(
-					$Db->name($Model->alias) . '.' . $Db->name($this->__settings[$Model->alias]['field']),
-					$Db->name($this->__settings[$Model->alias]['field']),
-					$Model->alias . '.' . $this->__settings[$Model->alias]['field'],
-					$this->__settings[$Model->alias]['field']
+					$Db->name($Model->alias) . '.' . $Db->name($this->_settings[$Model->alias]['field']),
+					$Db->name($this->_settings[$Model->alias]['field']),
+					$Model->alias . '.' . $this->_settings[$Model->alias]['field'],
+					$this->_settings[$Model->alias]['field']
 				);
 
-				foreach($fields as $field) {
+				foreach ($fields as $field) {
 					if (preg_match('/^' . preg_quote($field) . '[\s=!]+/i', $queryData['conditions']) ||
 						preg_match('/\\x20+' . preg_quote($field) . '[\s=!]+/i', $queryData['conditions'])) {
-							
 						$include = false;
 						break;
 					}
 				}
-			}
-			else if (empty($queryData['conditions']) ||
-				(!in_array($this->__settings[$Model->alias]['field'], array_keys($queryData['conditions'])) && 
-				!in_array($Model->alias . '.' . $this->__settings[$Model->alias]['field'], array_keys($queryData['conditions'])))) {
+			} else if (empty($queryData['conditions']) ||
+				(!in_array($this->_settings[$Model->alias]['field'], array_keys($queryData['conditions'])) && 
+				!in_array($Model->alias . '.' . $this->_settings[$Model->alias]['field'], array_keys($queryData['conditions'])))) {
 					
 				$include = true;
 			}
 
 			if ($include) {
-				if (isset($this->__settings[$Model->alias]['field_date']) && $Model->hasField($this->__settings[$Model->alias]['field_date'])) {
+				if (isset($this->_settings[$Model->alias]['field_date']) && $Model->hasField($this->_settings[$Model->alias]['field_date'])) {
 					$includeDateCondition = true;
 				}
 				if (empty($queryData['conditions'])) {
@@ -195,16 +202,15 @@ class PublishableBehavior extends ModelBehavior {
 				}
 
 				if (is_string($queryData['conditions'])) {
-					$queryData['conditions'] = $Db->name($Model->alias) . '.' . $Db->name($this->__settings[$Model->alias]['field']) . '= 1 AND ' . $queryData['conditions'];
-				}
-				else {
-					$queryData['conditions'][$Model->alias . '.' . $this->__settings[$Model->alias]['field']] = true;
+					$queryData['conditions'] = $Db->name($Model->alias) . '.' . $Db->name($this->_settings[$Model->alias]['field']) . '= 1 AND ' . $queryData['conditions'];
+				} else {
+					$queryData['conditions'][$Model->alias . '.' . $this->_settings[$Model->alias]['field']] = true;
 					if (!empty($includeDateCondition)) {
-						$queryData['conditions'][$Model->alias . '.' . $this->__settings[$Model->alias]['field_date'] . ' <='] = date('Y-m-d H:i');
+						$queryData['conditions'][$Model->alias . '.' . $this->_settings[$Model->alias]['field_date'] . ' <='] = date('Y-m-d H:i');
 					}
 				}
 			}
-			
+
 			if (is_null($recursive) && !empty($queryData['recursive'])) {
 				$recursive = $queryData['recursive'];
 			} elseif (is_null($recursive)) {
@@ -222,7 +228,6 @@ class PublishableBehavior extends ModelBehavior {
 					$queryData = $Model->{$m}->Behaviors->Publishable->beforeFind($Model->{$m}, $queryData, --$recursive);
 				}
 			}
-
 		}
 
 		return $queryData;
@@ -234,16 +239,15 @@ class PublishableBehavior extends ModelBehavior {
  * @param object $Model Model about to be saved.
  * @return boolean True if the operation should continue, false if it should abort
  */
-	function beforeSave(&$Model) {
-		if ($this->__settings[$Model->alias]['find']) {
+	public function beforeSave(&$Model) {
+		if ($this->_settings[$Model->alias]['find']) {
 			if (!isset($this->__backAttributes)) {
 				$this->__backAttributes = array($Model->alias => array());
-			}
-			else if (!isset($this->__backAttributes[$Model->alias])) {
+			} elseif (!isset($this->__backAttributes[$Model->alias])) {
 				$this->__backAttributes[$Model->alias] = array();
 			}
 
-			$this->__backAttributes[$Model->alias]['find'] = $this->__settings[$Model->alias]['find'];
+			$this->__backAttributes[$Model->alias]['find'] = $this->_settings[$Model->alias]['find'];
 			$this->enablePublishable($Model, false);
 		}
 
@@ -256,7 +260,7 @@ class PublishableBehavior extends ModelBehavior {
  * @param object $Model Model just saved.
  * @param boolean $created True if this save created a new record
  */
-	function afterSave(&$Model, $created) {
+	public function afterSave(&$Model, $created) {
 		if (isset($this->__backAttributes[$Model->alias]['find'])) {
 			$this->enablePublishable($Model, 'find', $this->__backAttributes[$Model->alias]['find']);
 			unset($this->__backAttributes[$Model->alias]['find']);

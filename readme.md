@@ -6,9 +6,9 @@ CakeDC Utils Plugin
 [![Downloads](https://poser.pugx.org/CakeDC/utils/d/total.png)](https://packagist.org/packages/CakeDC/utils)
 [![Latest Version](https://poser.pugx.org/CakeDC/utils/v/stable.png)](https://packagist.org/packages/CakeDC/utils)
 
-The **Utils** plugin is a collection of utility like components, helpers and behaviors for the CakePHP framework.
+The **Utils** plugin provides a lot of useful components, helpers and behaviours.
 
-See [the documentation](Docs/Home.md) for a full list of goodies that are included.
+See the [Documentation](Docs/Home.md) for a list of tools that come with this plugin.
 
 Requirements
 ------------
@@ -24,14 +24,14 @@ For documentation, as well as tutorials, see the [Docs](Docs/Home.md) directory 
 Support
 -------
 
-For bugs and feature requests, please use the [issues](https://github.com/CakeDC/utils/issues) section of this repository.
+For bugs and feature requests, please use the [issues](https://github.com/CakeDC/utils/issues) section of this repository. 
 
 Commercial support is also available, [contact us](http://cakedc.com/contact) for more information.
 
 Contributing
 ------------
 
-This repository follows the [CakeDC Plugin Standard](http://cakedc.com/plugin-standard). If you'd like to contribute new features, enhancements or bug fixes to the plugin, please read our [Contribution Guidelines](http://cakedc.com/contribution-guidelines) for detailed instructions.
+If you'd like to contribute new features, enhancements or bug fixes to the plugin, just read our [Contribution Guidelines](http://cakedc.com/plugins) for detailed instructions.
 
 License
 -------

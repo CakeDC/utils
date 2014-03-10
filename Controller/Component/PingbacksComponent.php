@@ -21,19 +21,22 @@ App::import('Core', 'HttpSocket');
 App::import('Lib', 'Xmlrpc.Xmlrpc');
 
 class PingbacksComponent extends Object {
+
 /**
  * Components that are required
  *
  * @var array $components
  */
-	public $components = array('Session');
+	public $components = array(
+		'Session'
+	);
 
 /**
  * Socket to access webservice
  *
  * @var Socket $Socket
  */
-	private $Socket;
+	protected $_Socket;
 
 /**
  * Controller
@@ -45,10 +48,11 @@ class PingbacksComponent extends Object {
 /**
  * Callback
  *
- * @param object Controller object
+ * @param Controller object
+ * @return void
  */
 	public function initialize(Controller $controller) {
-		$this->Socket = new HttpSocket();
+		$this->_Socket = new HttpSocket();
 		$this->controller = $controller;
 	}
 
@@ -68,12 +72,14 @@ class PingbacksComponent extends Object {
 /**
  * Attempts to notify the server of targetUri that sourceUri refers to it.
  *
- * @param object Controller object
+ * @param string $sourceUri
+ * @param string $targetUri
+ * @return void
  */
 	public function pingbackUrl($sourceUri, $targetUri) {
-		$urlData = $this->Socket->get($targetUri);
-		$pingbackServerUri = $this->_determinePingbackUri($this->Socket->response);
-		if(!empty($pingbackServerUri)) {
+		$urlData = $this->_Socket->get($targetUri);
+		$pingbackServerUri = $this->_determinePingbackUri($this->_Socket->response);
+		if (!empty($pingbackServerUri)) {
 			$XmlRpcClient = new XmlRpcClient($pingbackServerUri);
 			try {
 				$Request = new XmlRpcRequest('pingback.ping', array(new XmlRpcValue($sourceUri), new XmlRpcValue($targetUri)));
@@ -88,6 +94,9 @@ class PingbacksComponent extends Object {
  * Scans the input text, pings every linked website for auto-discovery-capable pingback
  * servers, and does an appropriate trackback.
  *
+ * @param string $sourceUri
+ * @param string $text
+ * @return void
  */
 	public function trackback($sourceUri, $text) {
 		$links = $this->extractLinks($text, false);
@@ -99,13 +108,16 @@ class PingbacksComponent extends Object {
 /**
  * Attempts to notify the server of targetUri that sourceUri refers to it.
  *
- * @param object Controller object
+ * @param string $sourceUri
+ * @param string $targetUri
+ * @param array $data
+ * @return void
  */
-	public function trackbackUrl($sourceUri, $targetUri) {
-		$urlData = $this->Socket->get($targetUri);
-		$trackbackServerUri = $this->_determineTrackbackUri($this->Socket->response);
-		if(!empty($trackbackServerUri)) {
-			$response = $this->Socket->post($targetUri, $data);
+	public function trackbackUrl($sourceUri, $targetUri, $data = array()) {
+		$urlData = $this->_Socket->get($targetUri);
+		$trackbackServerUri = $this->_determineTrackbackUri($this->_Socket->response);
+		if (!empty($trackbackServerUri)) {
+			$response = $this->_Socket->post($targetUri, $data);
 		}
 	}
 
@@ -149,9 +161,10 @@ class PingbacksComponent extends Object {
 /**
  * Process html response to find trackback link
  *
- * @param Xml $xml
+ * @param string $text
+ * @return string
  */
-	public function _determineTrackbackUri($text) {
+	protected function _determineTrackbackUri($text) {
 		$result = false;
 		preg_match_all('|(\<rdf\:RDF.+?\<\/rdf\:RDF\>)|is', $text, $matches);
 		if (isset($matches[1])) {
@@ -176,6 +189,7 @@ class PingbacksComponent extends Object {
  * Scan Xml document to fetch trackback link
  *
  * @param Xml $xml
+ * @return mixed
  */
 	protected function _scanRdf(Xml $xml) {
 		if (count($xml->children) > 0) {
@@ -204,7 +218,7 @@ class PingbacksComponent extends Object {
 				return $value;
 			}
 		}
-		return $this-> _testRelLink($response['body'], 'pingback');
+		return $this->_testRelLink($response['body'], 'pingback');
 	}
 
 /**
@@ -212,6 +226,7 @@ class PingbacksComponent extends Object {
  *
  * @param string $text
  * @param string $relType pingback, trackback or some other
+ * @return mixed
  */
 	protected function _testRelLink($text, $relType) {
 		if (preg_match('|<link rel="' . $relType . '" href="([^"]+)" ?/?>|', $text, $matches)) {
@@ -227,6 +242,7 @@ class PingbacksComponent extends Object {
  * @param string $text
  * @param string $tag
  * @param string $class
+ * @return mixed
  */
 	protected function _testTagClass($text, $tag, $class) {
 		if (preg_match('|<' . $tag . '.*? class="' . $class . '".*?>([^<]+?)</' . $tag . '>|', $text, $matches)) {
