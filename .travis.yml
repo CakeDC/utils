@@ -7,7 +7,7 @@ php:
 
 env:
   global:
-    - PLUGIN_NAME=Migrations
+    - PLUGIN_NAME=Utils
     - DB=mysql
 
   matrix:
