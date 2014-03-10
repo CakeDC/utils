@@ -133,7 +133,7 @@ class LookupableBehavior extends ModelBehavior {
  * @param boolean
  * @return array
  */
-	public function afterFind(Model $Model, $results, $primary) {
+	public function afterFind(Model $Model, $results, $primary = false) {
 		extract($this->settings[$Model->alias]);
 		foreach ($results as $key => $record) {
 			foreach ($types as $submodel) {

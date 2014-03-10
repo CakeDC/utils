@@ -58,7 +58,7 @@ class ListBehavior extends ModelBehavior {
  * @param Model $model
  * @return boolean True to continue, false to abort the save
  */
-	public function beforeSave(Model $model) {
+	public function beforeSave(Model $model, $options = array()) {
 		extract($this->settings[$model->alias]);
 		if (empty($model->data[$model->alias][$model->primaryKey])) {
 			if ($addToTop) {

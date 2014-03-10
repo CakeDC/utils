@@ -1,6 +1,7 @@
 <?php
 
 class UsersAddon extends CakeTestModel {
+
 /**
  * Name
  *
@@ -26,14 +27,16 @@ class UsersAddon extends CakeTestModel {
 	public $actsAs = array(
 		'Utils.List' => array(
 			'positionColumn' => 'position',
-			'scope' => 'user_id'));
+			'scope' => 'user_id'
+		)
+	);
 
 /**
  * beforeSave callback
  * 
  * @return boolean
  */
-	public function beforeSave() {
+	public function beforeSave($options = array()) {
 		return $this->beforeSaveFalse;
 	}
 

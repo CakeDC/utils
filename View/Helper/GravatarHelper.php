@@ -104,23 +104,22 @@ class GravatarHelper extends AppHelper {
  * @return string Gravatar Image URL
  */
 	public function imageUrl($email, $options = array()) {
-        if (env('HTTPS') && !isset($options['secure'])) {
-            $options['secure'] = true;
-        }
-        $options = $this->__cleanOptions(array_merge($this->__default, $options));
-        $ext = $options['ext'];
-        $secure = $options['secure'];
-        unset($options['ext'], $options['secure']);
-        $protocol = $secure === true ? 'https' : 'http';
+		if (env('HTTPS') && !isset($options['secure'])) {
+			$options['secure'] = true;
+		}
+		$options = $this->_cleanOptions(array_merge($this->__default, $options));
+		$ext = $options['ext'];
+		$secure = $options['secure'];
+		unset($options['ext'], $options['secure']);
+		$protocol = $secure === true ? 'https' : 'http';
 
-
-		$imageUrl = $this->__url[$protocol] . $this->__emailHash($email, $this->__hashType);
+		$imageUrl = $this->_url[$protocol] . $this->_emailHash($email, $this->__hashType);
 		if ($ext === true) {
 			// If 'ext' option is supplied and true, append an extension to the generated image URL.
 			// This helps systems that don't display images unless they have a specific image extension on the URL.
 			$imageUrl .= '.jpg';
 		}
-		$imageUrl .= $this->__buildOptions($options);
+		$imageUrl .= $this->_buildOptions($options);
 		return $imageUrl;
 	}
 
