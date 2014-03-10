@@ -20,7 +20,7 @@ class GravatarHelper extends AppHelper {
  *
  * @var string
  */
-	private $__url = array(
+	protected $_url = array(
 		'http' => 'http://www.gravatar.com/avatar/',
 		'https' => 'https://secure.gravatar.com/avatar/'
 	);
@@ -30,39 +30,52 @@ class GravatarHelper extends AppHelper {
  *
  * @var string
  */
-	private $__hashType = 'md5';
+	protected $_hashType = 'md5';
 
 /**
  * Collection of allowed ratings
  *
  * @var array
  */
-	private $__allowedRatings = array('g', 'pg', 'r', 'x');
+	protected $_allowedRatings = array(
+		'g', 'pg', 'r', 'x'
+	);
 
 /**
  * Default Icon sets
  *
  * @var array
  */
-	private $__defaultIcons = array('none', 'identicon', 'mm', 'monsterid', 'retro', 'wavatar', '404');
+	protected $_defaultIcons = array(
+		'none',
+		'identicon',
+		'mm',
+		'monsterid',
+		'retro',
+		'wavatar',
+		'404'
+	);
 
 /**
  * Default settings
  *
  * @var array
  */
-	private $__default = array(
+	protected $_default = array(
 		'default' => null,
 		'size' => null,
 		'rating' => null,
-		'ext' => false);
+		'ext' => false
+	);
 
 /**
  * Helpers used by this helper
  *
  * @var array
  */
-	public $helpers = array('Html');
+	public $helpers = array(
+		'Html'
+	);
 
 /**
  * Constructor
@@ -75,16 +88,16 @@ class GravatarHelper extends AppHelper {
 		if (!is_array($settings)) {
 			$settings = array();
 		}
-		$this->__default = array_merge($this->__default, array_intersect_key($settings, $this->__default));
+		$this->_default = array_merge($this->_default, array_intersect_key($settings, $this->_default));
 
 		// Default the secure option to match the current URL.
-		$this->__default['secure'] = env('HTTPS');
+		$this->_default['secure'] = env('HTTPS');
 
 		parent::__construct($View, $settings);
 	}
 
 /**
- * Show gravatar for the supplied email addresses
+ * Show the Gravatar for the supplied email addresses
  *
  * @param string $email Email address
  * @param array $options Array of options, keyed from default settings
@@ -107,13 +120,13 @@ class GravatarHelper extends AppHelper {
 		if (env('HTTPS') && !isset($options['secure'])) {
 			$options['secure'] = true;
 		}
-		$options = $this->_cleanOptions(array_merge($this->__default, $options));
+		$options = $this->_cleanOptions(array_merge($this->_default, $options));
 		$ext = $options['ext'];
 		$secure = $options['secure'];
 		unset($options['ext'], $options['secure']);
 		$protocol = $secure === true ? 'https' : 'http';
 
-		$imageUrl = $this->_url[$protocol] . $this->_emailHash($email, $this->__hashType);
+		$imageUrl = $this->_url[$protocol] . $this->_emailHash($email, $this->_hashType);
 		if ($ext === true) {
 			// If 'ext' option is supplied and true, append an extension to the generated image URL.
 			// This helps systems that don't display images unless they have a specific image extension on the URL.
@@ -137,14 +150,14 @@ class GravatarHelper extends AppHelper {
 			$options['size'] = min(max($options['size'], 1), 512);
 		}
 
-		if (!$options['rating'] || !in_array(mb_strtolower($options['rating']), $this->__allowedRatings)) {
+		if (!$options['rating'] || !in_array(mb_strtolower($options['rating']), $this->_allowedRatings)) {
 			unset($options['rating']);
 		}
 
 		if (!$options['default']) {
 			unset($options['default']);
 		} else {
-			if (!in_array($options['default'], $this->__defaultIcons) && !Validation::url($options['default'])) {
+			if (!in_array($options['default'], $this->_defaultIcons) && !Validation::url($options['default'])) {
 				unset($options['default']);
 			}
 		}
@@ -169,7 +182,7 @@ class GravatarHelper extends AppHelper {
  * @return string URL string of options
  */
 	protected function _buildOptions($options = array()) {
-		$gravatarOptions = array_intersect(array_keys($options), array_keys($this->__default));
+		$gravatarOptions = array_intersect(array_keys($options), array_keys($this->_default));
 		if (!empty($gravatarOptions)) {
 			$optionArray = array();
 			foreach ($gravatarOptions as $key) {

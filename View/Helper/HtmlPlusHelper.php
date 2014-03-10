@@ -54,5 +54,5 @@ class HtmlPlusHelper extends AppHelper {
 		}
 		return implode("\n\t", $result);
 	}
-	
+
 }

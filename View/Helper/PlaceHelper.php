@@ -26,7 +26,9 @@ class PlaceHelper extends AppHelper {
  *
  * @var array
  */
-	public $helpers = array('Html');
+	public $helpers = array(
+		'Html'
+	);
 
 /**
  * Settings, configurable in controller or from view/layout/element
