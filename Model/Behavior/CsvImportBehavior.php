@@ -131,6 +131,15 @@ class CsvImportBehavior extends ModelBehavior {
 					'data' => $data
 				)
 			));
+			$Event = new CakeEvent(
+				'CsvImportBehavior.beforeImport',
+				$Model, array(
+					'data' => $data
+				)
+			);
+			$Model->getEventManager()->dispatch($Event);
+			$data = $Event->result;
+
 			if (method_exists($Model, 'beforeImport')) {
 				$data = $Model->beforeImport($data);
 			}
