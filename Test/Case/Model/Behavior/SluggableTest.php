@@ -64,7 +64,7 @@ class SluggableTest extends CakeTestCase {
 		$this->Model->create(array(
 			'SluggedArticle' => array(
 				'title' => 'Fourth Article')));
-		$this->Model->save();	
+		$this->Model->save();
 
 		$result = $this->Model->read();
 		$this->assertEqual($result['SluggedArticle']['slug'], 'fourth_article');
@@ -133,10 +133,10 @@ class SluggableTest extends CakeTestCase {
     public function testSaveUnique2() {
         $this->Model->create(array('title' => 'Puertas para muebles'));
         $this->Model->save();
-		
+
 		$this->Model->create(array('title' => 'Puertas'));
         $this->Model->save();
-        
+
 		$results = $this->Model->find('all', array('conditions' => array('title LIKE' => 'Puertas%')));
         $this->assertEqual(count($results), 2);
         $this->assertEqual($results[0]['SluggedArticle']['slug'], 'puertas_para_muebles');
@@ -207,6 +207,9 @@ class SluggableTest extends CakeTestCase {
 
 		$result = $this->Model->multibyteSlug('Foo\'s book');
 		$this->assertEqual('foos_book', $result);
+
+        $result = $this->Model->multibyteSlug('Añoránzas Españólas y présentísmós' );
+        $this->assertEqual('anoranzas_espanolas_y_presentismos', $result);
 	}
 
 /**
