@@ -160,12 +160,6 @@ class SluggableBehavior extends ModelBehavior {
 		return $slug;
 	}
 
-
-
-
-
-
-
 /**
  * Generates a slug from a (multibyte) string
  *
@@ -180,6 +174,18 @@ class SluggableBehavior extends ModelBehavior {
 		$str = str_replace($this->settings[$Model->alias]['separator'], ' ', $str);
 		$str = preg_replace( '#[:\#\*"()~$^{}`@+=;,<>!&%\.\]\/\'\\\\|\[]#', "\x20", $str );
 		$str = str_replace('?', '', $str);
+        $str = str_replace('ñ', 'n', $str );
+        $str = str_replace('Ñ', 'N', $str );
+        $str = str_replace('á', 'a', $str );
+        $str = str_replace('é', 'e', $str );
+        $str = str_replace('í', 'i', $str );
+        $str = str_replace('ó', 'o', $str );
+        $str = str_replace('ú', 'u', $str );
+        $str = str_replace('Á', 'A', $str );
+        $str = str_replace('É', 'E', $str );
+        $str = str_replace('Í', 'I', $str );
+        $str = str_replace('Ó', 'O', $str );
+        $str = str_replace('Ú', 'U', $str );
 		$str = trim($str);
 		$str = preg_replace('#\x20+#', $this->settings[$Model->alias]['separator'], $str);
 		return $str;
