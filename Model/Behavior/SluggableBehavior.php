@@ -160,6 +160,12 @@ class SluggableBehavior extends ModelBehavior {
 		return $slug;
 	}
 
+
+
+
+
+
+
 /**
  * Generates a slug from a (multibyte) string
  *
