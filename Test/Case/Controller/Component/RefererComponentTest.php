@@ -90,19 +90,19 @@ class RefererComponentTest extends CakeTestCase {
 	public function testSetReferer() {
 		$_SERVER['HTTP_REFERER'] = '/bar';
 		$this->Controller->Referer->setReferer('/foo/bar');
-		$this->assertEqual($this->Controller->viewVars['referer'], '/bar');
+		$this->assertEquals($this->Controller->viewVars['referer'], '/bar');
 
 		$_SERVER['HTTP_REFERER'] = '/';
 		$this->Controller->Referer->setReferer('/foo/bar2');
-		$this->assertEqual($this->Controller->viewVars['referer'], '/foo/bar2');
+		$this->assertEquals($this->Controller->viewVars['referer'], '/foo/bar2');
 
 		$_SERVER['HTTP_REFERER'] = '/';
 		$this->Controller->Referer->setReferer(array('controller' => 'foo', 'action' => 'bar'));
-		$this->assertEqual($this->Controller->viewVars['referer'], '/foo/bar');
+		$this->assertEquals($this->Controller->viewVars['referer'], '/foo/bar');
 
 		$this->Controller->request->data['Data']['referer'] = '/post';
 		$this->Controller->Referer->setReferer('/foo/bar2');
-		$this->assertEqual($this->Controller->viewVars['referer'], '/post');
+		$this->assertEquals($this->Controller->viewVars['referer'], '/post');
 	}
 
 /**
@@ -113,12 +113,12 @@ class RefererComponentTest extends CakeTestCase {
 	public function testRedirect() {
 		$this->Controller->request->data['Data']['referer'] = '/foo/bar';
 		$result = $this->Controller->Referer->redirect('/home');
-		$this->assertEqual($this->Controller->redirectUrl, '/foo/bar');
+		$this->assertEquals($this->Controller->redirectUrl, '/foo/bar');
 
 		$_SERVER['HTTP_REFERER'] = '/';
 		$this->Controller->request->data = null;
 		$result = $this->Controller->Referer->redirect('/home');
-		$this->assertEqual($this->Controller->redirectUrl, '/home');
+		$this->assertEquals($this->Controller->redirectUrl, '/home');
 	}
 
 }

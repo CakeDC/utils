@@ -90,10 +90,10 @@ class CsvImportTest extends CakeTestCase {
 
 		$records = $this->Content->find('all', array('order' => 'created DESC', 'limit' => 2));
 		$titles = Set::extract('/Content/title', $records);
-		$this->assertEqual($titles, array('Unearthed rare monster in london', 'Another Title'));
+		$this->assertEquals($titles, array('Unearthed rare monster in london', 'Another Title'));
 		
 		$permalinks = Set::extract('/Content/permalink', $records);
-		$this->assertEqual($permalinks, array(13444555, 'A permalink'));
+		$this->assertEquals($permalinks, array(13444555, 'A permalink'));
 	}
 
 /**
@@ -111,7 +111,7 @@ class CsvImportTest extends CakeTestCase {
 
 		$records = $this->Content->find('all', array('order' => 'created DESC', 'limit' => 2));
 		$types = Set::extract('/ContentCallback/type', $records);
-		$this->assertEqual($types, array('Article-modified', 'Book-modified'));
+		$this->assertEquals($types, array('Article-modified', 'Book-modified'));
 	}
 
 /**
@@ -129,7 +129,7 @@ class CsvImportTest extends CakeTestCase {
 
 		$records = $this->Content->find('all', array('order' => 'created DESC', 'limit' => 2));
 		$parents = Set::extract('/Content/parent_id', $records);
-		$this->assertEqual($parents, array(10, 10));
+		$this->assertEquals($parents, array(10, 10));
 	}
 
 /**
@@ -151,7 +151,7 @@ class CsvImportTest extends CakeTestCase {
 			array('validation' => array('title' => array('long'))),
 			array('validation' => array('title' => array('long')))
 		);
-		$this->assertEqual($errors, $expected);
+		$this->assertEquals($errors, $expected);
 	}
 
 /**
@@ -168,13 +168,13 @@ class CsvImportTest extends CakeTestCase {
 				'list' => array('rule' => array('inList', array('Article')))));
 				
 		$result = $this->Content->importCSV($path . 'Test' . DS . 'tmp' . DS . 'test1.csv', array(), true);
-		$this->assertEqual($result, array(0)); // The numbers of the rows that were saved
+		$this->assertEquals($result, array(0)); // The numbers of the rows that were saved
 
 		$errors = $this->Content->getImportErrors();
 		$expected = array(
 			1 => array('validation' => array('type' => array('list'))) // the index 1 indicates the number of the failing row
 		);
-		$this->assertEqual($errors, $expected);
+		$this->assertEquals($errors, $expected);
 	}
 
 /**

@@ -68,7 +68,7 @@ class LookupableTest extends CakeTestCase {
 			'conditions' => array(
 				'Article.title' => 'Im looked up!')));
 		$this->assertTrue(is_array($result));
-		$this->assertEqual($result['Article']['title'], 'Im looked up!');
+		$this->assertEquals($result['Article']['title'], 'Im looked up!');
 
 		// another post with the same before created article
 		$this->Post->create();
@@ -76,7 +76,7 @@ class LookupableTest extends CakeTestCase {
 			'Post' => array(
 				'title' => 'foobar123',
 				'article_title' => 'Im looked up!')));
-		$this->assertEqual($firstResult['Post']['article_id'], $secondResult['Post']['article_id']);
+		$this->assertEquals($firstResult['Post']['article_id'], $secondResult['Post']['article_id']);
 	}
 
 }
