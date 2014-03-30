@@ -53,13 +53,15 @@ class SluggableBehavior extends ModelBehavior {
 		'length' => 255,
 		'unique' => true,
 		'update' => false,
-		'trigger' => false);
+		'trigger' => false
+	);
 
 /**
  * Initiate behaviour
  *
- * @param object $Model
+ * @param Model $Model
  * @param array $settings
+ * @return void
  */
 	public function setup(Model $Model, $settings = array()) {
 		$this->settings[$Model->alias] = array_merge($this->_defaults, $settings);
@@ -68,7 +70,9 @@ class SluggableBehavior extends ModelBehavior {
 /**
  * beforeSave callback
  *
- * @param object $Model
+ * @param Model $Model
+ * @param array $options
+ * @return boolean
  */
 	public function beforeSave(Model $Model, $options = array()) {
 		$settings = $this->settings[$Model->alias];
@@ -112,8 +116,8 @@ class SluggableBehavior extends ModelBehavior {
 /**
  * Search if the slug already exists and if yes increments it
  *
- * @param object $Model
- * @param string the raw slug
+ * @param Model $Model
+ * @param string $slug The raw slug
  * @return string The incremented unique slug
  *
  */

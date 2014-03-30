@@ -73,7 +73,7 @@ class SerializableTestCase extends CakeTestCase {
 
 		$record = array('Session' => array('id' => 1, 'data' => array(), 'expires' => 1000));
 		$data = $this->Session->find('first', array('conditions' => array('id' => 1)));
-		$this->assertEqual($data, $record);
+		$this->assertEquals($data, $record);
 	}
 
 	public function testJsonEmptyArrayDataValue() {
@@ -81,10 +81,10 @@ class SerializableTestCase extends CakeTestCase {
 		$record = array('Session' => array('id' => 1, 'data' => array(), 'expires' => 1000));
 		$this->Session->create($record);
 		$result = $this->Session->save();
-		$this->assertEqual($result, array('Session' => array('id' => 1, 'data' => '[]', 'expires' => 1000)));
+		$this->assertEquals($result, array('Session' => array('id' => 1, 'data' => '[]', 'expires' => 1000)));
 
 		$data = $this->Session->find('first', array('conditions' => array('id' => 1)));
-		$this->assertEqual($data, $record);
+		$this->assertEquals($data, $record);
 	}
 
 	public function testSerializeEmptyArrayDataValue() {
@@ -92,10 +92,10 @@ class SerializableTestCase extends CakeTestCase {
 		$record = array('Session' => array('id' => 1, 'data' => array(), 'expires' => 1000));
 		$this->Session->create($record);
 		$result = $this->Session->save();
-		$this->assertEqual($result, array('Session' => array('id' => 1, 'data' => 'a:0:{}', 'expires' => 1000)));
+		$this->assertEquals($result, array('Session' => array('id' => 1, 'data' => 'a:0:{}', 'expires' => 1000)));
 
 		$data = $this->Session->find('first', array('conditions' => array('id' => 1)));
-		$this->assertEqual($data, $record);
+		$this->assertEquals($data, $record);
 	}
 
 
@@ -104,10 +104,10 @@ class SerializableTestCase extends CakeTestCase {
 		$record = array('Session' => array('id' => 1, 'data' => array('k' => 'value'), 'expires' => 1000));
 		$this->Session->create($record);
 		$result = $this->Session->save();
-		$this->assertEqual($result, array('Session' => array('id' => 1, 'data' => '{"k":"value"}', 'expires' => 1000)));
+		$this->assertEquals($result, array('Session' => array('id' => 1, 'data' => '{"k":"value"}', 'expires' => 1000)));
 
 		$data = $this->Session->find('first', array('conditions' => array('id' => 1)));
-		$this->assertEqual($data, $record);
+		$this->assertEquals($data, $record);
 	}
 
 	public function testSerializeOneElementInData() {
@@ -115,10 +115,10 @@ class SerializableTestCase extends CakeTestCase {
 		$record = array('Session' => array('id' => 1, 'data' => array('k' => 'value'), 'expires' => 1000));
 		$this->Session->create($record);
 		$result = $this->Session->save();
-		$this->assertEqual($result, array('Session' => array('id' => 1, 'data' => 'a:1:{s:1:"k";s:5:"value";}', 'expires' => 1000)));
+		$this->assertEquals($result, array('Session' => array('id' => 1, 'data' => 'a:1:{s:1:"k";s:5:"value";}', 'expires' => 1000)));
 
 		$data = $this->Session->find('first', array('conditions' => array('id' => 1)));
-		$this->assertEqual($data, $record);
+		$this->assertEquals($data, $record);
 	}
 
 
@@ -126,10 +126,10 @@ class SerializableTestCase extends CakeTestCase {
 		$this->settings['Session']['engine'] = 'json';
 		$record = array('Session' => array(array('id' => 1, 'data' => array('k' => 'value'), 'expires' => 1000), array('id' => 2, 'data' => array('k' => 'value'), 'expires' => 1000)));
 		$result = $this->Session->saveAll($record['Session']);
-		$this->assertEqual($result, true);
+		$this->assertEquals($result, true);
 
 		$data = $this->Session->find('all', array('conditions' => array('id' => array(1, 2))));
-		$this->assertEqual(Set::classicExtract($data, '{n}.Session'), $record['Session']);
+		$this->assertEquals(Set::classicExtract($data, '{n}.Session'), $record['Session']);
 	}
 
 
@@ -139,10 +139,10 @@ class SerializableTestCase extends CakeTestCase {
 		$this->Content->create($record);
 		$result = $this->Content->save();
 		unset($result['Content']['updated'], $result['Content']['created']);
-		$this->assertEqual($result, array('Content' => array('id' => 1, 'title' => '{"k":"value"}', 'body' => '{"k":"value"}', 'published' => 'N')));
+		$this->assertEquals($result, array('Content' => array('id' => 1, 'title' => '{"k":"value"}', 'body' => '{"k":"value"}', 'published' => 'N')));
 
 		$data = $this->Content->find('first', array('conditions' => array('id' => 1), 'fields' => array('id', 'title', 'body', 'published')));
-		$this->assertEqual($data, $record);
+		$this->assertEquals($data, $record);
 	}
 
 	public function testSerializeSeveralDataFields() {
@@ -151,10 +151,10 @@ class SerializableTestCase extends CakeTestCase {
 		$this->Content->create($record);
 		$result = $this->Content->save();
 		unset($result['Content']['updated'], $result['Content']['created']);
-		$this->assertEqual($result, array('Content' => array('id' => 1, 'title' => 'a:1:{s:1:"k";s:5:"value";}', 'body' => 'a:1:{s:1:"k";s:5:"value";}', 'published' => 'N')));
+		$this->assertEquals($result, array('Content' => array('id' => 1, 'title' => 'a:1:{s:1:"k";s:5:"value";}', 'body' => 'a:1:{s:1:"k";s:5:"value";}', 'published' => 'N')));
 
 		$data = $this->Content->find('first', array('conditions' => array('id' => 1), 'fields' => array('id', 'title', 'body', 'published')));
-		$this->assertEqual($data, $record);
+		$this->assertEquals($data, $record);
 	}
 
 
@@ -167,6 +167,6 @@ class SerializableTestCase extends CakeTestCase {
 		$this->Session->Behaviors->load('Utils.Serializable', array('field' => array('data')));
 		$record = array('Session' => array('id' => 1, 'data' => array(), 'expires' => 1000));
 		$data = $this->Session->find('first', array('conditions' => array('id' => 1)));
-		$this->assertEqual($data, $record);
+		$this->assertEquals($data, $record);
 	}
 }

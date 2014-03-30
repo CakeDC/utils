@@ -101,7 +101,7 @@ class InheritableTest extends CakeTestCase {
 	public function testSubclassParentClass() {
 		$this->assertIsA($this->Article->parent, 'Content');
 		$this->assertIsA($this->Page->parent, 'Content');
-		$this->assertEqual($this->Content->find('all'), $this->Article->parent->find('all'));
+		$this->assertEquals($this->Content->find('all'), $this->Article->parent->find('all'));
 	}
 
 /**
@@ -125,7 +125,7 @@ class InheritableTest extends CakeTestCase {
 		// Test String Condition
 		$r1 = $this->Page->find('all', array('conditions' => array('Page.permalink' => 'about-us')));
 		$r2 = $this->Page->find('all', array('conditions' => 'Page.permalink = "about-us"'));
-		$this->assertEqual($r1, $r2, "should support string conditions");
+		$this->assertEquals($r1, $r2, "should support string conditions");
 
 		// Test condition build properly for different subclasses, should not conflict
 		$r1 = $this->Page->find('all', array('conditions' => "permalink = 'about-us'"));
@@ -151,7 +151,7 @@ class InheritableTest extends CakeTestCase {
 		$this->assertTrue(!empty($saveResult));
 
 		$result = $this->Article->findByPermalink('monday-morning-train-rush');
-		$this->assertEqual(count($result), 1);
+		$this->assertEquals(count($result), 1);
 		$this->assertTrue(Set::matches('/Article[body=/bus transport/i]', $result));
 
 		// another test
@@ -182,7 +182,7 @@ class InheritableTest extends CakeTestCase {
 			'url' => ''));
 		$this->assertFalse($this->Link->validates());
 		ksort($this->Link->validationErrors);
-		$this->assertEqual(array_keys($this->Link->validationErrors), array('title', 'url'));
+		$this->assertEquals(array_keys($this->Link->validationErrors), array('title', 'url'));
 	}
 
 /**
@@ -268,9 +268,9 @@ class InheritableTest extends CakeTestCase {
 		$this->assertTrue(!empty($saveResult));
 
 		$result = $this->Link->findById(11);
-		$this->assertEqual($this->Link->find('count'), 2);
-		$this->assertEqual($result['Link']['title'], $data['Link']['title']);
-		$this->assertEqual($result['Link']['url'], $data['Link']['url']);
+		$this->assertEquals($this->Link->find('count'), 2);
+		$this->assertEquals($result['Link']['title'], $data['Link']['title']);
+		$this->assertEquals($result['Link']['url'], $data['Link']['url']);
 	}
 
 /**
@@ -281,8 +281,8 @@ class InheritableTest extends CakeTestCase {
  */
 	public function testClassInheritanceDelete() {
 		$this->Link->delete(11);
-		$this->assertEqual($this->Link->findById(11), array());
-		$this->assertEqual($this->Asset->findById(11), array());
+		$this->assertEquals($this->Link->findById(11), array());
+		$this->assertEquals($this->Asset->findById(11), array());
 
 		$result = $this->Image->deleteAll(true, true, true);
 		$this->assertTrue($result);
@@ -299,7 +299,7 @@ class InheritableTest extends CakeTestCase {
 		$assetData = array('id' => 11, 'title' => 'home page link', 'description' => 'link back to home page');
 
 		$results = $this->Link->Behaviors->Inheritable->afterFind($this->Link, array());
-		$this->assertEqual($results, array());
+		$this->assertEquals($results, array());
 
 		$data = array(
 			array(
@@ -308,7 +308,7 @@ class InheritableTest extends CakeTestCase {
 		$expected = array(
 			array(
 				'Link' => array_merge($linkData, $assetData)));
-		$this->assertEqual($results, $expected);
+		$this->assertEquals($results, $expected);
 
 		$data = array(
 			array(
@@ -318,7 +318,7 @@ class InheritableTest extends CakeTestCase {
 		$expected = array(
 			array('Link' => array(
 				array_merge($linkData, $assetData))));
-		$this->assertEqual($results, $expected);
+		$this->assertEquals($results, $expected);
 	}
 
 /**
@@ -334,7 +334,7 @@ class InheritableTest extends CakeTestCase {
 		$data = array_merge($linkData, array('Asset' => $assetData));
 		$results = $this->Link->Behaviors->Inheritable->afterFind($this->Link, $data);
 		$expected = array_merge($linkData, $assetData);
-		$this->assertEqual($results, $expected);
+		$this->assertEquals($results, $expected);
 
 		// Another format that can be found
 		$data = array('Link' => array(
@@ -342,7 +342,7 @@ class InheritableTest extends CakeTestCase {
 		$results = $this->Link->Behaviors->Inheritable->afterFind($this->Link, $data);
 		$expected = array('Link' => array(
 			array_merge($linkData, $assetData)));
-		$this->assertEqual($results, $expected);
+		$this->assertEquals($results, $expected);
 	}
 
 /**
@@ -365,7 +365,7 @@ class InheritableTest extends CakeTestCase {
 		}
 
 		$final_count = $this->Asset->find('count');
-		$this->assertEqual($final_count-$initial_count, 10);
+		$this->assertEquals($final_count-$initial_count, 10);
 	}
 
 /**
@@ -381,7 +381,7 @@ class InheritableTest extends CakeTestCase {
 		$result = $this->Image->save();
 		$final_count = $this->Asset->find('count');
 		$this->assertTrue(!empty($result));
-		$this->assertEqual($final_count-$initial_count, 1);
+		$this->assertEquals($final_count-$initial_count, 1);
 	}
 
 /**
