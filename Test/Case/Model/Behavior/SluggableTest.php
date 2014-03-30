@@ -202,8 +202,11 @@ class SluggableTest extends CakeTestCase {
 		$result = $this->Model->multibyteSlug('krämer ~!@ # $% ^& *() =+[]{}\\/,.:;"\'<>');
 		$this->assertEquals('krämer', $result);
 
-		$result = $this->Model->multibyteSlug('Ärgerlich Öl Überzogen Straße ~!@ # $% ^& *() =+[]{}\\/,.:;"\'<>');
-		$this->assertEquals('ärgerlich_öl_überzogen_straße', $result);
+		$result = $this->Model->multibyteSlug('Ärgerliche Öl Überzogen Straße ~!@ # $% ^& *() =+[]{}\\/,.:;"\'<>');
+		$this->assertEquals('ärgerliche_öl_überzogen_straße', $result);
+
+		$result = $this->Model->multibyteSlug('ñÑ áéí óúÁ ÉÍÓÚ');
+		$this->assertEquals($result, 'ññ_áéí_óúá_éíóú');
 
 		$result = $this->Model->multibyteSlug('Foo\'s book');
 		$this->assertEquals('foos_book', $result);
