@@ -148,12 +148,12 @@ class PlaceHelperTest extends CakeTestCase {
  */
 	public function testTextWords() {
 		$result = $this->Place->text(11, 'w');
-		$this->assertEqual(str_word_count($result), 11);
-		$this->assertEqual(strpos($result, 'Lorem ipsum'), 0);
+		$this->assertEquals(str_word_count($result), 11);
+		$this->assertEquals(strpos($result, 'Lorem ipsum'), 0);
 
 		$result = $this->Place->text(5, 'w', array('start' => false));
-		$this->assertEqual(str_word_count($result), 5);
-		$this->assertEqual(strpos($result, 'Lorem ipsum'), false);
+		$this->assertEquals(str_word_count($result), 5);
+		$this->assertEquals(strpos($result, 'Lorem ipsum'), false);
 	}
 
 /**
@@ -169,7 +169,7 @@ class PlaceHelperTest extends CakeTestCase {
 
 		$result = $this->Place->text(2, 'paragraphs', array('class' => 'well'));
 		$exploded = explode(PHP_EOL, $result);
-		$this->assertEqual(count($exploded), 2);
+		$this->assertEquals(count($exploded), 2);
 		$match = array('tag' => 'p', 'attributes' => array('class' => 'well'));
 		$this->assertTag($match, $exploded[0]);
 		$this->assertTag($match, $exploded[1]);
@@ -182,7 +182,7 @@ class PlaceHelperTest extends CakeTestCase {
  */
 	public function testTextBytes() {
 		$result = $this->Place->text(77, 'b');
-		$this->assertEqual(strlen($result), 77);
+		$this->assertEquals(strlen($result), 77);
 	}
 
 /**
@@ -215,10 +215,10 @@ class PlaceHelperTest extends CakeTestCase {
  */
 	public function testCacheKey() {
 		$result = $this->Place->cacheKey(11, 'x', true);
-		$this->assertEqual($result, 'PlaceHelper_x_11_1');
+		$this->assertEquals($result, 'PlaceHelper_x_11_1');
 
 		$result = $this->Place->cacheKey(99, 'y', false);
-		$this->assertEqual($result, 'PlaceHelper_y_99_');
+		$this->assertEquals($result, 'PlaceHelper_y_99_');
 	}
 
 /**
@@ -232,7 +232,7 @@ class PlaceHelperTest extends CakeTestCase {
 		$response->code = 404;
 		$result = $this->Place->decodeResponse($response, $noCache);
 		$this->assertTrue($noCache);
-		$this->assertEqual($result, array(__d('Utils', 'Server lipsum.com returns error code %s.', 404)));
+		$this->assertEquals($result, array(__d('Utils', 'Server lipsum.com returns error code %s.', 404)));
 	}
 
 /**
@@ -246,13 +246,13 @@ class PlaceHelperTest extends CakeTestCase {
 		$response->code = 200;
 		$result = $this->Place->decodeResponse($response, $noCache);
 		$this->assertTrue($noCache);
-		$this->assertEqual($result, array(__d('Utils', 'Response from lipsum.com is empty or could not be decoded.')));
+		$this->assertEquals($result, array(__d('Utils', 'Response from lipsum.com is empty or could not be decoded.')));
 
 		$noCache = false;
 		$response->body = 'not a json';
 		$result = $this->Place->decodeResponse($response, $noCache);
 		$this->assertTrue($noCache);
-		$this->assertEqual($result, array(__d('Utils', 'Response from lipsum.com is empty or could not be decoded.')));
+		$this->assertEquals($result, array(__d('Utils', 'Response from lipsum.com is empty or could not be decoded.')));
 	}
 
 /**
@@ -268,14 +268,14 @@ class PlaceHelperTest extends CakeTestCase {
 		$response->body = '{"feed":{"lipsum":"' . $string . '"}}';
 		$result = $this->Place->decodeResponse($response, $noCache);
 		$this->assertNull($noCache);
-		$this->assertEqual($result, array($string));
+		$this->assertEquals($result, array($string));
 
 		$expected = array('first line', 'second line', 'third line');
 		$string = implode(PHP_EOL, $expected);
 		$response->body = '{"feed":{"lipsum":"' . $string . '"}}';
 		$result = $this->Place->decodeResponse($response, $noCache);
 		$this->assertNull($noCache);
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($result, $expected);
 	}
 
 /**
@@ -287,7 +287,7 @@ class PlaceHelperTest extends CakeTestCase {
 		$this->Place->setSocket(new TestPlaceSocket(true));
 		$result = $this->Place->fetchData(1, 'p', true, $noCache);
 		$this->assertTrue($noCache);
-		$this->assertEqual($result, array(__d('Utils', 'Connection to server lipsum.com failed. %s.', 'TestPlaceSocket Error')));
+		$this->assertEquals($result, array(__d('Utils', 'Connection to server lipsum.com failed. %s.', 'TestPlaceSocket Error')));
 	}
 
 /**
@@ -299,7 +299,7 @@ class PlaceHelperTest extends CakeTestCase {
 		$this->Place->setSocket(new TestPlaceSocket);
 		$result = $this->Place->fetchData(1, 'p', true, $noCache);
 		$this->assertFalse($noCache);
-		$this->assertEqual($result, array('ok'));
+		$this->assertEquals($result, array('ok'));
 	}
 
 /**
@@ -318,12 +318,12 @@ class PlaceHelperTest extends CakeTestCase {
 		$expected = array('two words');
 		Cache::write('PlaceHelper_w_2_', $expected, $cache);
 		$result = $this->Place->getData(2, 'w', false);
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($result, $expected);
 
 		Cache::clear(false, $cache);
 		$result = $this->Place->getData(8, 'w', true);
 		$expected = Cache::read('PlaceHelper_w_8_1', $cache);
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($result, $expected);
 	}
 
 /**
@@ -347,11 +347,11 @@ class PlaceHelperTest extends CakeTestCase {
 	public function testImageUrl() {
 		$width = $height = 1;
 		$result = $this->Place->imageUrl($width, $height);
-		$this->assertEqual($result, 'http://placekitten.com/1/1');
+		$this->assertEquals($result, 'http://placekitten.com/1/1');
 
 		$width = $height = null;
 		$result = $this->Place->imageUrl($width, $height);
-		$this->assertEqual($result, 'http://placekitten.com/300/200');
+		$this->assertEquals($result, 'http://placekitten.com/300/200');
 	}
 
 /**
@@ -361,10 +361,10 @@ class PlaceHelperTest extends CakeTestCase {
  */
 	public function testTextUrl() {
 		$result = $this->Place->textUrl(99, 'w', true);
-		$this->assertEqual($result, 'http://www.lipsum.com/feed/json?amount=99&what=words&start=yes');
+		$this->assertEquals($result, 'http://www.lipsum.com/feed/json?amount=99&what=words&start=yes');
 
 		$result = $this->Place->textUrl(5, 'l', false);
-		$this->assertEqual($result, 'http://www.lipsum.com/feed/json?amount=5&what=lists&start=no');
+		$this->assertEquals($result, 'http://www.lipsum.com/feed/json?amount=5&what=lists&start=no');
 	}
 
 /**

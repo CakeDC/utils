@@ -117,20 +117,20 @@ class ListTest extends CakeTestCase {
 		$result = $this->UsersAddon->insertAt(1, 'useraddon-3');
 		$this->assertTrue(!empty($result));
 		$result = $this->UsersAddon->read('position', 'useraddon-3');
-		$this->assertEqual($result['UsersAddon']['position'], 1);
+		$this->assertEquals($result['UsersAddon']['position'], 1);
 
 		// insert somewhere in the middle
 		$result = $this->UsersAddon->insertAt(2, 'useraddon-3');
 		$this->assertTrue(!empty($result));
 		$result = $this->UsersAddon->read('position', 'useraddon-3');
-		$this->assertEqual($result['UsersAddon']['position'], 2);
+		$this->assertEquals($result['UsersAddon']['position'], 2);
 
 		// insert at last position
 		$position = $this->UsersAddon->find('count');
 		$result = $this->UsersAddon->insertAt($position, 'useraddon-3');
 		$this->assertTrue(!empty($result));
 		$result = $this->UsersAddon->read('position', 'useraddon-3');
-		$this->assertEqual($result['UsersAddon']['position'], $position);
+		$this->assertEquals($result['UsersAddon']['position'], $position);
 	}
 
 /**
@@ -142,7 +142,7 @@ class ListTest extends CakeTestCase {
 	public function testMoveToBottom() {
 		$this->UsersAddon->moveToBottom('useraddon-1');
 		$result = $this->UsersAddon->read('position', 'useraddon-1');
-		$this->assertEqual($result['UsersAddon']['position'], 3);
+		$this->assertEquals($result['UsersAddon']['position'], 3);
 	}
 
 /**
@@ -154,7 +154,7 @@ class ListTest extends CakeTestCase {
 	public function testMoveToTop() {
 		$this->UsersAddon->moveToTop('useraddon-3');
 		$result = $this->UsersAddon->read('position', 'useraddon-3');
-		$this->assertEqual($result['UsersAddon']['position'], 1);
+		$this->assertEquals($result['UsersAddon']['position'], 1);
 	}
 
 /**
@@ -219,7 +219,7 @@ class ListTest extends CakeTestCase {
 		$this->UsersAddon->create($data);
 		$result = $this->UsersAddon->save($data);
 		$this->assertTrue(!empty($result));
-		$this->assertEqual($result['UsersAddon']['position'], 4);
+		$this->assertEquals($result['UsersAddon']['position'], 4);
 	}
 
 /**
@@ -243,10 +243,10 @@ class ListTest extends CakeTestCase {
 		$this->UsersAddon->create($data);
 		$result = $this->UsersAddon->save($data);
 		$this->assertTrue(!empty($result));
-		$this->assertEqual($result['UsersAddon']['position'], 1);
+		$this->assertEquals($result['UsersAddon']['position'], 1);
 		$userAddons = $this->UsersAddon->find('all', array('order' => 'position'));
 		$userAddons = Set::combine($userAddons, '/UsersAddon/id', '/UsersAddon/position');
-		$this->assertEqual(array_values($userAddons), range(1,4));
+		$this->assertEquals(array_values($userAddons), range(1,4));
 	}
 
 }

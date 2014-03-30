@@ -53,10 +53,10 @@ class ToggleableTest extends CakeTestCase {
 			'fields' => array(
 				'deleted' => array(1, 0))));
 
-		$this->assertEqual($this->Post->toggle(1, 'deleted'), 1);
-		$this->assertEqual($this->Post->field('deleted'), true);
-		$this->assertEqual($this->Post->toggle(1, 'deleted'), 0);
-		$this->assertEqual($this->Post->field('deleted'), false);
+		$this->assertEquals($this->Post->toggle(1, 'deleted'), 1);
+		$this->assertEquals($this->Post->field('deleted'), true);
+		$this->assertEquals($this->Post->toggle(1, 'deleted'), 0);
+		$this->assertEquals($this->Post->field('deleted'), false);
 	}
 
 /**
