@@ -3,6 +3,7 @@ App::uses('Controller', 'Controller');
 App::uses('AuthComponent', 'Controller/Component');
 App::uses('SessionComponent', 'Controller/Component');
 App::uses('FormPreserverComponent', 'Utils.Controller/Component');
+App::uses('ComponentCollection', 'Controller');
 
 class FormPreserverArticle extends CakeTestModel {
 
@@ -38,9 +39,14 @@ class FormPreserverArticlesTestController extends Controller {
 	);
 
 /**
- * 
+ * Redirect
+ *
+ * @param string $url
+ * @param integer $status
+ * @param boolean $exit
+ * @return void
  */
-	public function redirect($url, $status = NULL, $exit = true) {
+	public function redirect($url, $status = null, $exit = true) {
 		$this->redirectUrl = $url;
 	}
 
@@ -65,17 +71,34 @@ class FormPreserverComponentTest extends CakeTestCase {
  * @return void
  */
 	public function setUp() {
+		$this->Session = $this->getMockBuilder('SessionComponent')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$this->Auth = $this->getMockBuilder('AuthComponent')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$this->Collection = $this->getMockBuilder('ComponentCollection')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$this->Collection->Auth = $this->Auth;
+		$this->Collection->Session = $this->Session;
+
 		$request = new CakeRequest(null, false);
 		$this->Controller = new FormPreserverArticlesTestController($request, $this->getMock('CakeResponse'));
-		$this->Controller->constructClasses();
 		$this->Controller->action = 'edit';
 		$this->Controller->request->params = array(
 			'named' => array(),
 			'pass' => array(),
 			'url' => array());
+		$this->Controller->name = 'Articles';
 		$this->Controller->modelClass = 'Article';
-		$this->Controller->FormPreserver = new FormPreserverComponent($this->Controller->Components);
+		$this->Controller->Session = $this->Session;
+		$this->Controller->FormPreserver = new FormPreserverComponent($this->Collection);
 		$this->Controller->FormPreserver->initialize($this->Controller);
+		$this->Controller->FormPreserver->Session = $this->Session;
 	}
 
 /**
@@ -135,6 +158,12 @@ class FormPreserverComponentTest extends CakeTestCase {
 		$this->Controller->Session->write('PreservedForms.ArticlesTest.edit', $data);
 		$this->Controller->request->data = array();
 		$this->Controller->FormPreserver->restore();
+
+		$this->Session->expects($this->once())
+			->method('check')
+			->with('PreservedForms.ArticlesTest.edit')
+			->will($this->returnValue(true));
+
 		$this->assertFalse($this->Controller->Session->check('PreservedForms'));
 		$this->assertEquals($this->Controller->request->data, $data);
 		session_destroy();

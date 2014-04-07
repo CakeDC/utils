@@ -24,7 +24,10 @@ class FormPreserverComponent extends Object {
  *
  * @var array $components
  */
-	public $components = array('Session', 'Auth');
+	public $components = array(
+		'Session',
+		'Auth'
+	);
 
 /**
  * Actions used to fetch the post data
@@ -97,28 +100,28 @@ class FormPreserverComponent extends Object {
  */
 	public function startUp(Controller $Controller) {
 		if (in_array($Controller->action, $this->actions)) {
-			if (empty($Controller->request->data) && $Controller->Session->check($this->sessionPath)) {
+			if (empty($Controller->request->data) && $this->Session->check($this->sessionPath)) {
 				if ($this->directPost == true) {
-					$Controller->request->data = $Controller->Session->read($this->sessionPath);
-					$Controller->Session->delete($this->sessionPath);
+					$Controller->request->data = $this->Session->read($this->sessionPath);
+					$this->Session->delete($this->sessionPath);
 				}
-			} elseif (!empty($Controller->request->data) && !$Controller->Auth->user()) {
+			} elseif (!empty($Controller->request->data) && !$this->Auth->user()) {
 				$this->preserve($Controller->request->data);
-				if (empty($this->loginAction) && !empty($Controller->Auth->loginAction)) {
-					$this->loginAction = $Controller->Auth->loginAction;
+				if (empty($this->loginAction) && !empty($this->Auth->loginAction)) {
+					$this->loginAction = $this->Auth->loginAction;
 					if (!empty($this->redirectMessage)) {
-						$Controller->Session->setFlash($this->redirectMessage);
+						$this->Session->setFlash($this->redirectMessage);
 					}
 
 					// Code from AuthComponent to store the redirect url so the user get redirected to the correct location after a successful login
 					if (isset($Controller->Auth)) {
 						$url = '';
-						if (isset($Controller->params['url']['url'])) {
-							$url = $Controller->params['url']['url'];
+						if (isset($Controller->request->params['url']['url'])) {
+							$url = $Controller->request->params['url']['url'];
 						}
 						$url = Router::normalize($url);
-						if (!empty($Controller->params['url']) && count($Controller->params['url']) >= 2) {
-							$query = $Controller->params['url'];
+						if (!empty($Controller->request->params['url']) && count($Controller->request->params['url']) >= 2) {
+							$query = $Controller->request->params['url'];
 							unset($query['url'], $query['ext']);
 							$url .= Router::queryString($query, array());
 						}
@@ -143,7 +146,7 @@ class FormPreserverComponent extends Object {
 		if (isset($data['_Token'])) {
 			unset($data['_Token']);
 		}
-		return $this->Controller->Session->write($this->sessionPath, $data);
+		return $this->Session->write($this->sessionPath, $data);
 	}
 
 /**
@@ -154,13 +157,13 @@ class FormPreserverComponent extends Object {
  */
 	public function restore($sessionPath = null) {
 		$this->_overridPath($sessionPath);
-		if (empty($this->Controller->request->data) && $this->Controller->Session->check($this->sessionPath)) {
+		if (empty($this->Controller->request->data) && $this->Session->check($this->sessionPath)) {
 			if (!empty($this->Controller->request->data)) {
-				$this->Controller->request->data = array_merge($this->Controller->Session->read($this->sessionPath), $this->Controller->request->data);
+				$this->Controller->request->data = array_merge($this->Session->read($this->sessionPath), $this->Controller->request->data);
 			} else {
-				$this->Controller->request->data = $this->Controller->Session->read($this->sessionPath);
+				$this->Controller->request->data = $this->Session->read($this->sessionPath);
 			}
-			$this->Controller->Session->delete($this->sessionPath);
+			$this->Session->delete($this->sessionPath);
 		}
 	}
 
