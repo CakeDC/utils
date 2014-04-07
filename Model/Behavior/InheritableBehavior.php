@@ -171,12 +171,12 @@ class InheritableBehavior extends ModelBehavior {
  * Before validate callback
  * Merge validation rules from the parent class in case of CTI
  *
- * @param Model $model
- * @return true
+ * @param Model $Model
+ * @return boolean
  */
 	public function beforeValidate(Model $Model) {
 		if ($this->settings[$Model->alias]['method'] === InheritableBehavior::CTI && !empty($Model->parent->validate)) {
-			$Model->validate = Set::merge($Model->parent->validate, $Model->validate);
+			$Model->validate = Hash::merge($Model->parent->validate, $Model->validate);
 		}
 		return true;
 	}
@@ -192,7 +192,7 @@ class InheritableBehavior extends ModelBehavior {
 		extract($this->settings[$Model->alias]);
 		$_schema = $Model->schema();
 		if (isset($_schema[$inheritanceField]) && $Model->alias != $Model->parent->alias) {
-			$field = $Model->alias. '.' . $inheritanceField;
+			$field = $Model->alias . '.' . $inheritanceField;
 
 			if (!isset($query['conditions'])) {
 				$query['conditions'] = array();
@@ -241,10 +241,11 @@ class InheritableBehavior extends ModelBehavior {
 			$Model->parent->alias => array(
 				'type' => 'INNER',
 				'className' => $Model->parent->alias,
-				'foreignKey' => $Model->primaryKey)));
+				'foreignKey' => $Model->primaryKey
+			)
+		));
 		$success = $Model->bindModel($bind, false);
-		//Putting the parent association as the first one, so any dependent join on the parent model will
-		// be in the right order
+		//Putting the parent association as the first one, so any dependent join on the parent model will be in the right order
 		$assoc = $Model->belongsTo[$Model->parent->alias];
 		unset($Model->belongsTo[$Model->parent->alias]);
 		$Model->belongsTo = array_merge(array($Model->parent->alias => $assoc), $Model->belongsTo);
@@ -268,7 +269,9 @@ class InheritableBehavior extends ModelBehavior {
 				$bind = array('belongsTo' => array(
 					$alias => array(
 						'conditions' => "{$Model->parent->alias}.{$foreignKey} = {$alias}.id",
-						'foreignKey' => false)));
+						'foreignKey' => false
+					)
+				));
 				$Model->bindModel($bind, true);
 			}
 		}

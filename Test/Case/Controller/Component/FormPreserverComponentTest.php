@@ -5,8 +5,11 @@ App::uses('SessionComponent', 'Controller/Component');
 App::uses('FormPreserverComponent', 'Utils.Controller/Component');
 
 class FormPreserverArticle extends CakeTestModel {
+
 /**
- * 
+ * Name
+ *
+ * @var string
  */
 	public $name = 'Article';
 }
@@ -15,21 +18,24 @@ class FormPreserverArticlesTestController extends Controller {
 
 /**
  * @var string
- * @access public
  */
 	public $name = 'ArticlesTest';
 
 /**
  * @var array
- * @access public
  */
-	public $uses = array('FormPreserverArticle');
+	public $uses = array(
+		'FormPreserverArticle'
+	);
 
 /**
  * @var array
- * @access public
  */
-	public $components = array('Utils.FormPreserver', 'Session', 'Auth');
+	public $components = array(
+		'Utils.FormPreserver',
+		'Session',
+		'Auth'
+	);
 
 /**
  * 
@@ -41,6 +47,7 @@ class FormPreserverArticlesTestController extends Controller {
 }
 
 class FormPreserverComponentTest extends CakeTestCase {
+
 /**
  * Fixtures
  *
@@ -48,14 +55,16 @@ class FormPreserverComponentTest extends CakeTestCase {
  * @access public
  */
 	public $fixtures = array(
-		'plugin.utils.article');
+		'plugin.utils.article'
+	);
+
 /**
  * setUp method
  *
  * @access public
  * @return void
  */
-	function setUp() {
+	public function setUp() {
 		$request = new CakeRequest(null, false);
 		$this->Controller = new FormPreserverArticlesTestController($request, $this->getMock('CakeResponse'));
 		$this->Controller->constructClasses();
@@ -75,7 +84,7 @@ class FormPreserverComponentTest extends CakeTestCase {
  * @access public
  * @return void
  */
-	function tearDown() {
+	public function tearDown() {
 		unset($this->Controller);
 		ClassRegistry::flush();
 	}
@@ -90,7 +99,9 @@ class FormPreserverComponentTest extends CakeTestCase {
 		$data = array(
 			'_Token' => 'token',
 			'ArticleTest' => array(
-				'title' => 'Foo'));
+				'title' => 'Foo'
+			)
+		);
 
 		$this->Controller->action = 'edit';
 		$this->Controller->request->data = $data;
@@ -102,7 +113,8 @@ class FormPreserverComponentTest extends CakeTestCase {
 		$this->assertEquals($this->Controller->redirectUrl, array(
 			'controller' => 'users',
 			'action' => 'login',
-			'plugin' => null));
+			'plugin' => null
+		));
 	}
 
 /**
@@ -115,7 +127,9 @@ class FormPreserverComponentTest extends CakeTestCase {
 		$data = array(
 			'_Token' => 'token',
 			'ArticleTest' => array(
-				'title' => 'Foo'));
+				'title' => 'Foo'
+			)
+		);
 		$this->Controller->action = 'edit';
 		$this->Controller->FormPreserver->initialize($this->Controller);
 		$this->Controller->Session->write('PreservedForms.ArticlesTest.edit', $data);
@@ -136,7 +150,9 @@ class FormPreserverComponentTest extends CakeTestCase {
 		$data = array(
 			'_Token' => 'token',
 			'ArticleTest' => array(
-				'title' => 'Foo'));
+				'title' => 'Foo'
+			)
+		);
 
 		$this->Controller->action = 'edit';
 		$this->Controller->FormPreserver->initialize($this->Controller);

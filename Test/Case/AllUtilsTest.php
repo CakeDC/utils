@@ -7,7 +7,7 @@ class AllUtilsPluginTest extends PHPUnit_Framework_TestSuite {
  * @return Suite
  */
 	public static function suite() {
-		$Suite = new CakeTestSuite('All Plugin tests');
+		$Suite = new CakeTestSuite('All Plugin Tests');
 		$path = dirname(__FILE__);
 		$Suite->addTestDirectoryRecursive($path);
 		return $Suite;

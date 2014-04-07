@@ -109,7 +109,7 @@ class LookupableBehavior extends ModelBehavior {
 			$data = array($fieldName => $name);
 
 			if (isset($Model->data[$modelClass])) {
-				$data = Set::merge($Model->data[$modelClass], $data);
+				$data = Hash::merge($Model->data[$modelClass], $data);
 			}
 
 			$Model->saveLookupRecord($modelClass, $data);

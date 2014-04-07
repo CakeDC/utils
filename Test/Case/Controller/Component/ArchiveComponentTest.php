@@ -70,10 +70,6 @@ class ArchiveComponentTest extends CakeTestCase {
 		parent::setUp();
 		$this->Controller = new ArticlesTestController();
 		$this->Controller->constructClasses();
-		$this->Controller->params = array(
-			'named' => array(),
-			'pass' => array(),
-			'url' => array());
 		$this->Controller->modelClass = 'Article';
 		$this->Controller->Archive = new ArchiveComponent($this->Controller->Components);
 		$this->Controller->Archive->startup($this->Controller);
@@ -101,7 +97,8 @@ class ArchiveComponentTest extends CakeTestCase {
 		$this->assertEquals($result[0], array(
 			'year' => 2007,
 			'month' => 03,
-			'count' => 3));
+			'count' => 3
+		));
 	}
 
 }

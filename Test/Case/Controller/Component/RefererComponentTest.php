@@ -113,12 +113,12 @@ class RefererComponentTest extends CakeTestCase {
  */
 	public function testRedirect() {
 		$this->Controller->request->data['Data']['referer'] = '/foo/bar';
-		$result = $this->Controller->Referer->redirect('/home');
+		$this->Controller->Referer->redirect('/home');
 		$this->assertEquals($this->Controller->redirectUrl, '/foo/bar');
 
 		$_SERVER['HTTP_REFERER'] = '/';
 		$this->Controller->request->data = null;
-		$result = $this->Controller->Referer->redirect('/home');
+		$this->Controller->Referer->redirect('/home');
 		$this->assertEquals($this->Controller->redirectUrl, '/home');
 	}
 

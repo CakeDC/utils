@@ -18,6 +18,7 @@
  * @subpackage utils.controllers.components
  */
 class FormPreserverComponent extends Object {
+
 /**
  * Components that are required
  *
@@ -48,6 +49,7 @@ class FormPreserverComponent extends Object {
  * @var string
  */
 	public $sessionPath = null;
+
 /**
  * Flash message for the redirect
  *
@@ -70,7 +72,7 @@ class FormPreserverComponent extends Object {
 /**
  * Constructor
  *
- * @return void
+ * @return FormPreserverComponent
  */
 	public function __construct() {
 		parent::__construct();
@@ -80,7 +82,7 @@ class FormPreserverComponent extends Object {
 /**
  * Intialize Callback
  *
- * @param object Controller object
+ * @param Controller $Controller
  */
 	public function initialize(Controller $Controller) {
 		$this->Controller = $Controller;
@@ -90,10 +92,9 @@ class FormPreserverComponent extends Object {
 /**
  * Startup
  *
- * @param object Controller instance
+ * @param Controller $Controller
  * @return void
  */
-
 	public function startUp(Controller $Controller) {
 		if (in_array($Controller->action, $this->actions)) {
 			if (empty($Controller->request->data) && $Controller->Session->check($this->sessionPath)) {
@@ -109,8 +110,7 @@ class FormPreserverComponent extends Object {
 						$Controller->Session->setFlash($this->redirectMessage);
 					}
 
-					// Code from AuthComponent to store the redirect url so the user get redirected 
-					// to the correct location after a successful login
+					// Code from AuthComponent to store the redirect url so the user get redirected to the correct location after a successful login
 					if (isset($Controller->Auth)) {
 						$url = '';
 						if (isset($Controller->params['url']['url'])) {
@@ -135,6 +135,7 @@ class FormPreserverComponent extends Object {
  * Preserves the form data in a session
  *
  * @param array Data from Controller->data
+ * @param string $sessionPath
  * @return boolean
  */
 	public function preserve($data = null, $sessionPath = null) {
