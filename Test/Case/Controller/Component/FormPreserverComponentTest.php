@@ -147,26 +147,28 @@ class FormPreserverComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testRestore() {
-		$data = array(
-			'_Token' => 'token',
-			'ArticleTest' => array(
-				'title' => 'Foo'
-			)
-		);
 		$this->Controller->action = 'edit';
 		$this->Controller->FormPreserver->initialize($this->Controller);
-		$this->Controller->Session->write('PreservedForms.ArticlesTest.edit', $data);
-		$this->Controller->request->data = array();
-		$this->Controller->FormPreserver->restore();
 
-		$this->Session->expects($this->once())
+		$this->Session->expects($this->at(0))
 			->method('check')
-			->with('PreservedForms.ArticlesTest.edit')
+			->with('PreservedForms.Articles.edit')
+			->will($this->returnValue(true));
+		$this->Session->expects($this->at(1))
+			->method('read')
+			->with('PreservedForms.Articles.edit')
+			->will($this->returnValue(array(
+				'ArticleTest' => array(
+					'title' => 'Foo'
+				)
+			)));
+		$this->Session->expects($this->at(2))
+			->method('delete')
+			->with('PreservedForms.Articles.edit')
 			->will($this->returnValue(true));
 
-		$this->assertFalse($this->Controller->Session->check('PreservedForms'));
-		$this->assertEquals($this->Controller->request->data, $data);
-		session_destroy();
+		$this->Controller->request->data = array();
+		$this->Controller->FormPreserver->restore();
 	}
 
 /**
