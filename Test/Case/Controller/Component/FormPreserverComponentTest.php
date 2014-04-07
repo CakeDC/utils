@@ -185,9 +185,12 @@ class FormPreserverComponentTest extends CakeTestCase {
 
 		$this->Controller->action = 'edit';
 		$this->Controller->FormPreserver->initialize($this->Controller);
-		$this->assertTrue($this->Controller->FormPreserver->preserve($data));
-		$this->assertTrue($this->Controller->Session->check('PreservedForms'));
-		session_destroy();
-	}
+		$expectedDataForSession = Hash::remove($data, '_Token');
+		$this->Session->expects($this->once())
+			->method('write')
+			->with('PreservedForms.Articles.edit', $expectedDataForSession)
+			->will($this->returnValue(true));
 
+		$this->assertTrue($this->Controller->FormPreserver->preserve($data));
+	}
 }
