@@ -140,7 +140,7 @@ class InheritableBehavior extends ModelBehavior {
  * @param Model $Model
  * @return true
  */
-	public function beforeSave(Model $Model) {
+	public function beforeSave(Model $Model, $options = array()) {
 		if ($this->settings[$Model->alias]['method'] == 'STI') {
 			$this->_singleTableBeforeSave($Model);
 		} elseif ($this->settings[$Model->alias]['method'] == 'CTI') {
@@ -163,6 +163,23 @@ class InheritableBehavior extends ModelBehavior {
 		}
 		return true;
 	}
+
+/**
+ * Before validate callback
+ * Deconstructs complex types by calling model parent's method
+ *
+ * @param Model $Model
+ * @return true
+ */
+    public function beforeValidate(Model $Model, $options = array()) {
+        foreach ($Model->data[$Model->alias] as $fieldName => $fieldValue) {
+            if (is_array($fieldValue) || is_object($fieldValue)) {
+                $fieldValue = $Model->parent->deconstruct($fieldName, $fieldValue);
+                $Model->data[$Model->alias][$fieldName] = $fieldValue;
+            }
+        }
+        return true;
+    }
 
 /**
  * Beforefind callback for STI models
