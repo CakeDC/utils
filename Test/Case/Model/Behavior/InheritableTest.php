@@ -27,7 +27,8 @@ class Page extends Content {
 
 // CTI models
 class Asset extends CakeTestModel {
-	public $validate = array('title' => array('rule' => 'notEmpty'));
+	public $validate = array('title' => array('rule' => 'notEmpty'),
+		'expiration' => array('rule' => 'date', 'allowEmpty' => true));
 }
 
 class Link extends Asset {
@@ -382,6 +383,24 @@ class InheritableTest extends CakeTestCase {
 		$final_count = $this->Asset->find('count');
 		$this->assertTrue(!empty($result));
 		$this->assertEquals($final_count-$initial_count, 1);
+	}
+
+/**
+ * Test validating complex types on child models
+ *
+ * @link https://github.com/CakeDC/utils/issues/103
+ * @return void
+ */
+	public function testComplexTypeValidation() {
+		$data['Link']['title'] = 'The Weather Channel';
+		$data['Link']['url'] = 'http://www.weather.com';
+		$data['Link']['expiration'] = array('year' => '2016', 'month' => '01', 'day' => '01');
+		$this->Link->create($data);
+		$this->assertTrue($this->Link->validates());
+		$this->assertEquals('2016-01-01', $this->Link->data['Link']['expiration']);
+
+		$this->Link->set('expiration', array('year' => '2016', 'month' => '02', 'day' => '31'));
+		$this->assertFalse($this->Link->validates());
 	}
 
 /**
