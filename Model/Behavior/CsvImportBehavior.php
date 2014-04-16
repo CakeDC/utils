@@ -52,7 +52,7 @@ class CsvImportBehavior extends ModelBehavior {
 			$this->settings[$Model->alias] = array(
 				'delimiter' => ';',
 				'enclosure' => '"',
-				'hasHeader' => true,
+				'hasHeader' => true
 			);
 		}
 		$this->settings[$Model->alias] = array_merge($this->settings[$Model->alias], $settings);
@@ -65,7 +65,7 @@ class CsvImportBehavior extends ModelBehavior {
  * @param SplFileObject $handle CSV file handler
  * @return array list of attributes fetched from the CSV file
  */
-	protected function _getCSVLine(Model $Model, SplFileObject $handle) {
+	protected function _getCSVLine(Model &$Model, SplFileObject $handle) {
 		if ($handle->eof()) {
 			return false;
 		}
@@ -82,7 +82,7 @@ class CsvImportBehavior extends ModelBehavior {
  * @param SplFileObject $handle CSV file handler
  * @return array list of attributes fetched from the CSV file
  */
-	protected function _getHeader(Model $Model, SplFileObject $handle) {
+	protected function _getHeader(Model &$Model, SplFileObject $handle) {
 		if ($this->settings[$Model->alias]['hasHeader'] === true) {
 			$header = $this->_getCSVLine($Model, $handle);
 		} else {
@@ -101,45 +101,34 @@ class CsvImportBehavior extends ModelBehavior {
  * @throws RuntimeException if $file does not exists
  * @return mixed boolean indicating the success of the operation or list of saved records
  */
-	public function importCSV(Model $Model, $file, $fixed = array(), $returnSaved = false) {
+	public function importCSV(Model &$Model, $file, $fixed = array(), $returnSaved = false) {
 		$handle = new SplFileObject($file, 'rb');
 		$header = $this->_getHeader($Model, $handle);
-		$dataSource = $Model->getDataSource();
-		$dataSource->begin($Model);
+		$db = $Model->getDataSource();
+		$db->begin($Model);
 		$saved = array();
 		$i = 0;
-
 		while (($row = $this->_getCSVLine($Model, $handle)) !== false) {
 			$data = array();
 			foreach ($header as $k => $col) {
 				// get the data field from Model.field
 				if (strpos($col, '.') !== false) {
-					list($model,$field) = explode('.',$col);
-					$data[$model][$field] = (isset($row[$k])) ? $row[$k] : '';
+					$keys = explode('.', $col);
+					if (isset($keys[2])) {
+						$data[$keys[0]][$keys[1]][$keys[2]]= (isset($row[$k])) ? $row[$k] : '';
+					} else {
+						$data[$keys[0]][$keys[1]]= (isset($row[$k])) ? $row[$k] : '';
+					}
 				} else {
-					$data[$Model->alias][$col] = (isset($row[$k])) ? $row[$k] : '';
+					$data[$Model->alias][$col]= (isset($row[$k])) ? $row[$k] : '';
 				}
 			}
 
-			$data = Hash::merge($data, $fixed);
+			$data = Set::merge($data, $fixed);
 			$Model->create();
 			$Model->id = isset($data[$Model->alias][$Model->primaryKey]) ? $data[$Model->alias][$Model->primaryKey] : false;
 
-			$Model->getEventManager()->dispatch(new CakeEvent(
-				'CsvImportBehavior.beforeImport',
-				$Model, array(
-					'data' => $data
-				)
-			));
-			$Event = new CakeEvent(
-				'CsvImportBehavior.beforeImport',
-				$Model, array(
-					'data' => $data
-				)
-			);
-			$Model->getEventManager()->dispatch($Event);
-			$data = $Event->result;
-
+			//beforeImport callback
 			if (method_exists($Model, 'beforeImport')) {
 				$data = $Model->beforeImport($data);
 			}
@@ -150,39 +139,16 @@ class CsvImportBehavior extends ModelBehavior {
 				$this->errors[$Model->alias][$i]['validation'] = $Model->validationErrors;
 				$error = true;
 				$this->_notify($Model, 'onImportError', $this->errors[$Model->alias][$i]);
-				$Model->getEventManager()->dispatch(new CakeEvent(
-					'CsvImportBehavior.validationError',
-					$Model,
-					array(
-						'error' => $this->errors[$Model->alias][$i]['validation']
-					)
-				));
 			}
 
 			// save the row
 			if (!$error && !$Model->saveAll($data, array('validate' => false,'atomic' => false))) {
 				$this->errors[$Model->alias][$i]['save'] = sprintf(__d('utils', '%s for Row %d failed to save.'), $Model->alias, $i);
 				$error = true;
-				$Model->getEventManager()->dispatch(new CakeEvent(
-					'CsvImportBehavior.importError',
-					$Model,
-					array(
-						'error' => $this->errors[$Model->alias][$i]['save']
-					)
-				));
 				$this->_notify($Model, 'onImportError', $this->errors[$Model->alias][$i]);
 			}
 
-			$data[$Model->alias][$Model->primaryKey] = $Model->getLastInsertID();
-
 			if (!$error) {
-				$Model->getEventManager()->dispatch(new CakeEvent(
-					'CsvImportBehavior.rowImported',
-					$Model,
-					array(
-						'data' => $data
-					)
-				));
 				$this->_notify($Model, 'onImportRow', $data);
 				if ($returnSaved) {
 					$saved[] = $i;
@@ -194,11 +160,11 @@ class CsvImportBehavior extends ModelBehavior {
 
 		$success = empty($this->errors);
 		if (!$returnSaved && !$success) {
-			$dataSource->rollback($Model);
+			$db->rollback($Model);
 			return false;
 		}
 
-		$dataSource->commit($Model);
+		$db->commit($Model);
 
 		if ($returnSaved) {
 			return $saved;
@@ -213,7 +179,7 @@ class CsvImportBehavior extends ModelBehavior {
  * @param Model $Model
  * @return array
  */
-	public function getImportErrors(Model $Model) {
+	public function getImportErrors(Model &$Model) {
 		if (empty($this->errors[$Model->alias])) {
 			return array();
 		}
@@ -223,7 +189,6 @@ class CsvImportBehavior extends ModelBehavior {
 /**
  * Attachs a new listener for the events generated by this class
  *
- * @deprecated Use the event system
  * @param Model $Model
  * @param mixed listener instances of an object or valid php callback
  * @return void
@@ -235,7 +200,6 @@ class CsvImportBehavior extends ModelBehavior {
 /**
  * Notifies the listeners of events generated by this class
  *
- * @deprecated Use the event system
  * @param Model $Model
  * @param string $action the name of the event. It will be used as method name for object listeners
  * @param mixed $data additional information to pass to the listener callback
@@ -254,5 +218,4 @@ class CsvImportBehavior extends ModelBehavior {
 			}
 		}
 	}
-
 }
