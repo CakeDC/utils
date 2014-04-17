@@ -1,15 +1,6 @@
 CsvImport Behavior
 ==================
 
-Options
--------
-
-You can configure the Importable behavior using these options:
-
-* **delimiter:** The delimiter for the values, default is ```;```
-* **enclosure:** The enclosure, default is ```"```.
-* **hasHeader:** Parse the header of the CSV file if it has one, default is ```true```.
-
 Example
 -------
 
@@ -24,3 +15,12 @@ It will read the csv file and try to save the records to the model. In the case 
 ```php
 $this->Model->getImportErrors();
 ```
+
+Options
+-------
+
+You can configure the Importable behavior using these options:
+
+* **delimiter:** The delimiter for the values, default is ```;```
+* **enclosure:** The enclosure, default is ```"```.
+* **hasHeader:** Parse the header of the CSV file if it has one, default is ```true```.
