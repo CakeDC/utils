@@ -38,16 +38,12 @@ Documentation
 
 * **[AutoJavascript](Documentation/Helpers/Auto-Javascript-Helper.md)**:
 * **[Gravatar](Documentation/Helpers/Gravatar-Helper.md)**: Gravatar Helper
-* **[HtmlPlus](Documentation/Helpers/Html-Plus-Helper.md)**: -
-* **[Place](Documentation/Helpers/Place-Helper.md)**: Allows to display image and text placeholders
+* **[Place](Documentation/Helpers/Place-Helper.md)**: Lorem Lipsum placeholder generator
 * **[Tree](Documentation/Helpers/Tree-Helper.md)**: Generates nested representations of hierarchial data
 * **Cleaner**: Removed, use [HtmlPurifier](https://github.com/burzum/cakephp-html-purifier) instead.
+* **HtmlPlus:** Removed, can be done by the core functionality in 2.0
 
 **Libs**
 
-* **[Languages](Documentation/Libs/Languages.md)**: A convenience lib to generate language lists
-
-Tutorials
----------
-
-* **[Quick Start](Tutorials/Quick-Start.md)**
+* **[I18nCountry](Documentation/Lib/I18nCountry.md)**: Returns a country list that is translateable
+* **[Languages](Documentation/Lib/Languages.md)**: A convenience lib to generate language lists

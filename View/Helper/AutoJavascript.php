@@ -13,14 +13,17 @@ class AutoJavascriptHelper extends AppHelper {
  * @var array
  */
 	public $settings = array(
-		'path' => 'autoload');
+		'path' => 'autoload'
+	);
 
 /** 
  * View helpers required by this helper 
  * 
  * @var array 
- */ 
-	public $helpers = array('Html'); 
+ */
+	public $helpers = array(
+		'Html'
+	);
 
 /** 
  * Before Render callback 
@@ -31,8 +34,8 @@ class AutoJavascriptHelper extends AppHelper {
 	public function beforeRender() {
 		$path = '';
 		extract($this->settings);
-		if (!empty($path)) { 
-			$path .= DS; 
+		if (!empty($path)) {
+			$path .= DS;
 		}
 
 		$files = array(
@@ -40,12 +43,12 @@ class AutoJavascriptHelper extends AppHelper {
 			$this->request->params['controller'] . '.js',
 			$this->request->params['controller'] . DS . $this->request->params['action'] . '.js');
 
-		foreach ($files as $file) { 
-			$file = $path . $file; 
+		foreach ($files as $file) {
+			$file = $path . $file;
 			$includeFile = WWW_ROOT . 'js' . DS . $file;
-			if (file_exists($includeFile)) { 
-				$file = str_replace('\\', '/', $file); 
-				$this->Html->script($file, array('inline' => false)); 
+			if (file_exists($includeFile)) {
+				$file = str_replace('\\', '/', $file);
+				$this->Html->script($file, array('inline' => false));
 			}
 		}
 	}
