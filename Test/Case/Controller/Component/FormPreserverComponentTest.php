@@ -99,6 +99,7 @@ class FormPreserverComponentTest extends CakeTestCase {
 		$this->Controller->FormPreserver = new FormPreserverComponent($this->Collection);
 		$this->Controller->FormPreserver->initialize($this->Controller);
 		$this->Controller->FormPreserver->Session = $this->Session;
+		$this->Controller->FormPreserver->Auth = $this->Auth;
 	}
 
 /**
@@ -143,7 +144,6 @@ class FormPreserverComponentTest extends CakeTestCase {
 /**
  * testRestore
  *
- * @access public
  * @return void
  */
 	public function testRestore() {
@@ -174,7 +174,6 @@ class FormPreserverComponentTest extends CakeTestCase {
 /**
  * testPreserve
  *
- * @access public
  * @return void
  */
 	public function testPreserve() {
@@ -195,4 +194,21 @@ class FormPreserverComponentTest extends CakeTestCase {
 
 		$this->assertTrue($this->Controller->FormPreserver->preserve($data));
 	}
+
+/**
+ * testPreserve
+ *
+ * @return void
+ */
+	public function testBeforeRender() {
+		$this->FormPreserver = $this->Collection = $this->getMockBuilder('FormPreserverComponent', array('restore'))
+			->disableOriginalConstructor()
+			->getMock();
+
+		$this->FormPreserver->expects($this->at(0))
+			->method('restore');
+
+		$this->FormPreserver->beforeRender();
+	}
+
 }

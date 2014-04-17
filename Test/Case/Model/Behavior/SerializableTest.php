@@ -87,6 +87,17 @@ class SerializableTestCase extends CakeTestCase {
 		$this->assertEquals($data, $record);
 	}
 
+	public function testCsvEmptyArrayDataValue() {
+		$this->settings['Session']['engine'] = 'csv';
+		$record = array('Session' => array('id' => 1, 'data' => array(), 'expires' => 1000));
+		$this->Session->create($record);
+		$result = $this->Session->save();
+		$this->assertEqual($result, array('Session' => array('id' => 1, 'data' => '', 'expires' => 1000)));
+
+		$data = $this->Session->find('first', array('conditions' => array('id' => 1)));
+		$this->assertEqual($data, $record);
+	}
+
 	public function testSerializeEmptyArrayDataValue() {
 		$this->settings['Session']['engine'] = 'serialize';
 		$record = array('Session' => array('id' => 1, 'data' => array(), 'expires' => 1000));
@@ -108,6 +119,19 @@ class SerializableTestCase extends CakeTestCase {
 
 		$data = $this->Session->find('first', array('conditions' => array('id' => 1)));
 		$this->assertEquals($data, $record);
+	}
+
+	public function testCsvOneElementInData() {
+		$this->settings['Session']['engine'] = 'csv';
+		$record = array('Session' => array('id' => 1, 'data' => array('k' => 'value'), 'expires' => 1000));
+		$this->Session->create($record);
+		$result = $this->Session->save();
+		$this->assertEqual($result, array('Session' => array('id' => 1, 'data' => 'value', 'expires' => 1000)));
+
+		$data = $this->Session->find('first', array('conditions' => array('id' => 1)));
+		$expect = $record;
+		$expect['Session']['data'] = array('value');
+		$this->assertEqual($data, $expect);
 	}
 
 	public function testSerializeOneElementInData() {
@@ -143,6 +167,21 @@ class SerializableTestCase extends CakeTestCase {
 
 		$data = $this->Content->find('first', array('conditions' => array('id' => 1), 'fields' => array('id', 'title', 'body', 'published')));
 		$this->assertEquals($data, $record);
+	}
+
+	public function testCsvSeveralDataFields() {
+		$this->settings['Content']['engine'] = 'csv';
+		$record = array('Content' => array('id' => 1, 'title' => array('k' => 'value'), 'body' => array('value1', 'value2'), 'published' => 'N'));
+		$this->Content->create($record);
+		$result = $this->Content->save();
+		unset($result['Content']['updated'], $result['Content']['created']);
+		$this->assertEqual($result, array('Content' => array('id' => 1, 'title' => 'value', 'body' => 'value1,value2', 'published' => 'N')));
+
+		$data = $this->Content->find('first', array('conditions' => array('id' => 1), 'fields' => array('id', 'title', 'body', 'published')));
+		$expect = $record;
+		$expect['Content']['title'] = array('value');
+		$expect['Content']['body'] = array('value1', 'value2');
+		$this->assertEqual($data, $expect);
 	}
 
 	public function testSerializeSeveralDataFields() {

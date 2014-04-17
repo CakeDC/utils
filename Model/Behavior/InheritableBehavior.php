@@ -107,13 +107,13 @@ class InheritableBehavior extends ModelBehavior {
 					if (!empty($res[$Model->parent->alias]) && !empty($res[$Model->alias])) {
 						$results[$i][$Model->alias] = array_merge($res[$Model->parent->alias], $res[$Model->alias]);
 						unset($results[$i][$Model->parent->alias]);
-	
+
 					} elseif (!empty($res[$Model->alias][$Model->parent->alias])) {
 						$results[$i][$Model->alias] = array_merge($res[$Model->alias][$Model->parent->alias], $res[$Model->alias]);
 						unset($results[$i][$Model->alias][$Model->parent->alias]);
-	
+
 					} elseif (!empty($res[$Model->alias][0])) {
-						foreach($res[$Model->alias] as $j => $subRes) {
+						foreach ($res[$Model->alias] as $j => $subRes) {
 							if (isset($subRes[$Model->parent->alias])) {
 								$results[$i][$Model->alias][$j] = array_merge($subRes[$Model->parent->alias], $subRes);
 								unset($results[$i][$Model->alias][$j][$Model->parent->alias]);
@@ -124,7 +124,7 @@ class InheritableBehavior extends ModelBehavior {
 					$results = array_merge($results, $res);
 					unset($results[$i]);
 				} elseif ($i == $Model->alias && array_key_exists(0, $res)) {
-					foreach($res as $j => $payload) {
+					foreach ($res as $j => $payload) {
 						if (array_key_exists($Model->parent->alias, $payload)) {
 							$results[$i][$j] = array_merge($payload, $payload[$Model->parent->alias]);
 							unset($results[$i][$j][$Model->parent->alias]);
@@ -138,12 +138,14 @@ class InheritableBehavior extends ModelBehavior {
 
 /**
  * Before save callback
+ *
  * Set the `type' field before saving the record in case of STI model
  *
  * @param Model $Model
+ * @param array $options
  * @return true
  */
-	public function beforeSave(Model $Model) {
+	public function beforeSave(Model $Model, $options = array()) {
 		if ($this->settings[$Model->alias]['method'] === InheritableBehavior::STI) {
 			$this->_singleTableBeforeSave($Model);
 		} elseif ($this->settings[$Model->alias]['method'] === InheritableBehavior::CTI) {
@@ -169,14 +171,19 @@ class InheritableBehavior extends ModelBehavior {
 
 /**
  * Before validate callback
- * Merge validation rules from the parent class in case of CTI
+ *
+ * Deconstructs complex types by calling model parent's method
  *
  * @param Model $Model
- * @return boolean
+ * @param array $options
+ * @return true
  */
-	public function beforeValidate(Model $Model) {
-		if ($this->settings[$Model->alias]['method'] === InheritableBehavior::CTI && !empty($Model->parent->validate)) {
-			$Model->validate = Hash::merge($Model->parent->validate, $Model->validate);
+	public function beforeValidate(Model $Model, $options = array()) {
+		foreach ($Model->data[$Model->alias] as $fieldName => $fieldValue) {
+			if (is_array($fieldValue) || is_object($fieldValue)) {
+				$fieldValue = $Model->parent->deconstruct($fieldName, $fieldValue);
+				$Model->data[$Model->alias][$fieldName] = $fieldValue;
+			}
 		}
 		return true;
 	}
@@ -233,7 +240,6 @@ class InheritableBehavior extends ModelBehavior {
  * Binds the parent model for a CTI model
  *
  * @param Model $Model
- * @param array $query
  * @return boolean Success of the binding
  */
 	public function classTableBindParent(Model $Model) {

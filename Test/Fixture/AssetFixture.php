@@ -24,6 +24,7 @@ class AssetFixture extends CakeTestFixture {
 		'id' => array('type' => 'integer', 'key' => 'primary'),
 		'title' => array('type' => 'string', 'null' => false),
 		'description' => array('type' => 'text'),
+		'expiration' => array('type' => 'date'),
 		'created' => 'datetime',
 		'updated' => 'datetime'
 	);
