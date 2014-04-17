@@ -3,17 +3,22 @@
 /**
  * Post Test Model
  */
-class Post extends CakeTestModel {
+class LookupablePost extends CakeTestModel {
+
 	public $useTable = 'posts';
+
 	public $alias = 'Post';
+
 	public $belongsTo = array(
-		'Article');
+		'Article'
+	);
 }
 
 /**
  * Lookupable Test case
  */
 class LookupableTest extends CakeTestCase {
+
 /**
  * fixtures property
  *
@@ -22,7 +27,8 @@ class LookupableTest extends CakeTestCase {
  */
 	public $fixtures = array(
 		'plugin.utils.post',
-		'plugin.utils.article');
+		'plugin.utils.article'
+	);
 
 /**
  * Creates the model instance
@@ -31,7 +37,7 @@ class LookupableTest extends CakeTestCase {
  * @access public
  */
 	public function setUp() {
-		$this->Post = new Post();
+		$this->Post = new LookupablePost();
 	}
 
 /**

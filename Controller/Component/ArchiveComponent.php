@@ -25,7 +25,8 @@ class ArchiveComponent extends Component {
  * @var array
  */
 	protected $_parameters = array(
-		'year', 'month', 'day');
+		'year', 'month', 'day'
+	);
 
 /**
  * Controller reference
@@ -55,7 +56,8 @@ class ArchiveComponent extends Component {
  *
  * Builds the pagination conditions
  *
- * @param object
+ * @param Controller $controller
+ * @return boolean
  */
 	public function startup(Controller $controller) {
 		$this->controller = $controller;
@@ -111,7 +113,7 @@ class ArchiveComponent extends Component {
 			'limit' => 10
 		);
 
-		$conditions = Set::merge($defaults, $conditions);
+		$conditions = Hash::merge($defaults, $conditions);
 
 		$elements = $this->controller->{$modelName}->find('all', $conditions);
 		$dates = array();
@@ -131,7 +133,8 @@ class ArchiveComponent extends Component {
  * Default construction of date based parameters for archive pagination
  * Can be overloaded in a model by implementing buildArchiveConditions()
  *
- * @param array
+ * @param array $dateParams
+ * @return array
  */
 	protected function _buildArchiveConditions($dateParams) {
 		$duration = '1 month';
@@ -163,7 +166,7 @@ class ArchiveComponent extends Component {
 		$endDatetime->modify($duration);
 		$endDatetime->modify('-1 day');
 		$endDate = $endDatetime->format('Y-m-d');
-		$field = $this->modelName . '.' . $this->dateField .' BETWEEN ? AND ?';
+		$field = $this->modelName . '.' . $this->dateField . ' BETWEEN ? AND ?';
 		return array($field => array($startDate, $endDate));
 	}
 

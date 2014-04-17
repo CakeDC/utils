@@ -22,6 +22,12 @@
 class InheritableBehavior extends ModelBehavior {
 
 /**
+ * InheritableBehavior constants
+ */
+	const STI = 'STI';
+	const CTI = 'CTI';
+
+/**
  * Settings of the behavior.
  * Each settings are keyed by Model alias.
  *
@@ -46,7 +52,7 @@ class InheritableBehavior extends ModelBehavior {
 	public function setup(Model $Model, $config = array()) {
 		$_defaults = array(
 			'inheritanceField' => 'type',
-			'method' => 'STI',
+			'method' => InheritableBehavior::STI,
 			'fieldAlias' => $Model->alias);
 		$this->settings[$Model->alias] = array_merge($_defaults, $config);
 
@@ -54,11 +60,8 @@ class InheritableBehavior extends ModelBehavior {
 		$Model->inheritanceField = $this->settings[$Model->alias]['inheritanceField'];
 		$Model->fieldAlias = $this->settings[$Model->alias]['fieldAlias'];
 
-		if ($this->settings[$Model->alias]['method'] == 'CTI') {
+		if ($this->settings[$Model->alias]['method'] == InheritableBehavior::CTI) {
 			$this->classTableBindParent($Model);
-			if (!empty($Model->parent->validate)) {
-				$Model->validate = Hash::merge($Model->parent->validate, $Model->validate);
-			}
 		}
 	}
 
@@ -71,7 +74,7 @@ class InheritableBehavior extends ModelBehavior {
  * @return array Updated query
  */
 	public function beforeFind(Model $Model, $query) {
-		if ($this->settings[$Model->alias]['method'] == 'STI') {
+		if ($this->settings[$Model->alias]['method'] === InheritableBehavior::STI) {
 			$query = $this->_singleTableBeforeFind($Model, $query);
 		} else {
 			if (!empty($query['recursive']) && $query['recursive'] < 0) {
@@ -104,13 +107,13 @@ class InheritableBehavior extends ModelBehavior {
 					if (!empty($res[$Model->parent->alias]) && !empty($res[$Model->alias])) {
 						$results[$i][$Model->alias] = array_merge($res[$Model->parent->alias], $res[$Model->alias]);
 						unset($results[$i][$Model->parent->alias]);
-	
+
 					} elseif (!empty($res[$Model->alias][$Model->parent->alias])) {
 						$results[$i][$Model->alias] = array_merge($res[$Model->alias][$Model->parent->alias], $res[$Model->alias]);
 						unset($results[$i][$Model->alias][$Model->parent->alias]);
-	
+
 					} elseif (!empty($res[$Model->alias][0])) {
-						foreach($res[$Model->alias] as $j => $subRes) {
+						foreach ($res[$Model->alias] as $j => $subRes) {
 							if (isset($subRes[$Model->parent->alias])) {
 								$results[$i][$Model->alias][$j] = array_merge($subRes[$Model->parent->alias], $subRes);
 								unset($results[$i][$Model->alias][$j][$Model->parent->alias]);
@@ -121,7 +124,7 @@ class InheritableBehavior extends ModelBehavior {
 					$results = array_merge($results, $res);
 					unset($results[$i]);
 				} elseif ($i == $Model->alias && array_key_exists(0, $res)) {
-					foreach($res as $j => $payload) {
+					foreach ($res as $j => $payload) {
 						if (array_key_exists($Model->parent->alias, $payload)) {
 							$results[$i][$j] = array_merge($payload, $payload[$Model->parent->alias]);
 							unset($results[$i][$j][$Model->parent->alias]);
@@ -135,15 +138,17 @@ class InheritableBehavior extends ModelBehavior {
 
 /**
  * Before save callback
+ *
  * Set the `type' field before saving the record in case of STI model
  *
  * @param Model $Model
+ * @param array $options
  * @return true
  */
 	public function beforeSave(Model $Model, $options = array()) {
-		if ($this->settings[$Model->alias]['method'] == 'STI') {
+		if ($this->settings[$Model->alias]['method'] === InheritableBehavior::STI) {
 			$this->_singleTableBeforeSave($Model);
-		} elseif ($this->settings[$Model->alias]['method'] == 'CTI') {
+		} elseif ($this->settings[$Model->alias]['method'] === InheritableBehavior::CTI) {
 			$this->_saveParentModel($Model);
 			$Model->id = $Model->parent->id;
 		}
@@ -158,7 +163,7 @@ class InheritableBehavior extends ModelBehavior {
  * @return true
  */
 	public function afterDelete(Model $Model) {
-		if ($this->settings[$Model->alias]['method'] == 'CTI') {
+		if ($this->settings[$Model->alias]['method'] === InheritableBehavior::CTI) {
 			$Model->parent->delete($Model->id);
 		}
 		return true;
@@ -166,20 +171,22 @@ class InheritableBehavior extends ModelBehavior {
 
 /**
  * Before validate callback
+ *
  * Deconstructs complex types by calling model parent's method
  *
  * @param Model $Model
+ * @param array $options
  * @return true
  */
-    public function beforeValidate(Model $Model, $options = array()) {
-        foreach ($Model->data[$Model->alias] as $fieldName => $fieldValue) {
-            if (is_array($fieldValue) || is_object($fieldValue)) {
-                $fieldValue = $Model->parent->deconstruct($fieldName, $fieldValue);
-                $Model->data[$Model->alias][$fieldName] = $fieldValue;
-            }
-        }
-        return true;
-    }
+	public function beforeValidate(Model $Model, $options = array()) {
+		foreach ($Model->data[$Model->alias] as $fieldName => $fieldValue) {
+			if (is_array($fieldValue) || is_object($fieldValue)) {
+				$fieldValue = $Model->parent->deconstruct($fieldName, $fieldValue);
+				$Model->data[$Model->alias][$fieldName] = $fieldValue;
+			}
+		}
+		return true;
+	}
 
 /**
  * Beforefind callback for STI models
@@ -192,7 +199,7 @@ class InheritableBehavior extends ModelBehavior {
 		extract($this->settings[$Model->alias]);
 		$_schema = $Model->schema();
 		if (isset($_schema[$inheritanceField]) && $Model->alias != $Model->parent->alias) {
-			$field = $Model->alias. '.' . $inheritanceField;
+			$field = $Model->alias . '.' . $inheritanceField;
 
 			if (!isset($query['conditions'])) {
 				$query['conditions'] = array();
@@ -233,7 +240,6 @@ class InheritableBehavior extends ModelBehavior {
  * Binds the parent model for a CTI model
  *
  * @param Model $Model
- * @param array $query
  * @return boolean Success of the binding
  */
 	public function classTableBindParent(Model $Model) {
@@ -241,10 +247,11 @@ class InheritableBehavior extends ModelBehavior {
 			$Model->parent->alias => array(
 				'type' => 'INNER',
 				'className' => $Model->parent->alias,
-				'foreignKey' => $Model->primaryKey)));
+				'foreignKey' => $Model->primaryKey
+			)
+		));
 		$success = $Model->bindModel($bind, false);
-		//Putting the parent association as the first one, so any dependent join on the parent model will
-		// be in the right order
+		//Putting the parent association as the first one, so any dependent join on the parent model will be in the right order
 		$assoc = $Model->belongsTo[$Model->parent->alias];
 		unset($Model->belongsTo[$Model->parent->alias]);
 		$Model->belongsTo = array_merge(array($Model->parent->alias => $assoc), $Model->belongsTo);
@@ -268,7 +275,9 @@ class InheritableBehavior extends ModelBehavior {
 				$bind = array('belongsTo' => array(
 					$alias => array(
 						'conditions' => "{$Model->parent->alias}.{$foreignKey} = {$alias}.id",
-						'foreignKey' => false)));
+						'foreignKey' => false
+					)
+				));
 				$Model->bindModel($bind, true);
 			}
 		}

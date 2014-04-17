@@ -48,7 +48,7 @@ class SoftDeleteBehavior extends ModelBehavior {
 			$settings = array($settings);
 		}
 
-		$error = 'SoftDeleteBehavior::setup(): model ' . $model->alias . ' has no field ';
+		$error = __d('utils', 'SoftDeleteBehavior::setup(): model %s has no field!', $model->name);
 		$fields = $this->_normalizeFields($model, $settings);
 		foreach ($fields as $flag => $date) {
 			if ($model->hasField($flag)) {
@@ -112,7 +112,13 @@ class SoftDeleteBehavior extends ModelBehavior {
 		if ($id === false) {
 			return false;
 		}
-		$exists = $model->find('count', array('conditions' => array($model->alias . '.' . $model->primaryKey => $id)));
+		$exists = $model->find('count', array(
+			'contain' => array(),
+			'recursive' => -1,
+			'conditions' => array(
+				$model->alias . '.' . $model->primaryKey => $id
+			)
+		));
 		return ($exists ? true : false);
 	}
 
@@ -161,6 +167,7 @@ class SoftDeleteBehavior extends ModelBehavior {
 		$record = $model->find('first', array(
 			'fields' => $model->primaryKey,
 			'conditions' => array($model->primaryKey => $id),
+			'contain' => array(),
 			'recursive' => -1
 		));
 
@@ -168,7 +175,10 @@ class SoftDeleteBehavior extends ModelBehavior {
 			$model->set($model->primaryKey, $id);
 			unset($model->data[$model->alias]['modified']);
 			unset($model->data[$model->alias]['updated']);
-			return $model->save(array($model->alias => $data), false, array_keys($data));
+			$result = $model->save(array($model->alias => $data), false, array_keys($data));
+			if (!$result) {
+				return false;
+			}
 		}
 
 		return true;
@@ -203,7 +213,10 @@ class SoftDeleteBehavior extends ModelBehavior {
 		$model->set($model->primaryKey, $id);
 		$result = $model->save(array($model->alias => $data), false, array_keys($data));
 		$this->softDelete($model, $runtime);
-		return $result;
+		if ($result) {
+			return true;
+		}
+		return false;
 	}
 
 /**
@@ -221,7 +234,7 @@ class SoftDeleteBehavior extends ModelBehavior {
  */
 	public function softDelete($model, $active) {
 		if (is_null($active)) {
-			return isset($this->runtime[$model->alias]) ? @$this->runtime[$model->alias] : null;
+			return isset($this->runtime[$model->alias]) ? $this->runtime[$model->alias] : null;
 		}
 
 		$result = !isset($this->runtime[$model->alias]) || $this->runtime[$model->alias] !== $active;
@@ -259,7 +272,8 @@ class SoftDeleteBehavior extends ModelBehavior {
 		$records = $model->find('all', array(
 			'conditions' => $this->_purgeDeletedConditions($model, $expiration),
 			'fields' => array($model->primaryKey),
-			'recursive' => -1));
+			'recursive' => -1
+		));
 		if ($records) {
 			foreach ($records as $record) {
 				$model->delete($record[$model->alias][$model->primaryKey]);
@@ -316,10 +330,10 @@ class SoftDeleteBehavior extends ModelBehavior {
  * If multiple delete flags are configured for model, then $active=true doesn't
  * do anything - you have to alter conditions in association definition
  *
- * @param object $model
+ * @param Model $model
  * @param mixed $active
  */
-	protected function _softDeleteAssociations($model, $active) {
+	protected function _softDeleteAssociations(Model $model, $active) {
 		if (empty($model->belongsTo)) {
 			return;
 		}

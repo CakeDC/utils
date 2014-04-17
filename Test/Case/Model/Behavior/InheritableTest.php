@@ -13,29 +13,52 @@
 //App::import('Core', array('AppModel', 'Model'));
 
 // STI Models
-class Content extends CakeTestModel {
+class InheritableContent extends CakeTestModel {
+
+	public $name = 'Content';
+
 	public $useTable = 'contents';
 }
 
-class Article extends Content {
+class InheritableArticle extends InheritableContent {
+
+	public $name = 'Article';
+
 	public $actsAs = array('Utils.Inheritable');
 }
 
-class Page extends Content {
+class InheritablePage extends InheritableContent {
+
 	public $actsAs = array('Utils.Inheritable');
 }
 
 // CTI models
+<<<<<<< HEAD
+class InheritableAsset extends CakeTestModel {
+
+	public $name = 'Asset';
+
+	public $validate = array('title' => array('rule' => 'notEmpty'));
+=======
 class Asset extends CakeTestModel {
 	public $validate = array('title' => array('rule' => 'notEmpty'),
 		'expiration' => array('rule' => 'date', 'allowEmpty' => true));
+>>>>>>> ba83b459f58a3016cfe1c8973fba520dc71297ff
 }
 
-class Link extends Asset {
+class InheritableLink extends InheritableAsset {
+
+	public $name = 'Link';
+
 	public $actsAs = array('Utils.Inheritable' => array('method'=>'CTI'));
+
 	public $validate = array('url' => array('rule' => 'notEmpty'));
 }
-class Image extends Asset {
+
+class InheritableImage extends InheritableAsset {
+
+	public $name = 'Image';
+
 	public $actsAs = array('Utils.Inheritable' => array('method'=>'CTI'));
 }
 
@@ -54,12 +77,16 @@ class InheritableTest extends CakeTestCase {
  * @var array
  * @access public
  */
-	public $fixtures = array('plugin.utils.content', 'plugin.utils.asset', 'plugin.utils.link', 'plugin.utils.image');
+	public $fixtures = array(
+		'plugin.utils.content',
+		'plugin.utils.asset',
+		'plugin.utils.link',
+		'plugin.utils.image'
+	);
 
 /**
  * Start Test callback
  *
- * @param string $method
  * @return void
  * @access public
  */
@@ -67,17 +94,17 @@ class InheritableTest extends CakeTestCase {
 		parent::setUp();
 
 		// STI models
-		$this->Article = ClassRegistry::init('Article');
-		$this->Page = ClassRegistry::init('Page');
-		$this->Content = ClassRegistry::init('Content');
+		$this->Article = ClassRegistry::init('InheritableArticle');
+		$this->Page = ClassRegistry::init('InheritablePage');
+		$this->Content = ClassRegistry::init('InheritableContent');
 
 		$this->Page->Behaviors->load('Containable');
 		$this->Article->Behaviors->load('Containable');
 
 		// CTI models
-		$this->Asset = ClassRegistry::init('Asset');
-		$this->Link = ClassRegistry::init('Link');
-		$this->Image = ClassRegistry::init('Image');
+		$this->Asset = ClassRegistry::init('InheritableAsset');
+		$this->Link = ClassRegistry::init('InheritableLink');
+		$this->Image = ClassRegistry::init('InheritableImage');
 	}
 
 /**

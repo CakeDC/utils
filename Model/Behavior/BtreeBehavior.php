@@ -77,7 +77,7 @@ class BtreeBehavior extends ModelBehavior {
  * @param boolean $created indicates whether the node just saved was created or updated
  * @return boolean true on success, false on failure
  */
-	public function afterSave(Model $Model, $created) {
+	public function afterSave(Model $Model, $created, $options = array()) {
 		extract($this->settings[$Model->alias]);
 		if ($created) {
 			if ((isset($Model->data[$Model->alias][$parent])) && $Model->data[$Model->alias][$parent]) {
@@ -164,7 +164,7 @@ class BtreeBehavior extends ModelBehavior {
  * @param Model $Model Model instance
  * @return boolean true to continue, false to abort the save
  */
-	public function beforeSave(Model $Model) {
+	public function beforeSave(Model $Model, $options = array()) {
 		extract($this->settings[$Model->alias]);
 
 		$this->_addToWhitelist($Model, array($left, $right));

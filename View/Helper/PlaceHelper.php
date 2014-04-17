@@ -26,7 +26,9 @@ class PlaceHelper extends AppHelper {
  *
  * @var array
  */
-	public $helpers = array('Html');
+	public $helpers = array(
+		'Html'
+	);
 
 /**
  * Settings, configurable in controller or from view/layout/element
@@ -119,8 +121,10 @@ class PlaceHelper extends AppHelper {
 
 		switch ($type) {
 			case 'l':
+				$content = explode("\n", $content[0]);
 				return $this->Html->nestedList($content, $options, $itemOptions, ($what == 'ol') ? 'ol' : 'ul');
 			case 'p':
+				$content = explode("\n", $content[0]);
 				foreach ($content as $key => $line) {
 					$content[$key] = $this->Html->para(null, $line, $options);
 				}
