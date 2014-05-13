@@ -33,17 +33,20 @@ class InheritablePage extends InheritableContent {
 }
 
 // CTI models
-<<<<<<< HEAD
+
 class InheritableAsset extends CakeTestModel {
 
 	public $name = 'Asset';
 
 	public $validate = array('title' => array('rule' => 'notEmpty'));
-=======
+}
+
 class Asset extends CakeTestModel {
-	public $validate = array('title' => array('rule' => 'notEmpty'),
-		'expiration' => array('rule' => 'date', 'allowEmpty' => true));
->>>>>>> ba83b459f58a3016cfe1c8973fba520dc71297ff
+
+	public $validate = array(
+		'title' => array('rule' => 'notEmpty'),
+		'expiration' => array('rule' => 'date', 'allowEmpty' => true)
+	);
 }
 
 class InheritableLink extends InheritableAsset {
