@@ -133,7 +133,7 @@ class SoftDeleteBehavior extends ModelBehavior {
 		$runtime = $this->runtime[$model->alias];
 		if ($runtime) {
 			if ($model->beforeDelete($cascade)) {
-				return $this->delete($model, $model->id);
+				$this->delete($model, $model->id);
 			}
 			return false;
 		}
@@ -327,7 +327,7 @@ class SoftDeleteBehavior extends ModelBehavior {
 /**
  * Modifies conditions of hasOne and hasMany associations
  *
- * If multiple delete flags are configured for model, then $active=true doesn't
+ * If multiple delete flags are configured for model, then $active = true doesn't
  * do anything - you have to alter conditions in association definition
  *
  * @param Model $model
