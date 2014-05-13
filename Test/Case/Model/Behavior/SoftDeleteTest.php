@@ -97,7 +97,7 @@ class SoftDeleteTest extends CakeTestCase {
 		$this->Post->Behaviors->unload('SoftDelete');
 		$data = $this->Post->read(null, 1);
 		$this->assertEquals($data['Post']['deleted'], true);
-		$this->assertEquals($data['Post']['updated'], $data['Post']['deleted_date']);
+		$this->assertTrue(!empty($data['Post']['deleted_date']));
 	}
 
 /**
@@ -116,7 +116,7 @@ class SoftDeleteTest extends CakeTestCase {
 		$this->Post->Behaviors->unload('SoftDelete');
 		$data = $this->Post->read(null, 1);
 		$this->assertEquals($data['Post']['deleted'], true);
-		$this->assertEquals($data['Post']['updated'], $data['Post']['deleted_date']);
+		$this->assertTrue(!empty($data['Post']['deleted_date']));
 	}
 
 /**
