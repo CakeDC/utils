@@ -138,7 +138,6 @@ class CsvImportBehavior extends ModelBehavior {
 				$data = $Model->beforeImport($data);
 			}
 
-			// skip empty data rows
 			if (empty($data)) {
 				continue;
 			}

@@ -235,10 +235,10 @@ class CsvImportTest extends CakeTestCase {
 		$this->assertTrue($result);
 
 		$records = $this->Content->find('all', array('order' => 'created DESC', 'limit' => 2));
-		$titles = Set::extract('/Content/title', $records);
+		$titles = Hash::extract($records, '{n}.Content.title');
 		$this->assertEquals($titles, array('Unearthed rare monster in london', 'Another Title'));
-
-		$permalinks = Set::extract('/Content/permalink', $records);
+		
+		$permalinks = Hash::extract($records, '{n}.Content.permalink');
 		$this->assertEquals($permalinks, array(13444555, 'A permalink'));
 	}
 }
