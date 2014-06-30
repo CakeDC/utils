@@ -89,10 +89,10 @@ class CsvImportTest extends CakeTestCase {
 		$this->assertTrue($result);
 
 		$records = $this->Content->find('all', array('order' => 'created DESC', 'limit' => 2));
-		$titles = Set::extract('/Content/title', $records);
+		$titles = Hash::extract($records, '{n}.Content.title');
 		$this->assertEquals($titles, array('Unearthed rare monster in london', 'Another Title'));
 
-		$permalinks = Set::extract('/Content/permalink', $records);
+		$permalinks = Hash::extract($records, '{n}.Content.permalink');
 		$this->assertEquals($permalinks, array(13444555, 'A permalink'));
 	}
 
@@ -114,11 +114,11 @@ class CsvImportTest extends CakeTestCase {
 		$this->assertTrue($result);
 
 		$records = $this->Content->find('all', array('order' => 'created DESC', 'limit' => 2));
-		$titles = Set::extract('/Comment/body', $records);
-		$this->assertEqual($titles, array('really? how strange?', 'very good read'));
+		$titles = Hash::extract($records, '{n}.Comment.{n}.body');
+		$this->assertEquals($titles, array('really? how strange?', 'very good read'));
 
-		$permalinks = Set::extract('/Content/permalink', $records);
-		$this->assertEqual($permalinks, array(13444555, 'A permalink'));
+		$permalinks = Hash::extract($records, '{n}.Content.permalink');
+		$this->assertEquals($permalinks, array(13444555, 'A permalink'));
 	}
 
 /**
@@ -135,7 +135,7 @@ class CsvImportTest extends CakeTestCase {
 		$this->assertTrue($result);
 
 		$records = $this->Content->find('all', array('order' => 'created DESC', 'limit' => 2));
-		$types = Set::extract('/ContentCallback/type', $records);
+		$types = Hash::extract($records, '{n}.ContentCallback.type');
 		$this->assertEquals($types, array('Article-modified', 'Book-modified'));
 	}
 
@@ -153,7 +153,7 @@ class CsvImportTest extends CakeTestCase {
 		$this->assertTrue($result);
 
 		$records = $this->Content->find('all', array('order' => 'created DESC', 'limit' => 2));
-		$parents = Set::extract('/Content/parent_id', $records);
+		$parents = Hash::extract($records, '{n}.Content.parent_id');
 		$this->assertEquals($parents, array(10, 10));
 	}
 
@@ -237,7 +237,7 @@ class CsvImportTest extends CakeTestCase {
 		$records = $this->Content->find('all', array('order' => 'created DESC', 'limit' => 2));
 		$titles = Hash::extract($records, '{n}.Content.title');
 		$this->assertEquals($titles, array('Unearthed rare monster in london', 'Another Title'));
-		
+
 		$permalinks = Hash::extract($records, '{n}.Content.permalink');
 		$this->assertEquals($permalinks, array(13444555, 'A permalink'));
 	}

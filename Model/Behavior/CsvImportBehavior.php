@@ -129,7 +129,7 @@ class CsvImportBehavior extends ModelBehavior {
 				}
 			}
 
-			$data = Set::merge($data, $fixed);
+			$data = Hash::merge($data, $fixed);
 			$Model->create();
 			$Model->id = isset($data[$Model->alias][$Model->primaryKey]) ? $data[$Model->alias][$Model->primaryKey] : false;
 
