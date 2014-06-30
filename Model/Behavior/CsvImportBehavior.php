@@ -52,7 +52,8 @@ class CsvImportBehavior extends ModelBehavior {
 			$this->settings[$Model->alias] = array(
 				'delimiter' => ';',
 				'enclosure' => '"',
-				'hasHeader' => true
+				'hasHeader' => true,
+				'skipEmpty' => false
 			);
 		}
 		$this->settings[$Model->alias] = array_merge($this->settings[$Model->alias], $settings);
@@ -69,10 +70,11 @@ class CsvImportBehavior extends ModelBehavior {
 		if ($handle->eof()) {
 			return false;
 		}
-		return $handle->fgetcsv(
+		$line = $handle->fgetcsv(
 			$this->settings[$Model->alias]['delimiter'],
 			$this->settings[$Model->alias]['enclosure']
 		);
+		return $line ?: false;
 	}
 
 /**
@@ -103,6 +105,9 @@ class CsvImportBehavior extends ModelBehavior {
  */
 	public function importCSV(Model &$Model, $file, $fixed = array(), $returnSaved = false) {
 		$handle = new SplFileObject($file, 'rb');
+		if ($this->settings[$Model->alias]['skipEmpty'] === true) {
+			$handle->setFlags(SplFileObject::READ_AHEAD | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+		}
 		$header = $this->_getHeader($Model, $handle);
 		$db = $Model->getDataSource();
 		$db->begin($Model);
@@ -124,13 +129,17 @@ class CsvImportBehavior extends ModelBehavior {
 				}
 			}
 
-			$data = Set::merge($data, $fixed);
+			$data = Hash::merge($data, $fixed);
 			$Model->create();
 			$Model->id = isset($data[$Model->alias][$Model->primaryKey]) ? $data[$Model->alias][$Model->primaryKey] : false;
 
 			//beforeImport callback
 			if (method_exists($Model, 'beforeImport')) {
 				$data = $Model->beforeImport($data);
+			}
+
+			if (empty($data)) {
+				continue;
 			}
 
 			$error = false;
