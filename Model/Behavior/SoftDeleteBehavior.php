@@ -251,13 +251,16 @@ class SoftDeleteBehavior extends ModelBehavior {
  * @return integer
  */
 	public function purgeDeletedCount($model, $expiration = '-90 days') {
+		$runtime = $this->runtime[$model->alias];
 		$this->softDelete($model, false);
-		return $model->find('count', array(
+		$result = $model->find('count', array(
 				'conditions' => $this->_purgeDeletedConditions($model, $expiration),
 				'recursive' => -1,
 				'contain' => array()
 			)
 		);
+		$this->runtime[$model->alias] = $runtime;
+		return $result;
 	}
 
 /**
