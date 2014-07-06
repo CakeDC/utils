@@ -383,4 +383,28 @@ class SoftDeleteBehavior extends ModelBehavior {
 			}
 		}
 	}
+
+/**
+ * Soft delete all
+ *
+ * @param Model $model
+ * @param array $conditions
+ * @return void
+ */
+	public function softDeleteAll(Model $model, $conditions = array()) {
+		$results = $model->find('all', array(
+			'contain' => array(),
+			'recursive' => -1,
+			'conditions' => $conditions,
+			'fields' => array(
+				$model->alias . '.' . $model->primaryKey
+			)
+		));
+		if (empty($results)) {
+			return;
+		}
+		foreach ($results as $result) {
+			$this->delete($model, $result[$model->alias][$model->primaryKey]);
+		}
+	}
 }
