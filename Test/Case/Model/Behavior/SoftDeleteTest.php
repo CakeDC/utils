@@ -172,6 +172,11 @@ class SoftDeleteTest extends CakeTestCase {
 		$this->assertTrue(empty($data));
 	}
 
+/**
+ * testExistsAndNotDeleted
+ *
+ * @return void
+ */
 	public function testExistsAndNotDeleted() {
 		$data = $this->Post->read(null, 1);
 		$this->assertEquals($data[$this->Post->alias][$this->Post->primaryKey], 1);
@@ -182,6 +187,53 @@ class SoftDeleteTest extends CakeTestCase {
 		$this->assertFalse($this->Post->existsAndNotDeleted(1));
 		$this->Post->undelete(1);
 		$this->assertTrue($this->Post->existsAndNotDeleted(1));
+	}
+
+/**
+ * testSoftDeleteAll
+ *
+ * @return void
+ */
+	public function testSoftDeleteAll() {
+		$this->Post->saveAll(array(
+			array('title' => 'Test softDeleteAll'),
+			array('title' => 'Test softDeleteAll'),
+			array('title' => 'Test softDeleteAll')
+		));
+		$this->Post->softDeleteAll(array(
+			'Post.title' => 'Test softDeleteAll'
+		));
+		$this->Post->Behaviors->unload('SoftDelete');
+		$result = $this->Post->find('all', array(
+			'conditions' => array(
+				'Post.title' => 'Test softDeleteAll'
+			),
+			'fields' => array(
+				'Post.title',
+				'Post.deleted',
+			)
+		));
+		$expected = array(
+			0 => array(
+				'Post' => array(
+					'title' => 'Test softDeleteAll',
+					'deleted' => true
+				)
+			),
+			1 => array(
+				'Post' => array(
+					'title' => 'Test softDeleteAll',
+					'deleted' => true
+				)
+			),
+			2 => array(
+				'Post' => array(
+					'title' => 'Test softDeleteAll',
+					'deleted' => true
+				)
+			)
+		);
+		$this->assertEquals($result, $expected);
 	}
 
 }
