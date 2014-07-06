@@ -5,7 +5,9 @@ App::uses('Utils.Sluggable', 'Model/Behavior');
  * Slugged Article
  */
 class SluggedArticle extends CakeTestModel {
+
 	public $useTable = 'articles';
+
 	public $actsAs = array('Utils.Sluggable');
 }
 
@@ -13,25 +15,31 @@ class SluggedArticle extends CakeTestModel {
  * Slugged Article
  */
 class SluggedCustomArticle extends CakeTestModel {
+
 	public $useTable = 'articles';
+
 	public $actsAs = array('Utils.Sluggable');
 
-	function multibyteSlug($string = null, $separator = '_') {
+	public function multibyteSlug($string = null, $separator = '_') {
 		return 'slug';
 	}
+
 }
 
 /**
  * Sluggable Test case
  */
 class SluggableTest extends CakeTestCase {
+
 /**
  * fixtures property
  *
  * @var array
  * @access public
  */
-	public $fixtures = array('plugin.utils.article');
+	public $fixtures = array(
+		'plugin.utils.article'
+	);
 
 /**
  * Creates the model instance
@@ -63,8 +71,10 @@ class SluggableTest extends CakeTestCase {
 	public function testSave() {
 		$this->Model->create(array(
 			'SluggedArticle' => array(
-				'title' => 'Fourth Article')));
-		$this->Model->save();	
+				'title' => 'Fourth Article'
+			)
+		));
+		$this->Model->save();
 
 		$result = $this->Model->read();
 		$this->assertEquals($result['SluggedArticle']['slug'], 'fourth_article');
@@ -130,18 +140,18 @@ class SluggableTest extends CakeTestCase {
  *
  * @return void
  */
-    public function testSaveUnique2() {
-        $this->Model->create(array('title' => 'Puertas para muebles'));
-        $this->Model->save();
-		
+	public function testSaveUnique2() {
+		$this->Model->create(array('title' => 'Puertas para muebles'));
+		$this->Model->save();
+
 		$this->Model->create(array('title' => 'Puertas'));
-        $this->Model->save();
-        
+		$this->Model->save();
+
 		$results = $this->Model->find('all', array('conditions' => array('title LIKE' => 'Puertas%')));
-        $this->assertEquals(count($results), 2);
-        $this->assertEquals($results[0]['SluggedArticle']['slug'], 'puertas_para_muebles');
-        $this->assertEquals($results[1]['SluggedArticle']['slug'], 'puertas');
-    }
+		$this->assertEquals(count($results), 2);
+		$this->assertEquals($results[0]['SluggedArticle']['slug'], 'puertas_para_muebles');
+		$this->assertEquals($results[1]['SluggedArticle']['slug'], 'puertas');
+	}
 
 /**
  * Test slug generation/update based on trigger
@@ -152,7 +162,8 @@ class SluggableTest extends CakeTestCase {
 	public function testSluggenerationBasedOnTrigger() {
 		$this->Model->Behaviors->unload('Sluggable');
 		$this->Model->Behaviors->load('Sluggable', array(
-			'trigger' => 'generateSlug'));
+			'trigger' => 'generateSlug'
+		));
 
 		$this->Model->generateSlug = false;
 		$this->Model->create(array('title' => 'Some Article 25271'));
@@ -221,7 +232,8 @@ class SluggableTest extends CakeTestCase {
 	public function testUpdatingSlug() {
 		$this->Model->Behaviors->unload('Sluggable');
 		$this->Model->Behaviors->load('Sluggable', array(
-			'update' => true));
+			'update' => true
+		));
 
 		$this->Model->create(array('title' => "Andersons Fairy Tales"));
 		$this->Model->save();
@@ -232,4 +244,34 @@ class SluggableTest extends CakeTestCase {
 		$result = $this->Model->read();
 		$this->assertEquals($result['SluggedArticle']['slug'], 'andersons_fairy_tales_ii');
 	}
+
+/**
+ * Testing saving / slug generation in a loop
+ *
+ * @link https://github.com/CakeDC/utils/issues/128
+ * @return void
+ */
+	public function testSavingInALoop() {
+		$data = array(
+			array(
+				'SluggedArticle' => array('title' => 'Loop Article')
+			),
+			array(
+				'SluggedArticle' => array('title' => 'Loop Article')
+			),
+			array(
+				'SluggedArticle' => array('title' => 'Loop Article')
+			)
+		);
+		foreach ($data as $record) {
+			$this->Model->create();
+			$this->Model->save($record);
+		}
+		$result = $this->Model->find('all', array('conditions' => array('SluggedArticle.title LIKE' => 'Loop%')));
+		$this->assertEquals(count($result), 3);
+		$this->assertEquals($result[0]['SluggedArticle']['slug'], 'loop_article');
+		$this->assertEquals($result[1]['SluggedArticle']['slug'], 'loop_article_1');
+		$this->assertEquals($result[2]['SluggedArticle']['slug'], 'loop_article_2');
+	}
+
 }
