@@ -15,6 +15,24 @@ Behavior Options
 * **update:** Update the slug or not after the record was created, default is ```false```.
 * **trigger:** Defines a property in the model that has to be true to generate the slug, default is ```false```.
 
+Before And After Slug Generation Callbacks
+------------------------------------------
+
+The behavior has two callbacks that you can implement in your model using the behavior to modify the slugs.
+
+* **beforeSlugGeneration:** Is called before the actual slug generation starts in the behavior. The slug and separator are passed as arguments.
+* **afterSlugGeneration:** Is called after the slug was  generated. The slug and separator are passed as arguments.
+
+```php
+class Product extends AppModel {
+	public $actsAs = array(
+		'Utils.Sluggable'
+	);
+	public function beforeSlugGeneration($slug, $separator) {
+		return str_replace('§', 'paragraph');
+	}
+}
+
 Basic Example
 -------------
 

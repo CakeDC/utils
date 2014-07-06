@@ -53,7 +53,7 @@ class SluggableBehavior extends ModelBehavior {
 		'length' => 255,
 		'unique' => true,
 		'update' => false,
-		'trigger' => false
+		'trigger' => false,
 	);
 
 /**
@@ -90,17 +90,11 @@ class SluggableBehavior extends ModelBehavior {
 			return true;
 		}
 
-		$slug = $Model->data[$Model->alias][$settings['label']];
-		if (method_exists($Model, 'beforeSlugGeneration')) {
-			$slug = $Model->beforeSlugGeneration($slug, $settings['separator']);
-		}
-
-		$settings = $this->settings[$Model->alias];
-		if (method_exists($Model, 'multibyteSlug')) {
-			$slug = $Model->multibyteSlug($slug, $settings['separator']);
-		} else {
-			$slug = $this->multibyteSlug($Model, $slug);
-		}
+		$slug = $this->generateSlug(
+			$Model,
+			$Model->data[$Model->alias][$settings['label']],
+			$settings['separator']
+		);
 
 		if ($settings['unique'] === true || is_array($settings['unique'])) {
 			$slug = $this->makeUniqueSlug($Model, $slug);
@@ -111,6 +105,32 @@ class SluggableBehavior extends ModelBehavior {
 		}
 		$Model->data[$Model->alias][$settings['slug']] = $slug;
 		return true;
+	}
+
+/**
+ * Generates a slug from a string input
+ *
+ * @param Model $Model
+ * @param string $slug String that should become the slug
+ * @param string $separator
+ * @return string
+ */
+	public function generateSlug(Model $Model, $slug, $separator = '-') {
+		if (method_exists($Model, 'beforeSlugGeneration')) {
+			$slug = $Model->beforeSlugGeneration($slug, $separator);
+		}
+
+		if (method_exists($Model, 'multibyteSlug')) {
+			$slug = $Model->multibyteSlug($slug, $separator);
+		} else {
+			$slug = $this->multibyteSlug($Model, $slug);
+		}
+
+		if (method_exists($Model, 'afterSlugGeneration')) {
+			$slug = $Model->afterSlugGeneration($slug, $separator);
+		}
+
+		return $slug;
 	}
 
 /**
@@ -167,7 +187,7 @@ class SluggableBehavior extends ModelBehavior {
 /**
  * Generates a slug from a (multibyte) string
  *
- * @param object $Model
+ * @param Model $Model
  * @param string $string
  * @return string
  */
