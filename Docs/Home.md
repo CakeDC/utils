@@ -12,6 +12,8 @@ Requirements
 Documentation
 -------------
 
+* **[Installation.md](Documentation/Installation.md)**
+
 **Components**
 
 * **[Archive](Documentation/Components/Archive-Component.md)**: Creates the data for "archive" date ranges that can be used to generated links like "May 2010", "March 2010",...
