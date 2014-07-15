@@ -40,6 +40,7 @@ class SluggableBehavior extends ModelBehavior {
  * unique		- check if the slug is unique
  * update		- update the slug or not
  * trigger		- defines a property in the model that has to be true to generate the slug
+ * priority		- The priority of the behavior event callbacks
  *
  * Note that trigger will temporary bypass update and act like update is set to true.
  *
@@ -54,6 +55,7 @@ class SluggableBehavior extends ModelBehavior {
 		'unique' => true,
 		'update' => false,
 		'trigger' => false,
+		'priority' => 9
 	);
 
 /**
