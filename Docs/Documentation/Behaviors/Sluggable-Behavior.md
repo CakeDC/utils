@@ -14,6 +14,7 @@ Behavior Options
 * **unique:** Check if the slug is unique, default is ```true```.
 * **update:** Update the slug or not after the record was created, default is ```false```.
 * **trigger:** Defines a property in the model that has to be true to generate the slug, default is ```false```.
+* **priority:** See [Object Callback Priorities](http://book.cakephp.org/2.0/en/core-libraries/collections.html#object-callback-priorities) in the CakePHP book, default is ```9```, CakePHPs default is 10.
 
 Before And After Slug Generation Callbacks
 ------------------------------------------
@@ -64,3 +65,10 @@ Category extends AppModel {
 When saving a category with the name ```Some category``` the behavior will generate a slug named ```some-category``` and set it to the ```slug``` field of the table.
 
 When you edit the category now and change the title the slug will be updated as well because it is configured to update it on change.
+
+Using Slugglable with other behaviors
+-------------------------------------
+
+Change the priority of the behaviors to make sure that Sluggable is called *before* **or** *after* other behaviors that use or rely on the *same* data. It really depends on what the other behaviors.
+
+See [Object Callback Priorities](http://book.cakephp.org/2.0/en/core-libraries/collections.html#object-callback-priorities) in the CakePHP book.
