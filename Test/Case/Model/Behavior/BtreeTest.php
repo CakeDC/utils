@@ -104,7 +104,7 @@ class BtreeTest extends CakeTestCase {
  * @access public
  */
 	public function testGeneratetreelist() {
-		$result = $this->Model->generatetreelist();
+		$result = $this->Model->generateTreeList();
 		$expected = array(
 			1 => 'First article',
 			2 => '_First article - child 1',
@@ -120,10 +120,10 @@ class BtreeTest extends CakeTestCase {
  * @access public
  */
 	public function testGetParentNode() {
-		$result = $this->Model->getparentnode(2);
+		$result = $this->Model->getParentNode(2);
 		$this->assertEquals($result['BArticle']['id'], 1);
 
-		$result = $this->Model->getparentnode(3);
+		$result = $this->Model->getParentNode(3);
 		$this->assertEquals($result['BArticle']['id'], 2);
 	}
 
@@ -134,7 +134,7 @@ class BtreeTest extends CakeTestCase {
  * @access public
  */
 	public function testGetPath() {
-		$result = $this->Model->getpath(3);
+		$result = $this->Model->getPath(3);
 		$this->assertEquals(Set::extract('/BArticle/id', $result), array(1, 2, 3));
 	}
 
@@ -145,8 +145,8 @@ class BtreeTest extends CakeTestCase {
  * @access public
  */
 	public function testChildcount() {
-		$this->assertEquals($this->Model->childcount(1, true), 1);
-		$this->assertEquals($this->Model->childcount(null, false), 4);
+		$this->assertEquals($this->Model->childCount(1, true), 1);
+		$this->assertEquals($this->Model->childCount(null, false), 4);
 	}
 
 }
