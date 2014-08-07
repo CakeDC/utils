@@ -29,12 +29,18 @@ class BtreeBehavior extends ModelBehavior {
 
 /**
  * Defaults
- * 
+ *
  * @var array
  */
 	protected $_defaults = array(
-		'parent' => 'parent_id', 'left' => 'lft', 'right' => 'rght',
-		'scope' => '1 = 1', 'type' => 'nested', '__parentChange' => false, 'recursive' => -1,'block_size' => 32768 //block size of 32k allows for up to 64k trees (MAX_INT / 2*block_size)
+		'parent' => 'parent_id',
+		'left' => 'lft',
+		'right' => 'rght',
+		'scope' => '1 = 1',
+		'type' => 'nested',
+		'__parentChange' => false,
+		'recursive' => -1,
+		'block_size' => 32768 // block size of 32k allows for up to 64k trees (MAX_INT / 2 * block_size)
 	);
 
 /**
@@ -791,9 +797,9 @@ class BtreeBehavior extends ModelBehavior {
 		}
 		$errors = array();
 
-		$errors = am($errors, $this->__verifyContinuity($Model));
-		$errors = am($errors, $this->__verifySanity($Model));
-		$errors = am($errors, $this->__verifyRelations($Model));
+		$errors = am($errors, $this->_verifyContinuity($Model));
+		$errors = am($errors, $this->_verifySanity($Model));
+		$errors = am($errors, $this->_verifyRelations($Model));
 
 		$Model->cacheQueries = $cachequeries;
 		if ($errors) {
@@ -802,18 +808,26 @@ class BtreeBehavior extends ModelBehavior {
 		return true;
 	}
 
-	function __verifyRelations(Model $Model) {
+	protected function _verifyRelations(Model $Model) {
 		extract($this->settings[$Model->alias]);
 		$errors = array();
 
-		$Model->bindModel(array('belongsTo' => array('VerifyParent' => array(
-			'className' => $Model->alias,
-			'foreignKey' => $parent,
-			'fields' => array($Model->primaryKey, $left, $right, $parent)
-		))));
+		$Model->bindModel(array(
+			'belongsTo' => array(
+				'VerifyParent' => array(
+					'className' => $Model->alias,
+					'foreignKey' => $parent,
+					'fields' => array($Model->primaryKey, $left, $right, $parent)
+				)
+			)
+		));
 		$nodePage = 0;
 		$nodes = $Model->find('all', array(
 			'conditions' => am($scope),
+			'limit' => 1024,
+			'page' => $nodePage++,
+			'order' => $Model->escapeField($Model->primaryKey),
+			'recursive' => 1,
 			'fields' => array(
 				$Model->primaryKey,
 				$left,
@@ -822,14 +836,10 @@ class BtreeBehavior extends ModelBehavior {
 				'VerifyParent.' . $Model->primaryKey,
 				'VerifyParent.' . $left,
 				'VerifyParent.' . $right
-			),
-		'limit' => 1024,
-		'page' => $nodePage++,
-		'order' => $Model->escapeField($Model->primaryKey),
-		'recursive' => 1
+			)
 		));
 
-		while($nodes) {
+		while ($nodes) {
 			foreach ($nodes as $instance) {
 				if (is_null($instance[$Model->alias][$left]) || is_null($instance[$Model->alias][$right])) {
 					$errors[] = array('node', $instance[$Model->alias][$Model->primaryKey],
@@ -877,7 +887,7 @@ class BtreeBehavior extends ModelBehavior {
 		return $errors;
 	}
 
-	function __verifySanity(Model $Model) {
+	protected function _verifySanity(Model $Model) {
 		extract($this->settings[$Model->alias]);
 		$errors = array();
 		$node = $Model->find('first', array('conditions' => array($scope, $Model->escapeField($right) . '< ' . $Model->escapeField($left)), 'recursive' => 0));
@@ -887,7 +897,7 @@ class BtreeBehavior extends ModelBehavior {
 		return $errors;
 	}
 
-	function __verifyContinuity(Model $Model) {
+	protected function _verifyContinuity(Model $Model) {
 		extract($this->settings[$Model->alias]);
 		$errors = array();
 		$nodes = $this->children($Model, null, true, array($left, $right));
@@ -912,8 +922,6 @@ class BtreeBehavior extends ModelBehavior {
 		return $errors;
 	}
 
-	
-	
 /**
  * Sets the parent of the given node
  *
@@ -944,7 +952,7 @@ class BtreeBehavior extends ModelBehavior {
 				'fields' => array($Model->primaryKey, $left, $right),
 				'recursive' => $recursive
 			));
-			
+
 			if ($values === false) {
 				return false;
 			}
@@ -984,18 +992,6 @@ class BtreeBehavior extends ModelBehavior {
 		return true;
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-// NEW EDGE/GAP DETECTION
 	protected function _getPartition(Model $Model, $scope, $recursive = -1, $created = false) {
 		extract($this->settings[$Model->alias]);
 
@@ -1011,29 +1007,29 @@ class BtreeBehavior extends ModelBehavior {
 
 		list($count) = array_values(current($Model->find('first', array('conditions' => "1=1", 'fields' => 'count(' . $Model->alias . '.' . $Model->primaryKey . ')'))));
 
-		$part_lft = $block_size*2;
-		while($part_lft < ($count*2)) $part_lft = $part_lft + ($block_size*2);
+		$partLft = $blockSize * 2;
+		while($partLft < ($count * 2)) $partLft = $partLft + ($blockSize * 2);
 
-		$edge_pairs = $Model->find('list', array(
+		$edgePairs = $Model->find('list', array(
 			'conditions' => array($scope, 'parent_id' => null),
 			'fields' => array($left, $right),
 			'order' => "lft ASC",
 			'recursive' => $recursive)
 		);
 
-		reset($edge_pairs);
-		while(list($lft, $rght) = each($edge_pairs)) {
-			if(!$lft || $lft < $part_lft) {
+		reset($edgePairs);
+		while (list($lft, $rght) = each($edgePairs)) {
+			if (!$lft || $lft < $partLft) {
 				continue;
 			}
-			if(($lft - $part_lft) > $block_size) {
+			if (($lft - $partLft) > $blockSize) {
 				break;
 			} else {
-				$part_lft += $block_size * 2;
+				$partLft += $blockSize * 2;
 			}
 		}
 
-		return $part_lft;
+		return $partLft;
 	}
 
 /**
@@ -1062,12 +1058,14 @@ class BtreeBehavior extends ModelBehavior {
 			'fields' => $db->calculate($Model, 'max', array($name, $right)),
 					'recursive' => $recursive,
 					'callbacks' => false
-				)));
+				)
+			)
+		);
 		return (empty($edge[$right])) ? 0 : $edge[$right];
 	}
 
 /**
- * get the minimum index value in the table.
+ * Get the minimum index value in the table.
  *
  * @param Model $Model
  * @param string $scope
