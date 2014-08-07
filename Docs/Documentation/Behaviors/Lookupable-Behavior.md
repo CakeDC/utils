@@ -51,7 +51,7 @@ $result = $this->Book->find('first', array(
 		'Book.title' => 'foobar')
 	)
 );
-debug($result)
+debug($result);
 ```
 
 The result will be something similar to:
