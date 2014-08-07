@@ -53,7 +53,7 @@ class InheritableLink extends InheritableAsset {
 
 	public $name = 'Link';
 
-	public $actsAs = array('Utils.Inheritable' => array('method'=>'CTI'));
+	public $actsAs = array('Utils.Inheritable' => array('method' => 'CTI'));
 
 	public $validate = array('url' => array('rule' => 'notEmpty'));
 }
@@ -62,7 +62,7 @@ class InheritableImage extends InheritableAsset {
 
 	public $name = 'Image';
 
-	public $actsAs = array('Utils.Inheritable' => array('method'=>'CTI'));
+	public $actsAs = array('Utils.Inheritable' => array('method' => 'CTI'));
 }
 
 
@@ -130,8 +130,8 @@ class InheritableTest extends CakeTestCase {
  * @access public
  */
 	public function testSubclassParentClass() {
-		$this->assertIsA($this->Article->parent, 'Content');
-		$this->assertIsA($this->Page->parent, 'Content');
+		$this->assertInstanceOf('InheritableContent', $this->Article->parent);
+		$this->assertInstanceOf('InheritableContent', $this->Page->parent);
 		$this->assertEquals($this->Content->find('all'), $this->Article->parent->find('all'));
 	}
 
@@ -299,6 +299,8 @@ class InheritableTest extends CakeTestCase {
 		$this->assertTrue(!empty($saveResult));
 
 		$result = $this->Link->findById(11);
+		debug($result);
+		debug($data);
 		$this->assertEquals($this->Link->find('count'), 2);
 		$this->assertEquals($result['Link']['title'], $data['Link']['title']);
 		$this->assertEquals($result['Link']['url'], $data['Link']['url']);
@@ -353,18 +355,20 @@ class InheritableTest extends CakeTestCase {
 	}
 
 /**
- * Tests the afterfind callback on a related model - in this case it is called with a different
- * results formatting
+ * Tests the afterfind callback on a related model - in this case it is called
+ * with a different results formatting
  *
  * @return void
  */
 	public function testAfterFindRelatedModel() {
-		$linkData = array('id' => 11, 'url'=> 'http://cakephp.org');
+		$linkData = array('id' => 11, 'url' => 'http://cakephp.org');
 		$assetData = array('id' => 11, 'title' => 'home page link', 'description' => 'link back to home page');
 
 		$data = array_merge($linkData, array('Asset' => $assetData));
 		$results = $this->Link->Behaviors->Inheritable->afterFind($this->Link, $data);
 		$expected = array_merge($linkData, $assetData);
+		debug($results);
+		debug($expected);
 		$this->assertEquals($results, $expected);
 
 		// Another format that can be found
@@ -383,7 +387,7 @@ class InheritableTest extends CakeTestCase {
  * @return void
  */
 	public function testClassTableCreateCount() {
-		$initial_count = $this->Asset->find('count');
+		$initialCount = $this->Asset->find('count');
 
 		for ($i = 0; $i < 10; $i++) {
 			$this->Image->create(array(
@@ -395,8 +399,8 @@ class InheritableTest extends CakeTestCase {
 			$this->Image->save();
 		}
 
-		$final_count = $this->Asset->find('count');
-		$this->assertEquals($final_count-$initial_count, 10);
+		$finalCount = $this->Asset->find('count');
+		$this->assertEquals($finalCount - $initialCount, 10);
 	}
 
 /**
@@ -406,13 +410,13 @@ class InheritableTest extends CakeTestCase {
  * @return void
  */
 	public function testClassTableCreateSpecialCase() {
-		$initial_count = $this->Asset->find('count');
+		$initialCount = $this->Asset->find('count');
 		$this->Image->create(array(
 			'title' => 'BSD logo'));
 		$result = $this->Image->save();
-		$final_count = $this->Asset->find('count');
+		$finalCount = $this->Asset->find('count');
 		$this->assertTrue(!empty($result));
-		$this->assertEquals($final_count-$initial_count, 1);
+		$this->assertEquals($finalCount - $initialCount, 1);
 	}
 
 /**

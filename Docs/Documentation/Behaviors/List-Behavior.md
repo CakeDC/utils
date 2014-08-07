@@ -27,7 +27,7 @@ TrackList extends AppModel {
 }
 ```
 
-When you add now a new record with an album_id of 1 and the record is not already present, the position of that record will become 1. Adding a second record with the same album_id will add it with the position value of 2.
+When you add now a new record with an ```album_id``` of 1 and the record is not already present, the position of that record will become 1. Adding a second record with the same ```album_id``` will add it with the position value of 2.
 
 Now let's assume you've added three records:
 
@@ -50,7 +50,7 @@ Now let's assume you've added three records:
 	</tr>
 </table>
 
-You can now manipulate the order of these records by using the behaviors methods. They're pretty self explaining just by looking at their name.
+You can now manipulate the order of these records by using the behaviors methods. They're pretty self explaining by just looking at their name.
 
 * **insertAt($position, $id):** Moves an existing record to a given position in the list.
 * **moveUp($id):** Moves a record one position up.
@@ -66,5 +66,3 @@ You can now manipulate the order of these records by using the behaviors methods
 * **lowerItem($id):** Returns the next lower item in the list.
 * **isInList():** Checks if an item is in the list, the data has to be set by Model::set() before calling this method.
 * **fixListOrder():** Attempt to fix a messed up order for a list.
-
-

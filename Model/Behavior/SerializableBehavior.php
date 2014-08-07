@@ -40,12 +40,12 @@ class SerializableBehavior extends ModelBehavior {
 /**
  * Setup
  *
- * @param object AppModel
+ * @param Model $Model
  * @param array $config
  */
 	public function setup(Model $Model, $config = array()) {
 		$settings = array_merge($this->_defaults, $config);
-		if(!empty($settings['field']) && empty($settings['fields'])) {
+		if (!empty($settings['field']) && empty($settings['fields'])) {
 			$settings['fields'] = $settings['field'];
 		}
 		if (!is_array($settings['fields'])) {
@@ -131,13 +131,12 @@ class SerializableBehavior extends ModelBehavior {
 	}
 
 /**
- *
+ * deserialize
  *
  * @param string $matchId
  * @param array $data
  * @return boolean
  */
-
 	public function deserialize($Model, &$data) {
 		if (empty($data[$Model->alias])) {
 			return $data;
