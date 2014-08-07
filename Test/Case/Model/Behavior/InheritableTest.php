@@ -299,8 +299,6 @@ class InheritableTest extends CakeTestCase {
 		$this->assertTrue(!empty($saveResult));
 
 		$result = $this->Link->findById(11);
-		debug($result);
-		debug($data);
 		$this->assertEquals($this->Link->find('count'), 2);
 		$this->assertEquals($result['Link']['title'], $data['Link']['title']);
 		$this->assertEquals($result['Link']['url'], $data['Link']['url']);
@@ -367,8 +365,6 @@ class InheritableTest extends CakeTestCase {
 		$data = array_merge($linkData, array('Asset' => $assetData));
 		$results = $this->Link->Behaviors->Inheritable->afterFind($this->Link, $data);
 		$expected = array_merge($linkData, $assetData);
-		debug($results);
-		debug($expected);
 		$this->assertEquals($results, $expected);
 
 		// Another format that can be found

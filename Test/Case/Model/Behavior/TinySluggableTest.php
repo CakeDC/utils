@@ -44,8 +44,6 @@ class TinySluggableBehaviorTest extends CakeTestCase {
  */
 	public function setUp() {
 		$this->Model = new TinySluggableArticle();
-		//debug($this->Model);
-		//$this->Model->useTable = 'test_suite_articles';
 		$this->Model->Behaviors->load('Utils.TinySluggable', array());
 	}
 
