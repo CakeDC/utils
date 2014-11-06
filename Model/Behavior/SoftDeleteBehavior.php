@@ -127,7 +127,7 @@ class SoftDeleteBehavior extends ModelBehavior {
 		$runtime = $this->runtime[$model->alias];
 		if ($runtime) {
 			if ($model->beforeDelete($cascade)) {
-				return $this->delete($model, $model->id);
+				return !$this->delete($model, $model->id);
 			}
 			return false;
 		}
