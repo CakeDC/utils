@@ -32,8 +32,8 @@ class ImageFixture extends CakeTestFixture {
  * @var array
  */
 	public $records = array(
-		array('id' => 1, 'file_name'=> 'soccer_worldcup.jpg', 'file_size' =>' 53422', 'content_type' => 'image/jpeg'),
-		array('id' => 2, 'file_name'=> 'dog.png', 'file_size'=>'431234', 'content_type'=>'image/png')
+		array('id' => 1, 'file_name' => 'soccer_worldcup.jpg', 'file_size' => ' 53422', 'content_type' => 'image/jpeg'),
+		array('id' => 2, 'file_name' => 'dog.png', 'file_size' => '431234', 'content_type' => 'image/png')
 	);
 
 }
