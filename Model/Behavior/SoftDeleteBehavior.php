@@ -102,7 +102,7 @@ class SoftDeleteBehavior extends ModelBehavior {
  * Check if a record exists for the given id
  *
  * @param Model $model
- * @param id
+ * @param $id
  * @return mixed
  */
 	public function existsAndNotDeleted(Model $model, $id) {
@@ -126,8 +126,8 @@ class SoftDeleteBehavior extends ModelBehavior {
  * Before delete callback
  *
  * @param Model $model
- * @param boolean $cascade
- * @return boolean
+ * @param bool $cascade
+ * @return bool
  */
 	public function beforeDelete(Model $model, $cascade = true) {
 		$runtime = $this->runtime[$model->alias];
@@ -144,8 +144,8 @@ class SoftDeleteBehavior extends ModelBehavior {
  * Mark record as deleted
  *
  * @param object $model
- * @param integer $id
- * @return boolean
+ * @param int $id
+ * @return bool
  */
 	public function delete($model, $id) {
 		$runtime = $this->runtime[$model->alias];
@@ -188,8 +188,8 @@ class SoftDeleteBehavior extends ModelBehavior {
  * Mark record as not deleted
  *
  * @param object $model
- * @param integer $id
- * @return boolean
+ * @param int $id
+ * @return bool
  */
 	public function undelete($model, $id) {
 		$runtime = $this->runtime[$model->alias];
@@ -248,7 +248,7 @@ class SoftDeleteBehavior extends ModelBehavior {
  *
  * @param object $model
  * @param mixed $expiration anything parseable by strtotime(), by default '-90 days'
- * @return integer
+ * @return int
  */
 	public function purgeDeletedCount($model, $expiration = '-90 days') {
 		$runtime = $this->runtime[$model->alias];
@@ -268,7 +268,7 @@ class SoftDeleteBehavior extends ModelBehavior {
  *
  * @param object $model
  * @param mixed $expiration anything parseable by strtotime(), by default '-90 days'
- * @return boolean if there were some outdated records
+ * @return bool if there were some outdated records
  */
 	public function purgeDeleted($model, $expiration = '-90 days') {
 		$this->softDelete($model, false);
@@ -335,6 +335,7 @@ class SoftDeleteBehavior extends ModelBehavior {
  *
  * @param Model $model
  * @param mixed $active
+ * @return void
  */
 	protected function _softDeleteAssociations(Model $model, $active) {
 		if (empty($model->belongsTo)) {
@@ -345,6 +346,13 @@ class SoftDeleteBehavior extends ModelBehavior {
 		$parentModels = array_keys($model->belongsTo);
 
 		foreach ($parentModels as $parentModel) {
+			list($plugin, $modelClass) = pluginSplit($parentModel, true);
+			App::uses($modelClass, $plugin . 'Model');
+			if (!class_exists($modelClass)) {
+				throw new MissingModelException(array('class' => $modelClass));
+			}
+			$model->{$parentModel} = new $parentModel(null, null, $model->useDbConfig);
+
 			foreach (array('hasOne', 'hasMany') as $assocType) {
 				if (empty($model->{$parentModel}->{$assocType})) {
 					continue;

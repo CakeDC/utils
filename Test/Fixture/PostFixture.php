@@ -26,7 +26,7 @@ class PostFixture extends CakeTestFixture {
 		'article_id' => array('type' => 'integer'),
 		'title' => array('type' => 'string', 'null' => false),
 		'deleted' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
-		'deleted_date'  => 'datetime',
+		'deleted_date' => 'datetime',
 		'created' => 'datetime',
 		'updated' => 'datetime');
 
@@ -63,5 +63,3 @@ class PostFixture extends CakeTestFixture {
 			'updated' => '2007-03-18 10:45:31'));
 
 }
-
-?>

@@ -1,6 +1,13 @@
 <?php
-// For the inheritable behavior
+/**
+ * Short description for class.
+ *
+ * @package	   cake
+ * @subpackage	cake.tests.fixtures
+ */
+
 class LinkFixture extends CakeTestFixture {
+
 	public $name = 'Link';
 
 	public $fields = array(
@@ -9,10 +16,7 @@ class LinkFixture extends CakeTestFixture {
 	);
 
 	public $records = array(
-
-		array('id' => 11, 'url'=> 'http://cakephp.org'),
-		array('id' => 12, 'url'=> 'http://google.com'),
-
+		array('id' => 11, 'url' => 'http://cakephp.org'),
+		array('id' => 12, 'url' => 'http://google.com'),
 	);
-
 }

@@ -30,10 +30,10 @@ class AssetFixture extends CakeTestFixture {
 	);
 
 	public $records = array(
-		array('id' => 1, 'title'=> 'soccuer image', 'description'=> 'amazing shot...'),
-		array('id' => 2, 'title'=> 'animal image', 'description'=> 'very disturbing'),
-		array('id' => 11, 'title'=> 'home page link', 'description' => 'link back to home page'),
-		array('id' => 12, 'title'=> 'google', 'description' => 'Google is the search engine'),
+		array('id' => 1, 'title' => 'soccuer image', 'description' => 'amazing shot...'),
+		array('id' => 2, 'title' => 'animal image', 'description' => 'very disturbing'),
+		array('id' => 11, 'title' => 'home page link', 'description' => 'link back to home page'),
+		array('id' => 12, 'title' => 'google', 'description' => 'Google is the search engine'),
 	);
 
 }

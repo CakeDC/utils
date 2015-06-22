@@ -43,4 +43,3 @@ class BinaryArticleFixture extends CakeTestFixture {
 		array('id' => 6, 'parent_id' => 3, 'title' => 'Fifth Article', 'position' => 512, 'created' => '2007-03-18 10:41:23', 'updated' => '2007-03-18 10:43:31'),
 	);
 }
-?>

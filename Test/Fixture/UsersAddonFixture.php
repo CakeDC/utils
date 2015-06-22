@@ -1,5 +1,6 @@
 <?php
 class UsersAddonFixture extends CakeTestFixture {
+
 /**
  * Name
  *
@@ -7,6 +8,7 @@ class UsersAddonFixture extends CakeTestFixture {
  * @access public
  */
 	public $name = 'UsersAddon';
+
 /**
  * Table
  *
@@ -14,6 +16,7 @@ class UsersAddonFixture extends CakeTestFixture {
  * @access public
  */
 	public $table = 'users_addons';
+
 /**
  * Fields
  *
@@ -21,17 +24,18 @@ class UsersAddonFixture extends CakeTestFixture {
  * @access public
  */
 	public $fields = array(
-		'id' => array('type'=>'string', 'null' => false, 'length' => 36, 'key' => 'primary'),
-		'addon_id' => array('type'=>'string', 'null' => false, 'length' => 36, 'key' => 'index'),
-		'user_id' => array('type'=>'string', 'null' => false, 'length' => 36),
-		'position' => array('type'=>'float', 'null' => false, 'default' => '1', 'length' => 4),
-		'active' => array('type'=>'boolean', 'null' => false, 'default' => '0'),
-		'created' => array('type'=>'datetime', 'null' => true, 'default' => NULL),
-		'modified' => array('type'=>'datetime', 'null' => true, 'default' => NULL),
+		'id' => array('type' => 'string', 'null' => false, 'length' => 36, 'key' => 'primary'),
+		'addon_id' => array('type' => 'string', 'null' => false, 'length' => 36, 'key' => 'index'),
+		'user_id' => array('type' => 'string', 'null' => false, 'length' => 36),
+		'position' => array('type' => 'float', 'null' => false, 'default' => '1', 'length' => 4),
+		'active' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
+		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'indexes' => array(
-			'PRIMARY' => array('column' => 'id', 'unique' => 1), 
+			'PRIMARY' => array('column' => 'id', 'unique' => 1),
 			'UNIQUE_ADDON_USER' => array('column' => array('addon_id', 'user_id'), 'unique' => 1))
 	);
+
 /**
  * Records
  *

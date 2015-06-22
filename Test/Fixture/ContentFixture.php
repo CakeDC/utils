@@ -1,6 +1,12 @@
 <?php
-// For the inheritable behavior
+/**
+ * Short description for class.
+ *
+ * @package	   cake
+ * @subpackage	cake.tests.fixtures
+ */
 class ContentFixture extends CakeTestFixture {
+
 	public $name = 'Content';
 
 	public $fields = array(
@@ -19,16 +25,15 @@ class ContentFixture extends CakeTestFixture {
 	public $records = array(
 
 		/* Articles */
-		array('id' => 1, 'parent_id' => 0, 'type'=>'Article', 'title'=> 'Unearthed rare monster in london', 'body'=> 'very strange discovery...', 'permalink'=> 'unearthed-rare-monster-in-london'),
-		array('id' => 2, 'parent_id' => 0, 'type'=>'Article', 'title'=> 'about us', 'body'=> 'history of our company', 'permalink'=> 'about-us'),
+		array('id' => 1, 'parent_id' => 0, 'type' => 'Article', 'title' => 'Unearthed rare monster in london', 'body' => 'very strange discovery...', 'permalink' => 'unearthed-rare-monster-in-london'),
+		array('id' => 2, 'parent_id' => 0, 'type' => 'Article', 'title' => 'about us', 'body' => 'history of our company', 'permalink' => 'about-us'),
 
 
 		/*  Pages */
-		array('id' => 100, 'parent_id' => 0, 'type' => 'Page', 'title' => 'Home page', 'body'=>'welcome to my site', 'permalink'=>''),
-		array('id' => 101, 'parent_id' => 100, 'type'=>'Page', 'title'=> 'Frequent Asked Questions', 'body'=> 'questions and more...', 'permalink'=> 'faq'),
-		array('id' => 102, 'parent_id' => 101, 'type'=>'Page', 'title'=> 'about us', 'body'=> 'CakePHP is a MVC PHP framework that aids development of... ', 'permalink'=> 'about-us'),
+		array('id' => 100, 'parent_id' => 0, 'type' => 'Page', 'title' => 'Home page', 'body' => 'welcome to my site', 'permalink' => ''),
+		array('id' => 101, 'parent_id' => 100, 'type' => 'Page', 'title' => 'Frequent Asked Questions', 'body' => 'questions and more...', 'permalink' => 'faq'),
+		array('id' => 102, 'parent_id' => 101, 'type' => 'Page', 'title' => 'about us', 'body' => 'CakePHP is a MVC PHP framework that aids development of... ', 'permalink' => 'about-us'),
 
 	);
 
 }
-?>

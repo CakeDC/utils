@@ -52,6 +52,36 @@ class SoftDeletedPost extends CakeTestModel {
 }
 
 /**
+ * SoftDeletedPost
+ *
+ * @package utils
+ * @subpackage utils.tests.cases.behaviors
+ */
+class SoftDeletedArticle extends CakeTestModel {
+
+/**
+ * Use Table
+ *
+ * @var string
+ */
+	public $useTable = 'articles';
+
+/**
+ * Behaviors
+ *
+ * @var array
+ */
+	public $actsAs = array('Utils.SoftDelete');
+
+/**
+ * Alias
+ *
+ * @var string
+ */
+	public $alias = 'Article';
+}
+
+/**
  * SoftDelete Test case
  */
 class SoftDeleteTest extends CakeTestCase {
@@ -61,7 +91,10 @@ class SoftDeleteTest extends CakeTestCase {
  *
  * @var array
  */
-	public $fixtures = array('plugin.utils.post');
+	public $fixtures = array(
+		'plugin.utils.post',
+		'plugin.utils.article'
+	);
 
 /**
  * Creates the model instance
@@ -70,6 +103,7 @@ class SoftDeleteTest extends CakeTestCase {
  */
 	public function setUp() {
 		$this->Post = new SoftDeletedPost();
+		$this->Article = new SoftDeletedArticle();
 	}
 
 /**
@@ -236,4 +270,28 @@ class SoftDeleteTest extends CakeTestCase {
 		$this->assertEquals($result, $expected);
 	}
 
+	public function testModelHasManyRelation() {
+		$this->Post->bindModel(array(
+			'belongsTo' => array(
+				'Article' => array(
+					'foreignKey' => 'article_id'
+				)
+			)
+		));
+
+		$this->Article->bindModel(array(
+			'hasMany' => array(
+				'Post' => array(
+					'foreignKey' => 'article_id'
+				)
+			)
+		));
+
+		$result = $this->Post->delete(1);
+		$this->Post->Behaviors->unload('SoftDelete');
+		$this->assertFalse($result);
+		$data = $this->Post->read(null, 1);
+		$this->assertEquals($data['Post']['deleted'], true);
+		$this->assertTrue(!empty($data['Post']['deleted_date']));
+	}
 }
