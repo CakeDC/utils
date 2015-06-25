@@ -100,6 +100,7 @@ class TinySluggableBehavior extends ModelBehavior {
 				}
 				$new = $this->_toShort($Model, $this->_toDecimal($Model, $new) + 1);
 				$existing = $Model->find('count', array(
+					'contain' => array(),
 					'conditions' => array(
 						$Model->alias . '.' . $Model->tinySlug => $new)));
 				$attempts++;
