@@ -14,28 +14,46 @@
 
 // STI Models
 class Content extends CakeTestModel {
+
 	public $useTable = 'contents';
 }
 
 class Article extends Content {
+
 	public $actsAs = array('Utils.Inheritable');
 }
 
 class Page extends Content {
+
 	public $actsAs = array('Utils.Inheritable');
 }
 
 // CTI models
 class Asset extends CakeTestModel {
+
 	public $validate = array('title' => array('rule' => 'notEmpty'));
 }
 
 class Link extends Asset {
-	public $actsAs = array('Utils.Inheritable' => array('method'=>'CTI'));
+
+	public $actsAs = array('Utils.Inheritable' => array('method' => 'CTI'));
+
 	public $validate = array('url' => array('rule' => 'notEmpty'));
 }
+
 class Image extends Asset {
-	public $actsAs = array('Utils.Inheritable' => array('method'=>'CTI'));
+
+	public $actsAs = array('Utils.Inheritable' => array('method' => 'CTI'));
+}
+
+class Person extends CakeTestModel {
+
+	public $hasOne = 'Address';
+}
+
+class Client extends Person {
+
+	public $actsAs = array('Utils.Inheritable' => array('method' => 'CTI'));
 }
 
 
@@ -53,7 +71,7 @@ class InheritableTest extends CakeTestCase {
  * @var array
  * @access public
  */
-	public $fixtures = array('plugin.utils.content', 'plugin.utils.asset', 'plugin.utils.link', 'plugin.utils.image');
+	public $fixtures = array('plugin.utils.content', 'plugin.utils.asset', 'plugin.utils.link', 'plugin.utils.image', 'plugin.utils.person', 'plugin.utils.address');
 
 /**
  * Start Test callback
@@ -77,6 +95,7 @@ class InheritableTest extends CakeTestCase {
 		$this->Asset = ClassRegistry::init('Asset');
 		$this->Link = ClassRegistry::init('Link');
 		$this->Image = ClassRegistry::init('Image');
+		$this->Client = ClassRegistry::init('Client');
 	}
 
 /**
@@ -295,7 +314,7 @@ class InheritableTest extends CakeTestCase {
  * @access public
  */
 	public function testAfterFind() {
-		$linkData = array('id' => 11, 'url'=> 'http://cakephp.org');
+		$linkData = array('id' => 11, 'url' => 'http://cakephp.org');
 		$assetData = array('id' => 11, 'title' => 'home page link', 'description' => 'link back to home page');
 
 		$results = $this->Link->Behaviors->Inheritable->afterFind($this->Link, array());
@@ -328,7 +347,7 @@ class InheritableTest extends CakeTestCase {
  * @return void
  */
 	public function testAfterFindRelatedModel() {
-		$linkData = array('id' => 11, 'url'=> 'http://cakephp.org');
+		$linkData = array('id' => 11, 'url' => 'http://cakephp.org');
 		$assetData = array('id' => 11, 'title' => 'home page link', 'description' => 'link back to home page');
 
 		$data = array_merge($linkData, array('Asset' => $assetData));
@@ -352,7 +371,7 @@ class InheritableTest extends CakeTestCase {
  * @return void
  */
 	public function testClassTableCreateCount() {
-		$initial_count = $this->Asset->find('count');
+		$initialCount = $this->Asset->find('count');
 
 		for ($i = 0; $i < 10; $i++) {
 			$this->Image->create(array(
@@ -364,8 +383,8 @@ class InheritableTest extends CakeTestCase {
 			$this->Image->save();
 		}
 
-		$final_count = $this->Asset->find('count');
-		$this->assertEquals($final_count-$initial_count, 10);
+		$finalCount = $this->Asset->find('count');
+		$this->assertEquals($finalCount - $initialCount, 10);
 	}
 
 /**
@@ -375,13 +394,22 @@ class InheritableTest extends CakeTestCase {
  * @return void
  */
 	public function testClassTableCreateSpecialCase() {
-		$initial_count = $this->Asset->find('count');
+		$initialCount = $this->Asset->find('count');
 		$this->Image->create(array(
 			'title' => 'BSD logo'));
 		$result = $this->Image->save();
-		$final_count = $this->Asset->find('count');
+		$finalCount = $this->Asset->find('count');
 		$this->assertTrue(!empty($result));
-		$this->assertEquals($final_count-$initial_count, 1);
+		$this->assertEquals($finalCount - $initialCount, 1);
+	}
+
+/**
+ * testMergingField
+ * @link https://github.com/CakeDC/utils/issues/83
+ * @return void
+ */
+	public function testMergingField() {
+		$this->assertTrue(isset($this->Client->Address));
 	}
 
 /**
