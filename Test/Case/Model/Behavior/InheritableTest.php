@@ -52,8 +52,6 @@ class Person extends CakeTestModel {
 }
 
 class Client extends Person {
-
-	public $actsAs = array('Utils.Inheritable' => array('method' => 'CTI'));
 }
 
 
@@ -96,6 +94,7 @@ class InheritableTest extends CakeTestCase {
 		$this->Link = ClassRegistry::init('Link');
 		$this->Image = ClassRegistry::init('Image');
 		$this->Client = ClassRegistry::init('Client');
+		$this->Person = ClassRegistry::init('Person');
 	}
 
 /**
@@ -404,11 +403,15 @@ class InheritableTest extends CakeTestCase {
 	}
 
 /**
- * testMergingField
+ * classParentAssociations
  * @link https://github.com/CakeDC/utils/issues/83
  * @return void
  */
-	public function testMergingField() {
+	public function classParentAssociations() {
+		$parentAssociations = array_flip($this->Person->getAssociated());
+		$this->Client->Behaviors->load('Inheritable');
+		$this->Client->Behaviors->Inheritable->classParentAssociations($this->Client->parent->primaryKey, 'hasOne', $parentAssociations);
+		$this->Client->Behaviors->unload('Inheritable');
 		$this->assertTrue(isset($this->Client->Address));
 	}
 

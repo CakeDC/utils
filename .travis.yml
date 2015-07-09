@@ -4,30 +4,37 @@ php:
   - 5.3
   - 5.4
   - 5.5
-  - 5.6
 
 env:
   global:
     - PLUGIN_NAME=Utils
-    - REQUIRE=""
+    - DB=mysql
+    - MYSQL_CREATE_DB="mysql -e 'create database cakephp_test CHARACTER SET utf8 COLLATE utf8_general_ci;'"
+    - REQUIRE="phpunit/phpunit:3.7.31"
 
   matrix:
-    - DB=mysql CAKE_VERSION=2.4
-    - DB=mysql CAKE_VERSION=2.5
     - DB=mysql CAKE_VERSION=2.6
 
 matrix:
   include:
+    - php: 5.3
+      env:
+        - CAKE_VERSION=2.6
     - php: 5.4
       env:
-        - COVERALLS=1
-    - php: 5.4
+        - CAKE_VERSION=2.6
+    - php: 5.5
       env:
-        - PHPCS=1
+        - CAKE_VERSION=2.6
 
 before_script:
-  - git clone -b master https://github.com/FriendsOfCake/travis.git --depth 1 ../travis
+  - git clone https://github.com/steinkel/travis.git --depth 1 ../travis
   - ../travis/before_script.sh
+  - if [ "$PHPCS" != 1 ]; then
+            echo "
+                require_once APP . DS . 'vendor' . DS . 'phpunit' . DS . 'phpunit' . DS . 'PHPUnit' . DS . 'Autoload.php';
+            " >> ../cakephp/app/Config/bootstrap.php;
+    fi
 
 script:
   - ../travis/script.sh

@@ -12,7 +12,7 @@ class AllTest extends CakeTestCase {
 	public static function suite() {
 		$suite = new CakeTestSuite('All  test');
 
-		$path = CakePlugin::path('') . 'Test' . DS . 'Case' . DS;
+		$path = CakePlugin::path('Utils') . 'Test' . DS . 'Case' . DS;
 		$suite->addTestDirectoryRecursive($path);
 
 		return $suite;

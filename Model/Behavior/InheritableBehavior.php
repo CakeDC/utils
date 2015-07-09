@@ -141,7 +141,7 @@ class InheritableBehavior extends ModelBehavior {
  * @param array $options options
  * @return true
  */
-	public function beforeSave(Model $Model, $options = Array()) {
+	public function beforeSave(Model $Model, $options = array()) {
 		if ($this->settings[$Model->alias]['method'] == 'STI') {
 			$this->_singleTableBeforeSave($Model);
 		} elseif ($this->settings[$Model->alias]['method'] == 'CTI') {
@@ -241,7 +241,8 @@ class InheritableBehavior extends ModelBehavior {
 		}
 
 		$success = $Model->bindModel($bind, false);
-		//Putting the parent association as the first one, so any dependent join on the parent model will be in the right order
+		//Putting the parent association as the first one,
+		//so any dependent join on the parent model will be in the right order
 		$assoc = $Model->belongsTo[$Model->parent->alias];
 		unset($Model->belongsTo[$Model->parent->alias]);
 		$Model->belongsTo = array_merge(array($Model->parent->alias => $assoc), $Model->belongsTo);
@@ -258,8 +259,8 @@ class InheritableBehavior extends ModelBehavior {
  */
 	public function classParentAssociations($ppk, $name, $assoc) {
 		$data = array($name => array(
-			$assoc[$name] => array(
-				'className' => $assoc[$name],
+			Hash::get($assoc, $name) => array(
+				'className' => Hash::get($assoc, $name),
 				'foreignKey' => $ppk
 			)
 		));
