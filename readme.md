@@ -85,7 +85,7 @@ Since "exists" method in Model disable callbacks you may experience problems usi
 ```php
 <?php
 public function exists($id = null) {
-	if ($this->Behaviors->attached('SoftDelete')) {
+	if ($this->Behaviors->loaded('SoftDelete')) {
 		return $this->existsAndNotDeleted($id);
 	} else {
 		return parent::exists($id);
