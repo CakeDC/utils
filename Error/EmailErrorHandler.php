@@ -63,8 +63,10 @@ class EmailErrorHandler extends ErrorHandler {
 					$server = $_SERVER;
 					$request = $_REQUEST;
 					$Email = self::getEmailInstance();
-					$Email->viewVars(compact('code', 'description', 'file', 'line', 'context', 'session', 'server', 'request', 'trace'));
-					$Email->send();
+					$Email->template('Utils.error_notification')
+						->subject(__d('utils', 'Error notification from %s', env('HTTP_HOST')))
+						->viewVars(compact('code', 'description', 'file', 'line', 'context', 'session', 'server', 'request', 'trace'))
+						->send();
 				}
 
 				Cache::write($cacheHash, true, 'error_handler');
@@ -72,6 +74,31 @@ class EmailErrorHandler extends ErrorHandler {
 		}
 
 		return parent::handleError($code, $description, $file, $line, $context);
+	}
+
+/**
+ * handleException
+ *
+ * @param Exception $exception The exception to render.
+ * @return void
+ */
+	public static function handleException(Exception $exception) {
+		extract(self::handlerSettings());
+
+		if ($emailNotifications === true && !empty($receiver)) {
+			$trace = Debugger::trace(array('start' => 1, 'format' => 'log'));
+			$session = CakeSession::read();
+			$server = $_SERVER;
+			$request = $_REQUEST;
+			$message = self::_getMessage($exception);
+			$Email = self::getEmailInstance();
+			$Email->template('Utils.exception_notification')
+				->subject(__d('utils', 'Exception notification from %s', env('HTTP_HOST')))
+				->viewVars(compact('message', 'session', 'server', 'request', 'trace'))
+				->send();
+		}
+
+		return parent::handleException($exception);
 	}
 
 /**
@@ -114,11 +141,9 @@ class EmailErrorHandler extends ErrorHandler {
 	public static function getEmailInstance() {
 		if (empty(self::$Email)) {
 			$Email = new CakeEmail();
-			$Email->subject(__d('utils', 'Error notification from %s', env('HTTP_HOST')))
-				->from(array('error@' . env('HTTP_HOST') => 'Error Handler'))
+			$Email->from(array('error@' . env('HTTP_HOST') => 'Error Handler'))
 				->to(Configure::read('ErrorHandler.receiver'))
-				->emailFormat('both')
-				->template('Utils.error_notification');
+				->emailFormat('both');
 			self::$Email = $Email;
 		}
 		return self::$Email;
