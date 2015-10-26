@@ -1,45 +1,45 @@
-<h1><?php echo __('utils', 'An Error happened'); ?>:</h1>
+<h1><?php echo __d('utils', 'An Error happened'); ?>:</h1>
 
 <br />
 
-<?php echo __('utils', 'Code: %s', h($code)); ?><br />
-<?php echo __('utils', 'File: %s', h($file)); ?><br />
-<?php echo __('utils', 'Line: %d', h($line)); ?><br />
+<?php echo __d('utils', 'Code: %s', h($code)); ?><br />
+<?php echo __d('utils', 'File: %s', h($file)); ?><br />
+<?php echo __d('utils', 'Line: %d', h($line)); ?><br />
 
 <hr><br />
 
-<h2> <?php echo __('utils', 'Description'); ?>:</h2>
+<h2> <?php echo __d('utils', 'Description'); ?>:</h2>
 <?php echo $description; ?>
 
 <hr><br />
 
-<h2><?php echo __('utils', 'Context'); ?>:</h2>
-<?php echo $context; ?>
+<h2><?php echo __d('utils', 'Context'); ?>:</h2>
+<?php print_r($context); ?>
 
 <hr><br />
 
-<h2><?php echo __('utils', 'Trace'); ?>:</h2>
+<h2><?php echo __d('utils', 'Trace'); ?>:</h2>
 <pre>
 	<?php echo $trace; ?>
 </pre>
 
 <hr><br />
 
-<h2><?php echo __('utils', 'Session Data'); ?>:</h2>
+<h2><?php echo __d('utils', 'Session Data'); ?>:</h2>
 <pre>
-	<?php echo print_r($session); ?>
+	<?php print_r($session); ?>
 </pre>
 
 <hr><br />
 
-<h2><?php echo __('utils', 'Server Data'); ?>:</h2>
+<h2><?php echo __d('utils', 'Server Data'); ?>:</h2>
 <pre>
-	<?php echo print_r($server); ?>
+	<?php print_r($server); ?>
 </pre>
 
 <hr><br />
 
-<h2><?php echo __('utils', 'Request Data'); ?>:</h2>
+<h2><?php echo __d('utils', 'Request Data'); ?>:</h2>
 <pre>
-	<?php echo print_r($request); ?>
+	<?php print_r($request); ?>
 </pre>
