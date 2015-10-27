@@ -37,6 +37,13 @@ class EmailErrorHandler extends ErrorHandler {
 	public static $Email = null;
 
 /**
+ * settings
+ *
+ * @var array
+ */
+	public static $settings = array();
+
+/**
  * HandleError
  *
  * @param integer $code Code of error
@@ -109,6 +116,8 @@ class EmailErrorHandler extends ErrorHandler {
 		$defaults = array(
 			'caching' => true,
 			'receiver' => null,
+			'sender' => null,
+			'emailFormat' => CakeEmail::MESSAGE_TEXT,
 			'emailNotifications' => false,
 			'duration' => ini_get('max_execution_time'),
 			'codes' => array(),
@@ -117,7 +126,10 @@ class EmailErrorHandler extends ErrorHandler {
 		if (empty($config)) {
 			$config = array();
 		}
-		return array_merge($defaults, $config);
+
+		self::$settings = array_merge($defaults, $config);
+
+		return self::$settings;
 	}
 
 /**
@@ -140,11 +152,12 @@ class EmailErrorHandler extends ErrorHandler {
 	public static function getEmailInstance() {
 		if (empty(self::$Email)) {
 			$Email = new CakeEmail();
-			$Email->from(array('error@' . env('HTTP_HOST') => 'Error Handler'))
-				->to(Configure::read('ErrorHandler.receiver'))
-				->emailFormat('both');
+			$Email->from(self::$settings['sender'])
+				->to(self::$settings['receiver'])
+				->emailFormat(self::$settings['emailFormat']);
 			self::$Email = $Email;
 		}
+
 		return self::$Email;
 	}
 
