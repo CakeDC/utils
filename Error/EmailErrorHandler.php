@@ -86,7 +86,6 @@ class EmailErrorHandler extends ErrorHandler {
 		extract(self::handlerSettings());
 
 		if ($emailNotifications === true && !empty($receiver)) {
-			$trace = Debugger::trace(array('start' => 1, 'format' => 'log'));
 			$session = CakeSession::read();
 			$server = $_SERVER;
 			$request = $_REQUEST;

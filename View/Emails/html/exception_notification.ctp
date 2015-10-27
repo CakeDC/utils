@@ -3,32 +3,27 @@
 <br />
 
 <h2><?php echo __d('utils', 'Message'); ?>:</h2>
-<?php echo $message; ?>
-
-<hr><br />
-
-<h2><?php echo __d('utils', 'Trace'); ?>:</h2>
 <pre>
-	<?php echo $trace; ?>
+<?php echo $message; ?>
 </pre>
 
 <hr><br />
 
 <h2><?php echo __d('utils', 'Session Data'); ?>:</h2>
 <pre>
-	<?php print_r($session); ?>
+<?php print_r($session); ?>
 </pre>
 
 <hr><br />
 
 <h2><?php echo __d('utils', 'Server Data'); ?>:</h2>
 <pre>
-	<?php print_r($server); ?>
+<?php print_r($server); ?>
 </pre>
 
 <hr><br />
 
 <h2><?php echo __d('utils', 'Request Data'); ?>:</h2>
 <pre>
-	<?php print_r($request); ?>
+<?php print_r($request); ?>
 </pre>

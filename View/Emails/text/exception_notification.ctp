@@ -6,11 +6,6 @@
 <?php echo $message; ?>
 
 
-<?php echo __d('utils', 'Trace'); ?>:
-
-<?php echo $trace; ?>
-
-
 <?php echo __d('utils', 'Session Data'); ?>:
 
 <?php print_r($session); ?>
