@@ -37,6 +37,13 @@ class EmailErrorHandler extends ErrorHandler {
 	public static $Email = null;
 
 /**
+ * settings
+ *
+ * @var array
+ */
+	public static $settings = array();
+
+/**
  * HandleError
  *
  * @param integer $code Code of error
@@ -63,8 +70,10 @@ class EmailErrorHandler extends ErrorHandler {
 					$server = $_SERVER;
 					$request = $_REQUEST;
 					$Email = self::getEmailInstance();
-					$Email->viewVars(compact('code', 'description', 'file', 'line', 'context', 'session', 'server', 'request', 'trace'));
-					$Email->send();
+					$Email->template('Utils.error_notification')
+						->subject(__d('utils', 'Error notification from %s', env('HTTP_HOST')))
+						->viewVars(compact('code', 'description', 'file', 'line', 'context', 'session', 'server', 'request', 'trace'))
+						->send();
 				}
 
 				Cache::write($cacheHash, true, 'error_handler');
@@ -72,6 +81,30 @@ class EmailErrorHandler extends ErrorHandler {
 		}
 
 		return parent::handleError($code, $description, $file, $line, $context);
+	}
+
+/**
+ * handleException
+ *
+ * @param Exception $exception The exception to render.
+ * @return void
+ */
+	public static function handleException(Exception $exception) {
+		extract(self::handlerSettings());
+
+		if ($emailNotifications === true && !empty($receiver)) {
+			$session = CakeSession::read();
+			$server = $_SERVER;
+			$request = $_REQUEST;
+			$message = self::_getMessage($exception);
+			$Email = self::getEmailInstance();
+			$Email->template('Utils.exception_notification')
+				->subject(__d('utils', 'Exception notification from %s', env('HTTP_HOST')))
+				->viewVars(compact('message', 'session', 'server', 'request', 'trace'))
+				->send();
+		}
+
+		return parent::handleException($exception);
 	}
 
 /**
@@ -83,6 +116,8 @@ class EmailErrorHandler extends ErrorHandler {
 		$defaults = array(
 			'caching' => true,
 			'receiver' => null,
+			'sender' => null,
+			'emailFormat' => CakeEmail::MESSAGE_TEXT,
 			'emailNotifications' => false,
 			'duration' => ini_get('max_execution_time'),
 			'codes' => array(),
@@ -91,7 +126,10 @@ class EmailErrorHandler extends ErrorHandler {
 		if (empty($config)) {
 			$config = array();
 		}
-		return array_merge($defaults, $config);
+
+		self::$settings = array_merge($defaults, $config);
+
+		return self::$settings;
 	}
 
 /**
@@ -114,13 +152,12 @@ class EmailErrorHandler extends ErrorHandler {
 	public static function getEmailInstance() {
 		if (empty(self::$Email)) {
 			$Email = new CakeEmail();
-			$Email->subject(__d('utils', 'Error notification from %s', env('HTTP_HOST')))
-				->from(array('error@' . env('HTTP_HOST') => 'Error Handler'))
-				->to(Configure::read('ErrorHandler.receiver'))
-				->emailFormat('both')
-				->template('Utils.error_notification');
+			$Email->from(self::$settings['sender'])
+				->to(self::$settings['receiver'])
+				->emailFormat(self::$settings['emailFormat']);
 			self::$Email = $Email;
 		}
+
 		return self::$Email;
 	}
 

@@ -52,7 +52,7 @@ class I18nCountry extends Object {
 		$this->settings = array_merge($this->_defaults, $options);
 
 		if (!in_array($this->settings['key'], array('iso', 'iso3', 'numcode', 'name', 'printableName'))) {
-			throw new InvalidArgumentException(__('utils', 'Invalid setting for key: Use iso, name, iso3, numcode or printableName.'));
+			throw new InvalidArgumentException(__d('utils', 'Invalid setting for key: Use iso, name, iso3, numcode or printableName.'));
 		}
 
 		$this->_translated = array(
