@@ -250,6 +250,16 @@ class InheritableBehavior extends ModelBehavior {
 				'foreignKey' => $Model->primaryKey
 			)
 		));
+		$assocs = array_flip($Model->parent->getAssociated());
+		$ppk = $Model->parent->primaryKey;
+		if (array_key_exists('hasOne', $assocs)) {
+			$hasOne = $this->classParentAssociations($ppk, 'hasOne', $assocs);
+			$bind = array_merge($bind, $hasOne);
+		}
+		if (array_key_exists('hasMany', $assocs)) {
+			$hasMany = $this->classParentAssociations($ppk, 'hasMany', $assocs);
+			$bind = array_merge($bind, $hasMany);
+		}
 		$success = $Model->bindModel($bind, false);
 		//Putting the parent association as the first one, 
 		//so any dependent join on the parent model will be in the right order
@@ -257,6 +267,25 @@ class InheritableBehavior extends ModelBehavior {
 		unset($Model->belongsTo[$Model->parent->alias]);
 		$Model->belongsTo = array_merge(array($Model->parent->alias => $assoc), $Model->belongsTo);
 		return $success;
+	}
+
+/**
+ * Return the parent model association for a CTI model
+ *
+ * @param string $ppk Parent primary key
+ * @param string $name Association name
+ * @param array $assoc Association parent array
+ * @return array Association parent model
+ */
+
+	public function classParentAssociations($ppk, $name, $assoc) {
+		$data = array($name => array(
+			Hash::get($assoc, $name) => array(
+				'className' => Hash::get($assoc, $name),
+				'foreignKey' => $ppk
+			)
+		));
+		return $data;
 	}
 
 /**
