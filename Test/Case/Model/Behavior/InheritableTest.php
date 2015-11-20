@@ -65,6 +65,16 @@ class InheritableImage extends InheritableAsset {
 	public $actsAs = array('Utils.Inheritable' => array('method' => 'CTI'));
 }
 
+class Person extends CakeTestModel {
+
+	public $hasOne = 'Address';
+}
+
+class Client extends Person {
+
+	public $actsAs = array('Utils.Inheritable' => array('method' => 'CTI'));
+}
+
 
 /**
  * InheritableTest class
@@ -84,7 +94,9 @@ class InheritableTest extends CakeTestCase {
 		'plugin.utils.content',
 		'plugin.utils.asset',
 		'plugin.utils.link',
-		'plugin.utils.image'
+		'plugin.utils.image',
+		'plugin.utils.person',
+		'plugin.utils.address'
 	);
 
 /**
@@ -108,6 +120,8 @@ class InheritableTest extends CakeTestCase {
 		$this->Asset = ClassRegistry::init('InheritableAsset');
 		$this->Link = ClassRegistry::init('InheritableLink');
 		$this->Image = ClassRegistry::init('InheritableImage');
+		$this->Client = ClassRegistry::init('Client');
+		$this->Person = ClassRegistry::init('Person');
 	}
 
 /**
@@ -431,6 +445,20 @@ class InheritableTest extends CakeTestCase {
 
 		$this->Link->set('expiration', array('year' => '2016', 'month' => '02', 'day' => '31'));
 		$this->assertFalse($this->Link->validates());
+	}
+
+/**
+ * testClassParentAssociations
+ *
+ * @link https://github.com/CakeDC/utils/issues/83
+ * @return void
+ */
+	public function testClassParentAssociations() {
+		$parentAssociations = array_flip($this->Person->getAssociated());
+		$this->Client->Behaviors->load('Inheritable');
+		$this->Client->Behaviors->Inheritable->classParentAssociations($this->Client->parent->primaryKey, 'hasOne', $parentAssociations);
+		$this->Client->Behaviors->unload('Inheritable');
+		$this->assertTrue(isset($this->Client->Address));
 	}
 
 /**
