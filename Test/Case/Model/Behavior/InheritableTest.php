@@ -38,13 +38,13 @@ class InheritableAsset extends CakeTestModel {
 
 	public $name = 'Asset';
 
-	public $validate = array('title' => array('rule' => 'notEmpty'));
+	public $validate = array('title' => array('rule' => 'notBlank'));
 }
 
 class Asset extends CakeTestModel {
 
 	public $validate = array(
-		'title' => array('rule' => 'notEmpty'),
+		'title' => array('rule' => 'notBlank'),
 		'expiration' => array('rule' => 'date', 'allowEmpty' => true)
 	);
 }
@@ -55,7 +55,7 @@ class InheritableLink extends InheritableAsset {
 
 	public $actsAs = array('Utils.Inheritable' => array('method' => 'CTI'));
 
-	public $validate = array('url' => array('rule' => 'notEmpty'));
+	public $validate = array('url' => array('rule' => 'notBlank'));
 }
 
 class InheritableImage extends InheritableAsset {
