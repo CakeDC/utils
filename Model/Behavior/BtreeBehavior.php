@@ -40,7 +40,7 @@ class BtreeBehavior extends ModelBehavior {
 		'type' => 'nested',
 		'__parentChange' => false,
 		'recursive' => -1,
-		'block_size' => 32768 // block size of 32k allows for up to 64k trees (MAX_INT / 2 * block_size)
+		'blockSize' => 32768 // block size of 32k allows for up to 64k trees (MAX_INT / 2 * block_size)
 	);
 
 /**
