@@ -42,6 +42,13 @@ class SoftDeleteBehavior extends ModelBehavior {
  * @param array $settings
  */
 	public function setup(Model $model, $settings = array()) {
+		//Issue #147: Don't activate behavior if table is not found. Prevents unit tests from failing
+		try{
+			$model->setSource($model->table);
+		} catch (MissingTableException $e) {
+			return;
+		}
+
 		if (empty($settings)) {
 			$settings = $this->default;
 		} elseif (!is_array($settings)) {
@@ -346,13 +353,6 @@ class SoftDeleteBehavior extends ModelBehavior {
 		$parentModels = array_keys($model->belongsTo);
 
 		foreach ($parentModels as $parentModel) {
-			list($plugin, $modelClass) = pluginSplit($parentModel, true);
-			App::uses($modelClass, $plugin . 'Model');
-			if (!class_exists($modelClass)) {
-				throw new MissingModelException(array('class' => $modelClass));
-			}
-			$model->{$parentModel} = new $parentModel(null, null, $model->useDbConfig);
-
 			foreach (array('hasOne', 'hasMany') as $assocType) {
 				if (empty($model->{$parentModel}->{$assocType})) {
 					continue;
