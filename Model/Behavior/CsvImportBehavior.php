@@ -69,10 +69,15 @@ class CsvImportBehavior extends ModelBehavior {
 		if ($handle->eof()) {
 			return false;
 		}
-		return $handle->fgetcsv(
+		$csvline = $handle->fgetcsv(
 			$this->settings[$Model->alias]['delimiter'],
 			$this->settings[$Model->alias]['enclosure']
 		);
+		// fgetcsv return array(null)
+		if (count($csvline) === 1 && $csvline[0] === null) {
+			return false;
+		}
+		return $csvline;
 	}
 
 /**
