@@ -78,8 +78,11 @@ The list behavior allows you to have records act like a list, for example a trac
 
 ### SoftDelete Behavior 
 
-The SoftDelete behavior allows you to keep records on database and do not show them to users having a "deleted" flag. By default you should have "deleted" and "deleted_date" fields on your database table. 
-
+The SoftDelete behavior allows you to keep records on database and do not show them to users having a "deleted" flag. By default you should have "deleted" and "deleted_date" fields on your database table. As an example you can use the following SQL code for the fields:
+```
+	`deleted` TINYINT(1) NOT NULL DEFAULT '0',
+	`deleted_date` DATETIME NULL DEFAULT NULL,
+```
 Since "exists" method in Model disable callbacks you may experience problems using it. To avoid these problems you can use the "existsAndNotDeleted" method from the behavior and we provide the following code to be put into AppModel to make this transparent:
 
 ```php
