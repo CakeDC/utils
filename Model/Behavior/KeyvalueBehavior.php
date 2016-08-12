@@ -83,7 +83,7 @@ class KeyvalueBehavior extends ModelBehavior {
 			foreach($details as $key => $value) {
 				$newDetail = array();
 				$Model->recursive = -1;
-				$tmp = $this->find('first', array(
+				$tmp = $Model->find('first', array(
 					'conditions' => array(
 						$this->settings[$model->alias]['foreignKey'] => $foreignKey,
 						'field' => $section . '.' . $key),
