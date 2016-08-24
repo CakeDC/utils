@@ -40,7 +40,7 @@ class KeyvalueBehavior extends ModelBehavior {
  * @param object AppModel
  * @param array $config
  */
-	public function setup(&$model, $config = array()) {
+	public function setup(Model $model, $config = array()) {
 		$settings = array_merge($this->_defaults, $config);
 		$this->settings[$model->alias] = $settings;
 	}
@@ -55,20 +55,22 @@ class KeyvalueBehavior extends ModelBehavior {
 	public function getSection($Model, $foreignKey = null, $section = null) {
 		$Model->recursive = -1;
 		$results = $Model->find('all',
-			array('conditions' => array($this->settings[$model->alias]['foreignKey'] => $foreignKey)),
+ 			array('conditions' => array($this->settings[$Model->alias]['foreignKey'] => $foreignKey)),
 			array('fields' => array('field', 'value')));
-
+		
+		if ($results) {
 		foreach($results as $result) {
-			$details[] = array('field' => $result[$model->alias]['field'], 'value' => $result[$model->alias]['value']);
+				$details[] = array('field' => $result[$Model->alias]['field'], 'value' => $result[$Model->alias]['value']);
+			}
+	
+			$detailArray = array();
+			foreach ($details as $value) {
+				$key = preg_split('/\./', $value['field'], 2);
+				$detailArray[$key[0]][$key[1]] = $value['value'];
+			}
+	
+			return ($detailArray[$section]);
 		}
-
-		$detailArray = array();
-		foreach ($details as $value) {
-			$key = preg_split('/\./', $value['field'], 2);
-			$detailArray[$key[0]][$key[1]] = $value['value'];
-		}
-
-		return ($detailArray[$section]);
 	}
 
 /**
@@ -83,16 +85,18 @@ class KeyvalueBehavior extends ModelBehavior {
 			foreach($details as $key => $value) {
 				$newDetail = array();
 				$Model->recursive = -1;
-				$tmp = $this->find('first', array(
+				$tmp = $Model->find('first', array(
 					'conditions' => array(
-						$this->settings[$model->alias]['foreignKey'] => $foreignKey,
+						$this->settings[$Model->alias]['foreignKey'] => $foreignKey,
 						'field' => $section . '.' . $key),
 					'fields' => array('id')));
-				$newDetail[$Model->alias]['id'] = $tmp[$model->alias]['id'];
+				$newDetail[$Model->alias]['id'] = (isset($tmp[$Model->alias]['id']) ? $tmp[$Model->alias]['id'] : false);
+				$newDetail[$Model->alias]['user_id'] = $Model->User->id;
 				$newDetail[$Model->alias]['field'] = $section . '.' . $key;
 				$newDetail[$Model->alias]['value'] = $value;
-				$this->save($newDetail);
+				return ($Model->save($newDetail) ? true : false);
 			}
 		}
 	}
 }
+
