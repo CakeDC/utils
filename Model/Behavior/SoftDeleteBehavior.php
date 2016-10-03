@@ -25,7 +25,8 @@ class SoftDeleteBehavior extends ModelBehavior {
  * @var array $default
  */
 	public $default = array(
-		'deleted' => 'deleted_date'
+		'deleted' => 'deleted_date',
+		'atomic' => true,
 	);
 
 /**
@@ -36,12 +37,24 @@ class SoftDeleteBehavior extends ModelBehavior {
 	public $runtime = array();
 
 /**
+ * Holds atomic flag for model save operation
+ *
+ * @var bool $_atomic
+ */
+	protected $_atomic = true;
+
+/**
  * Setup callback
  *
  * @param Model $model
  * @param array $settings
  */
 	public function setup(Model $model, $settings = array()) {
+		if (array_key_exists('atomic', $settings)) {
+			$this->_atomic = $settings['atomic'];
+			unset($settings['atomic']);
+		}
+
 		if (empty($settings)) {
 			$settings = $this->default;
 		} elseif (!is_array($settings)) {
@@ -175,7 +188,10 @@ class SoftDeleteBehavior extends ModelBehavior {
 			$model->set($model->primaryKey, $id);
 			unset($model->data[$model->alias]['modified']);
 			unset($model->data[$model->alias]['updated']);
-			$result = $model->save(array($model->alias => $data), false, array_keys($data));
+			$result = $model->save(
+				array($model->alias => $data),
+				array('validate' => false, 'fieldList' => array_keys($data), 'atomic' => $this->_atomic)
+			);
 			if (!$result) {
 				return false;
 			}
@@ -211,7 +227,10 @@ class SoftDeleteBehavior extends ModelBehavior {
 
 		$model->create();
 		$model->set($model->primaryKey, $id);
-		$result = $model->save(array($model->alias => $data), false, array_keys($data));
+		$result = $model->save(
+			array($model->alias => $data),
+			array('validate' => false, 'fieldList' => array_keys($data), 'atomic' => $this->_atomic)
+		);
 		$this->softDelete($model, $runtime);
 		if ($result) {
 			return true;
