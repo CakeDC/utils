@@ -44,7 +44,7 @@ class InheritableBehavior extends ModelBehavior {
  * Set up the behavior.
  * Finds parent model and determines type field settings
  *
- * @param Model $Model
+ * @param Model $Model Model to determine parent and type field setting
  * @param array $config Behavior configuration
  * @internal param \Model $model
  * @return void
@@ -69,7 +69,7 @@ class InheritableBehavior extends ModelBehavior {
  * Before find callback
  * Filter query conditions with the correct `type' field condition.
  *
- * @param Model $model
+ * @param Model $Model Model
  * @param array $query Find query
  * @return array Updated query
  */
@@ -95,9 +95,9 @@ class InheritableBehavior extends ModelBehavior {
  * After find callback
  * In case of CTI inheritance, data contained in the 'ParentAlias' key are merged with Model data
  *
- * @param Model $Model
- * @param array $results
- * @param boolean $primary
+ * @param Model $Model Model
+ * @param array $results results
+ * @param bool $primary primary
  * @return array Results
  */
 	public function afterFind(Model $Model, $results = array(), $primary = false) {
@@ -141,8 +141,8 @@ class InheritableBehavior extends ModelBehavior {
  *
  * Set the `type' field before saving the record in case of STI model
  *
- * @param Model $Model
- * @param array $options
+ * @param Model $Model Model
+ * @param array $options options
  * @return true
  */
 	public function beforeSave(Model $Model, $options = array()) {
@@ -159,7 +159,7 @@ class InheritableBehavior extends ModelBehavior {
  * After delete callback
  * Deletes the parent model in case of CTI model
  *
- * @param Model $Model
+ * @param Model $Model Model
  * @return true
  */
 	public function afterDelete(Model $Model) {
@@ -174,7 +174,7 @@ class InheritableBehavior extends ModelBehavior {
  *
  * Deconstructs complex types by calling model parent's method
  *
- * @param Model $Model
+ * @param Model $Model Model
  * @param array $options
  * @return true
  */
@@ -191,7 +191,7 @@ class InheritableBehavior extends ModelBehavior {
 /**
  * Beforefind callback for STI models
  *
- * @param Model $Model
+ * @param Model $Model Model
  * @param array $query Find query
  * @return Updated query
  */
@@ -222,7 +222,7 @@ class InheritableBehavior extends ModelBehavior {
  * BeforeSave callback for STI models
  * Sets the inheritance field to the correct Model alias
  *
- * @param Model $Model
+ * @param Model $Model Model
  * @return true
  */
 	protected function _singleTableBeforeSave(Model $Model) {
@@ -239,8 +239,8 @@ class InheritableBehavior extends ModelBehavior {
 /**
  * Binds the parent model for a CTI model
  *
- * @param Model $Model
- * @return boolean Success of the binding
+ * @param Model $Model Model
+ * @return bool Success of the binding
  */
 	public function classTableBindParent(Model $Model) {
 		$bind = array('belongsTo' => array(
@@ -250,8 +250,19 @@ class InheritableBehavior extends ModelBehavior {
 				'foreignKey' => $Model->primaryKey
 			)
 		));
+		$assocs = array_flip($Model->parent->getAssociated());
+		$ppk = $Model->parent->primaryKey;
+		if (array_key_exists('hasOne', $assocs)) {
+			$hasOne = $this->classParentAssociations($ppk, 'hasOne', $assocs);
+			$bind = array_merge($bind, $hasOne);
+		}
+		if (array_key_exists('hasMany', $assocs)) {
+			$hasMany = $this->classParentAssociations($ppk, 'hasMany', $assocs);
+			$bind = array_merge($bind, $hasMany);
+		}
 		$success = $Model->bindModel($bind, false);
-		//Putting the parent association as the first one, so any dependent join on the parent model will be in the right order
+		//Putting the parent association as the first one, 
+		//so any dependent join on the parent model will be in the right order
 		$assoc = $Model->belongsTo[$Model->parent->alias];
 		unset($Model->belongsTo[$Model->parent->alias]);
 		$Model->belongsTo = array_merge(array($Model->parent->alias => $assoc), $Model->belongsTo);
@@ -259,9 +270,28 @@ class InheritableBehavior extends ModelBehavior {
 	}
 
 /**
+ * Return the parent model association for a CTI model
+ *
+ * @param string $ppk Parent primary key
+ * @param string $name Association name
+ * @param array $assoc Association parent array
+ * @return array Association parent model
+ */
+
+	public function classParentAssociations($ppk, $name, $assoc) {
+		$data = array($name => array(
+			Hash::get($assoc, $name) => array(
+				'className' => Hash::get($assoc, $name),
+				'foreignKey' => $ppk
+			)
+		));
+		return $data;
+	}
+
+/**
  * Binds additional belongsTo association from the parent for a CTI model
  *
- * @param Model $Model
+ * @param Model $Model Model
  * @param array $binds, additional models to bind. They will be filtered to left only belongsTo associations
  */
 	protected function _classTableBindContains(Model $Model, $binds) {
@@ -287,7 +317,7 @@ class InheritableBehavior extends ModelBehavior {
  * After save callback for CTI models
  * Saves data for the parent model
  *
- * @param Model $Model
+ * @param Model $Model Model
  * @return true
  */
 	protected function _saveParentModel(Model $Model) {
