@@ -21,14 +21,14 @@ class KeyvalueBehavior extends ModelBehavior {
 
 /**
  * Settings
- * 
+ *
  * @var mixed
  */
 	public $settings = array();
 
 /**
  * Default settings
- * 
+ *
  * @var array
  */
 	protected $_defaults = array(
@@ -47,7 +47,7 @@ class KeyvalueBehavior extends ModelBehavior {
 
 /**
  * Returns details for named section
- * 
+ *
  * @var string
  * @var string
  * @return array
@@ -57,25 +57,25 @@ class KeyvalueBehavior extends ModelBehavior {
 		$results = $Model->find('all',
  			array('conditions' => array($this->settings[$Model->alias]['foreignKey'] => $foreignKey)),
 			array('fields' => array('field', 'value')));
-		
+
 		if ($results) {
 		foreach($results as $result) {
 				$details[] = array('field' => $result[$Model->alias]['field'], 'value' => $result[$Model->alias]['value']);
 			}
-	
+
 			$detailArray = array();
 			foreach ($details as $value) {
 				$key = preg_split('/\./', $value['field'], 2);
 				$detailArray[$key[0]][$key[1]] = $value['value'];
 			}
-	
-			return ($detailArray[$section]);
+
+		return (isset($detailArray[$section]) ? $detailArray[$section] : false);
 		}
 	}
 
 /**
  * Save details for named section
- * 
+ *
  * @var string
  * @var array
  * @var string
