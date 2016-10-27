@@ -190,11 +190,13 @@ class SoftDeleteBehavior extends ModelBehavior {
 			unset($model->data[$model->alias]['updated']);
 			$result = $model->save(
 				array($model->alias => $data),
-				array('validate' => false, 'fieldList' => array_keys($data), 'atomic' => $this->_atomic)
+				array('validate' => false, 'fieldList' => array_keys($data), 'atomic' => $this->_atomic, 'callbacks' => false)
 			);
 			if (!$result) {
 				return false;
 			}
+
+			$model->getEventManager()->dispatch(new CakeEvent('Model.afterDelete', $model));
 		}
 
 		return true;
