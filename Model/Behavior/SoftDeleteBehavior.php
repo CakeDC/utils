@@ -26,7 +26,6 @@ class SoftDeleteBehavior extends ModelBehavior {
  */
 	public $default = array(
 		'deleted' => 'deleted_date',
-		'atomic' => true,
 	);
 
 /**
