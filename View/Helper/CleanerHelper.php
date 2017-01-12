@@ -268,7 +268,7 @@ class CleanerHelper extends AppHelper {
 				$attributeSubSet[1] = join('=', $attributeSubSetTmp);
 			}
 			list($attributeSubSet[0]) = explode(' ', $attributeSubSet[0]);
-			if (!eregi("^[a-z]*$",$attributeSubSet[0]) || substr($attributeSubSet[0], 0, 2) == 'on') {
+			if (!preg_match("/^[a-z]*$/i",$attributeSubSet[0]) || substr($attributeSubSet[0], 0, 2) == 'on') {
 				continue;
 			}
 			if ($attributeSubSet[1]) {
