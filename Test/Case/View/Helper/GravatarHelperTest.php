@@ -128,11 +128,11 @@ class GravatarHelperTest extends CakeTestCase {
  * @access public
  */
 	public function testImageTag() {
-		$expected = '<img src="http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5') . '" alt="" />';
+		$expected = '<img src="http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5') . '" alt=""/>';
 		$result = $this->Gravatar->image('example@gravatar.com', array('ext' => false));
 		$this->assertEquals($expected, $result);
 
-		$expected = '<img src="http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5') . '" alt="Gravatar" />';
+		$expected = '<img src="http://www.gravatar.com/avatar/' . Security::hash('example@gravatar.com', 'md5') . '" alt="Gravatar"/>';
 		$result = $this->Gravatar->image('example@gravatar.com', array('ext' => false, 'alt' => 'Gravatar'));
 		$this->assertEquals($expected, $result);
 	}

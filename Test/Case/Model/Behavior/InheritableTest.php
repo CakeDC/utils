@@ -38,13 +38,8 @@ class InheritableAsset extends CakeTestModel {
 
 	public $name = 'Asset';
 
-	public $validate = array('title' => array('rule' => 'notEmpty'));
-}
-
-class Asset extends CakeTestModel {
-
 	public $validate = array(
-		'title' => array('rule' => 'notEmpty'),
+		'title' => array('rule' => 'notBlank'),
 		'expiration' => array('rule' => 'date', 'allowEmpty' => true)
 	);
 }
@@ -55,7 +50,7 @@ class InheritableLink extends InheritableAsset {
 
 	public $actsAs = array('Utils.Inheritable' => array('method' => 'CTI'));
 
-	public $validate = array('url' => array('rule' => 'notEmpty'));
+	public $validate = array('url' => array('rule' => 'notBlank'));
 }
 
 class InheritableImage extends InheritableAsset {
@@ -97,17 +92,18 @@ class InheritableTest extends CakeTestCase {
 		parent::setUp();
 
 		// STI models
-		$this->Article = ClassRegistry::init('InheritableArticle');
-		$this->Page = ClassRegistry::init('InheritablePage');
-		$this->Content = ClassRegistry::init('InheritableContent');
+		$this->Article = ClassRegistry::init(array('class'=>'InheritableArticle', 'alias'=>'Article'));
+		$this->Page = ClassRegistry::init(array('class'=>'InheritablePage', 'alias'=>'Page'));
+		$this->Content = ClassRegistry::init(array('class'=>'InheritableContent'));
 
 		$this->Page->Behaviors->load('Containable');
 		$this->Article->Behaviors->load('Containable');
 
 		// CTI models
-		$this->Asset = ClassRegistry::init('InheritableAsset');
-		$this->Link = ClassRegistry::init('InheritableLink');
-		$this->Image = ClassRegistry::init('InheritableImage');
+		$this->Asset = ClassRegistry::init(array('class'=>'InheritableAsset', 'alias'=>'Asset'));
+		$this->Link = ClassRegistry::init(array('class'=>'InheritableLink', 'alias'=>'Link'));
+		$this->Image = ClassRegistry::init(array('class'=>'InheritableImage', 'alias'=>'Image'));
+
 	}
 
 /**
@@ -163,7 +159,7 @@ class InheritableTest extends CakeTestCase {
 		$r2 = $this->Article->find('all', array('conditions' => "permalink = 'about-us'"));
 		$this->__assertMatches('/Page[body=/CakePHP is a MVC PHP framework/i]', $r1);
 		$this->__assertMatches('/Article[body=/company/i]', $r2, "shit");
-		$this->assertNotEqual($r1, $r2);
+		$this->assertNotEquals($r1, $r2);
 	}
 
 /**

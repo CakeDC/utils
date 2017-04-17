@@ -63,6 +63,7 @@ class InheritableBehavior extends ModelBehavior {
 		if ($this->settings[$Model->alias]['method'] == InheritableBehavior::CTI) {
 			$this->classTableBindParent($Model);
 		}
+		$Model->validate = array_merge($Model->validate, $Model->parent->validate);
 	}
 
 /**
@@ -108,26 +109,26 @@ class InheritableBehavior extends ModelBehavior {
 						$results[$i][$Model->alias] = array_merge($res[$Model->parent->alias], $res[$Model->alias]);
 						unset($results[$i][$Model->parent->alias]);
 
-					} elseif (!empty($res[$Model->alias][$Model->parent->alias])) {
-						$results[$i][$Model->alias] = array_merge($res[$Model->alias][$Model->parent->alias], $res[$Model->alias]);
-						unset($results[$i][$Model->alias][$Model->parent->alias]);
+					} elseif (!empty($res[$Model->alias][$Model->parent->name])) {
+						$results[$i][$Model->alias] = array_merge($res[$Model->alias][$Model->parent->name], $res[$Model->alias]);
+						unset($results[$i][$Model->alias][$Model->parent->name]);
 
 					} elseif (!empty($res[$Model->alias][0])) {
 						foreach ($res[$Model->alias] as $j => $subRes) {
-							if (isset($subRes[$Model->parent->alias])) {
-								$results[$i][$Model->alias][$j] = array_merge($subRes[$Model->parent->alias], $subRes);
-								unset($results[$i][$Model->alias][$j][$Model->parent->alias]);
+							if (isset($subRes[$Model->parent->name])) {
+								$results[$i][$Model->alias][$j] = array_merge($subRes[$Model->parent->name], $subRes);
+								unset($results[$i][$Model->alias][$j][$Model->parent->name]);
 							}
 						}
 					}
-				} elseif ($i == $Model->parent->alias) {
+				} elseif ($i == $Model->parent->name) {
 					$results = array_merge($results, $res);
 					unset($results[$i]);
 				} elseif ($i == $Model->alias && array_key_exists(0, $res)) {
 					foreach ($res as $j => $payload) {
-						if (array_key_exists($Model->parent->alias, $payload)) {
-							$results[$i][$j] = array_merge($payload, $payload[$Model->parent->alias]);
-							unset($results[$i][$j][$Model->parent->alias]);
+						if (array_key_exists($Model->parent->name, $payload)) {
+							$results[$i][$j] = array_merge($payload, $payload[$Model->parent->name]);
+							unset($results[$i][$j][$Model->parent->name]);
 						}
 					}
 				}
